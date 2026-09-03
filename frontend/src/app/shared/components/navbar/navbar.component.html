@@ -1,1 +1,39 @@
-<p>navbar works!</p>
+<header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6">
+  <!-- Left Side: Menu toggle & Search -->
+  <div class="flex items-center flex-1">
+    <!-- Hamburger icon for mobile (hidden on desktop) -->
+    <button class="md:hidden text-gray-500 hover:text-gray-700 mr-4">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    
+    <!-- Search Bar -->
+    <div class="relative w-full max-w-md hidden md:block">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+      <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-brand-orange focus:border-brand-orange sm:text-sm transition duration-150 ease-in-out" placeholder="Search menu items, orders, customers...">
+    </div>
+  </div>
+
+  <!-- Right Side: Notifications & User -->
+  <div class="flex items-center ml-4 space-x-4">
+    <!-- Notification Bell -->
+    <button class="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      <!-- Notification Badge -->
+      <span class="absolute top-1 right-1 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
+    </button>
+
+    <!-- Separator -->
+    <div class="hidden sm:block h-6 border-l border-gray-300"></div>
+
+    <!-- User Profile Dropdown -->
+    <div class="flex items-center">
+      <img class="h-8 w-8 rounded-full object-cover border border-gray-200" src="https://ui-avatars.com/api/?name=John+Doe&background=ff6b00&color=fff" alt="User avatar">
+      <div class="ml-3 hidden md:block text-sm">
+        <p class="font-medium text-gray-700">John Doe</p>
+        <p class="text-gray-500 text-xs">Administrator</p>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,1 +1,58 @@
-<p>sidebar works!</p>
+<div class="h-full bg-brand-dark text-white flex flex-col">
+  <!-- Logo Area -->
+  <div class="h-16 flex items-center px-6 border-b border-gray-800">
+    <!-- Chef Hat Icon -->
+    <svg class="w-8 h-8 text-brand-orange mr-2" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2C8.68 2 6 4.68 6 8v1h-.5C4.12 9 3 10.12 3 11.5 3 12.83 4.02 13.92 5.31 13.99L6.5 21h11l1.19-7.01c1.29-.07 2.31-1.16 2.31-2.49C21 10.12 19.88 9 18.5 9H18V8c0-3.32-2.68-6-6-6zm0 2c2.21 0 4 1.79 4 4v1H8V8c0-2.21 1.79-4 4-4z"/>
+    </svg>
+    <span class="text-xl font-bold tracking-tight">
+      <span class="text-white">Gastro</span><span class="text-brand-orange">Suite</span>
+    </span>
+  </div>
+
+  <!-- Navigation Links -->
+  <nav class="flex-1 py-4 overflow-y-auto space-y-1 px-3">
+    <!-- Dashboard -->
+    <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors group">
+      <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Dashboard
+    </a>
+    
+    <!-- POS (Active) -->
+    <a href="#" class="flex items-center px-4 py-3 bg-brand-orange text-white rounded-lg shadow-md">
+      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      <span class="font-medium">POS</span>
+    </a>
+
+    <!-- Orders -->
+    <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors group">
+      <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Orders
+    </a>
+
+    <!-- Menu -->
+    <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors group">
+      <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      Menu
+    </a>
+
+    <!-- Inventory -->
+    <a href="#" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors group">
+      <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      Inventory
+    </a>
+  </nav>
+
+  <!-- User Profile Section Bottom -->
+  <div class="p-4 border-t border-gray-800">
+    <div class="flex items-center bg-gray-800/50 p-3 rounded-lg border border-gray-700/50">
+      <div class="w-10 h-10 rounded-full bg-brand-orange flex items-center justify-center text-white font-bold mr-3 shadow-sm">
+        A
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-white truncate">Admin</p>
+        <p class="text-xs text-gray-400 truncate">Administrator</p>
+      </div>
+    </div>
+  </div>
+</div>
