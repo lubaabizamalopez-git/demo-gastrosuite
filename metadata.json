@@ -1,0 +1,6 @@
+{
+  "name": "GastroSuite POS",
+  "description": "Sistema modular de venta gastronómica con POS táctil, Salón, Cocina KDS, Inventario y Arquitectura NestJS/Prisma",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

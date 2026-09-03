@@ -1,0 +1,601 @@
+// ==========================================
+// GASTROSUITE - PRISMA SCHEMA (FASE 1 MVP)
+// Motor de Base de Datos: MariaDB / MySQL
+// ==========================================
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ------------------------------------------
+// 1. USUARIOS, ROLES Y ACCESOS (RBAC)
+// ------------------------------------------
+
+/// Nombres de roles fijos disponibles en el sistema
+enum NombreRol {
+  SUPERADMIN
+  ADMINISTRADOR
+  GERENTE
+  SUPERVISOR_COCINA
+  SUPERVISOR_MESAS
+  CAJERO
+  MESERO
+  COCINERO
+}
+
+/// Representa a un empleado o persona con acceso al sistema
+model Usuario {
+  /// Identificador único del usuario (UUID)
+  id              String             @id @default(uuid())
+  /// RUT sin dígito verificador
+  rut             String?            @unique
+  /// Dígito verificador del RUT
+  dv              String?
+  /// Correo electrónico (usado para iniciar sesión)
+  correo          String             @unique
+  /// Contraseña encriptada
+  claveHash       String
+  /// Primer y/o segundo nombre
+  nombre          String
+  /// Apellido Paterno
+  apellidoPaterno String
+  /// Apellido Materno
+  apellidoMaterno String?
+  /// PIN de 4 dígitos para acceso rápido en la caja (POS)
+  codigoPin       String?            
+  /// Indica si el usuario puede acceder al sistema
+  activo          Boolean            @default(true)
+  /// Fecha de creación del registro
+  creadoEn        DateTime           @default(now())
+  /// Fecha de última modificación
+  actualizadoEn   DateTime           @updatedAt
+
+  rolesUsuario    UsuarioRol[]
+  pedidos         Pedido[]           @relation("PedidosMesero")
+  turnosCaja      TurnoCaja[]
+  movimientosInventario MovimientoInventario[]
+
+  @@map("usuarios")
+}
+
+/// Representa un rol o cargo dentro del sistema
+model Rol {
+  /// Identificador único del rol
+  id          String       @id @default(uuid())
+  /// Nombre del rol (ej. ADMINISTRADOR)
+  nombre      NombreRol    @unique
+  /// Breve descripción de los permisos del rol
+  descripcion String?
+  
+  rolesUsuario UsuarioRol[]
+
+  @@map("roles")
+}
+
+/// Tabla intermedia para asignar múltiples roles a un usuario
+model UsuarioRol {
+  /// ID del usuario
+  usuarioId String
+  /// ID del rol asignado
+  rolId     String
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  rol     Rol     @relation(fields: [rolId], references: [id], onDelete: Cascade)
+
+  @@id([usuarioId, rolId])
+  @@map("usuarios_roles")
+}
+
+// ------------------------------------------
+// 2. CATÁLOGO, PRODUCTOS, MODIFICADORES Y RECETAS
+// ------------------------------------------
+
+/// Categoría principal para organizar los productos (ej. Bebidas, Platos de Fondo)
+model Categoria {
+  /// Identificador único de la categoría
+  id          String     @id @default(uuid())
+  /// Nombre visible de la categoría
+  nombre      String
+  /// Nombre del ícono para mostrar en el frontend
+  icono       String?
+  /// Número para ordenar la categoría en el menú
+  orden       Int        @default(0)
+  /// Si es falso, la categoría y sus productos no se muestran
+  activo      Boolean    @default(true)
+  
+  productos   Producto[]
+
+  @@map("categorias")
+}
+
+/// Producto vendible en el restaurante
+model Producto {
+  /// Identificador único del producto
+  id              String           @id @default(uuid())
+  /// ID de la categoría a la que pertenece
+  categoriaId     String
+  /// Nombre del producto
+  nombre          String
+  /// Descripción o ingredientes visibles para el cliente
+  descripcion     String?          @db.Text
+  /// Precio base de venta
+  precio          Decimal          @db.Decimal(10, 2)
+  /// Código de barra o identificador único de inventario
+  sku             String?          @unique
+  /// URL de la foto del producto
+  imagen          String?
+  /// Indica si el producto está disponible para la venta
+  activo          Boolean          @default(true)
+  /// Área donde se prepara este producto (ej. COCINA, BAR)
+  areaPreparacion AreaPreparacion  @default(COCINA)
+
+  categoria           Categoria           @relation(fields: [categoriaId], references: [id])
+  variantes           VarianteProducto[]
+  gruposModificadores GrupoModificador[]
+  recetas             RecetaProducto[]
+  itemsPedido         ItemPedido[]
+
+  @@map("productos")
+}
+
+/// Zonas de impresión y preparación del restaurante
+enum AreaPreparacion {
+  COCINA
+  BAR
+  POSTRES
+  PARRILLA
+}
+
+/// Tamaños o variaciones de un producto base (ej. Pizza Familiar vs Personal)
+model VarianteProducto {
+  /// Identificador único de la variante
+  id         String   @id @default(uuid())
+  /// Producto padre
+  productoId String
+  /// Nombre de la variante (ej. "Familiar")
+  nombre     String   
+  /// Precio de esta variante específica
+  precio     Decimal  @db.Decimal(10, 2)
+  /// Código SKU específico
+  sku        String?
+
+  producto   Producto     @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  itemsPedido ItemPedido[]
+
+  @@map("variantes_producto")
+}
+
+/// Grupo de modificadores u opciones (ej. "Elige tu salsa", "Término de la carne")
+model GrupoModificador {
+  /// ID único del grupo
+  id           String     @id @default(uuid())
+  /// Producto al que pertenece este grupo
+  productoId   String
+  /// Nombre de la instrucción (ej. "Elige 2 salsas")
+  nombre       String     
+  /// Cantidad mínima que el cliente debe elegir (0 = opcional)
+  minSeleccion Int        @default(0)
+  /// Cantidad máxima que el cliente puede elegir
+  maxSeleccion Int        @default(1)
+  /// Atajo para saber si debe seleccionarse obligatoriamente
+  esRequerido  Boolean    @default(false)
+
+  producto      Producto      @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  modificadores Modificador[]
+
+  @@map("grupos_modificadores")
+}
+
+/// Modificador individual (ej. "Ketchup", "Bien cocido", "Sin cebolla")
+model Modificador {
+  /// ID único
+  id                 String        @id @default(uuid())
+  /// Grupo al que pertenece
+  grupoModificadorId String
+  /// Nombre de la opción
+  nombre             String        
+  /// Costo extra si el cliente elige esta opción
+  precioAdicional    Decimal       @default(0.00) @db.Decimal(10, 2)
+
+  grupo                 GrupoModificador        @relation(fields: [grupoModificadorId], references: [id], onDelete: Cascade)
+  modificadoresItemPedido ModificadorItemPedido[]
+
+  @@map("modificadores")
+}
+
+// ------------------------------------------
+// 3. INVENTARIO, INSUMOS Y KARDEX
+// ------------------------------------------
+
+/// Unidades de medida para el control de inventario
+enum UnidadMedida {
+  KG
+  GRAMOS
+  LITROS
+  MILILITROS
+  CC
+  CM
+  METROS
+  UNIDADES
+  CANTIDAD
+  PORCION
+}
+
+/// Ingredientes o insumos base que no se venden directamente pero componen las recetas
+model Insumo {
+  /// ID del insumo
+  id             String        @id @default(uuid())
+  /// Nombre del insumo (ej. "Tomate", "Carne Molida")
+  nombre         String
+  /// Unidad en la que se mide su stock
+  unidad         UnidadMedida
+  /// Stock disponible actualmente
+  stockActual    Decimal       @default(0.00) @db.Decimal(10, 3)
+  /// Alerta de stock bajo
+  stockMinimo    Decimal       @default(0.00) @db.Decimal(10, 3)
+  /// Costo promedio por unidad
+  costoPorUnidad Decimal       @default(0.00) @db.Decimal(10, 2)
+
+  recetas               RecetaProducto[]
+  movimientosInventario MovimientoInventario[]
+
+  @@map("insumos")
+}
+
+/// Relación de ingredientes que componen un Producto
+model RecetaProducto {
+  /// ID único
+  id         String   @id @default(uuid())
+  /// Producto final
+  productoId String
+  /// Insumo requerido
+  insumoId   String
+  /// Cuánto insumo se descuenta por cada producto vendido
+  cantidad   Decimal  @db.Decimal(10, 3) 
+
+  producto Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  insumo   Insumo   @relation(fields: [insumoId], references: [id], onDelete: Cascade)
+
+  @@map("recetas_producto")
+}
+
+/// Tipos de ajuste en el Kardex/Inventario
+enum TipoMovimiento {
+  ENTRADA
+  SALIDA
+  VENTA
+  MERMA
+  AJUSTE
+}
+
+/// Historial de movimientos (Kardex) de cada insumo
+model MovimientoInventario {
+  /// ID único del movimiento
+  id        String         @id @default(uuid())
+  /// Insumo modificado
+  insumoId  String
+  /// Empleado que registró o provocó el movimiento
+  usuarioId String
+  /// Clasificación del movimiento
+  tipo      TipoMovimiento
+  /// Cantidad sumada o restada
+  cantidad  Decimal        @db.Decimal(10, 3)
+  /// Costo total de este movimiento (si aplica)
+  costo     Decimal?       @db.Decimal(10, 2)
+  /// Motivo o razón (ej. "Tomates en mal estado")
+  notas     String?
+  /// Fecha y hora exacta
+  creadoEn  DateTime       @default(now())
+
+  insumo  Insumo  @relation(fields: [insumoId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@map("movimientos_inventario")
+}
+
+// ------------------------------------------
+// 4. PLANO DE SALÓN Y MESAS
+// ------------------------------------------
+
+/// Situación actual de una mesa en el salón
+enum EstadoMesa {
+  LIBRE
+  OCUPADA
+  CUENTA_PEDIDA
+  LIMPIANDO
+  RESERVADA
+}
+
+/// Zonas del local (ej. Terraza, Primer Piso)
+model AreaSalon {
+  /// ID del área
+  id        String  @id @default(uuid())
+  /// Nombre del área
+  nombre    String  
+  /// Orden para mostrar en pestañas
+  orden     Int     @default(0)
+  
+  mesas     Mesa[]
+
+  @@map("areas_salon")
+}
+
+/// Mesa individual dentro de un área
+model Mesa {
+  /// ID único de la mesa
+  id          String     @id @default(uuid())
+  /// ID del área a la que pertenece
+  areaSalonId String
+  /// Identificador visible (ej. "Mesa 5", "T-12")
+  numeroMesa  String
+  /// Cuántas personas caben
+  capacidad   Int        @default(4)
+  /// Si está libre, ocupada, etc.
+  estado      EstadoMesa @default(LIBRE)
+  /// Eje X en el mapa visual
+  posX        Int        @default(0) 
+  /// Eje Y en el mapa visual
+  posY        Int        @default(0)
+
+  areaSalon AreaSalon @relation(fields: [areaSalonId], references: [id])
+  pedidos   Pedido[]
+
+  @@map("mesas")
+}
+
+// ------------------------------------------
+// 5. ÓRDENES, ÍTEMS, PAGOS Y CAJA
+// ------------------------------------------
+
+/// Origen del pedido
+enum TipoPedido {
+  SALON
+  PARA_LLEVAR
+  DELIVERY
+}
+
+/// Flujo de estados generales de un pedido
+enum EstadoPedido {
+  PENDIENTE
+  EN_COCINA
+  LISTO
+  ENTREGADO
+  PAGADO
+  CANCELADO
+}
+
+/// Cabecera de la cuenta o comanda
+model Pedido {
+  /// ID único del pedido (UUID)
+  id             String       @id @default(uuid())
+  /// Número autoincremental fácil de leer para el cliente
+  numeroPedido   Int          @unique @default(autoincrement())
+  /// Modalidad de venta
+  tipoPedido     TipoPedido   @default(SALON)
+  /// Estado general del ticket
+  estado         EstadoPedido @default(PENDIENTE)
+  /// Si es SALON, qué mesa es
+  mesaId         String?
+  /// Quién atendió la mesa
+  meseroId       String?
+  /// Para delivery o para llevar
+  nombreCliente  String?
+  telefonoCliente String?
+  notas          String?
+  /// Suma de precios sin impuesto
+  subtotal       Decimal      @db.Decimal(10, 2)
+  /// Monto de impuestos calculados
+  impuestos      Decimal      @db.Decimal(10, 2)
+  /// Descuentos aplicados
+  descuento      Decimal      @default(0.00) @db.Decimal(10, 2)
+  /// Propina voluntaria dejada
+  propina        Decimal      @default(0.00) @db.Decimal(10, 2)
+  /// Gran total a pagar
+  total          Decimal      @db.Decimal(10, 2)
+  creadoEn       DateTime     @default(now())
+  actualizadoEn  DateTime     @updatedAt
+
+  mesa    Mesa?       @relation(fields: [mesaId], references: [id])
+  mesero  Usuario?    @relation("PedidosMesero", fields: [meseroId], references: [id])
+  items   ItemPedido[]
+  pagos   Pago[]
+
+  @@map("pedidos")
+}
+
+/// Estado individual de cada plato en la cocina
+enum EstadoItemPedido {
+  PENDIENTE
+  PREPARANDO
+  LISTO
+  SERVIDO
+  CANCELADO
+}
+
+/// Plato o bebida específica dentro de un Pedido
+model ItemPedido {
+  /// ID del ítem
+  id               String           @id @default(uuid())
+  /// Pedido al que pertenece
+  pedidoId         String
+  /// Qué producto es
+  productoId       String
+  /// Si eligió tamaño familiar, etc.
+  varianteId       String?
+  /// Cantidad pedida
+  cantidad         Int              @default(1)
+  /// Precio de 1 unidad
+  precioUnitario   Decimal          @db.Decimal(10, 2)
+  /// Precio final (cantidad * precioUnitario + extras)
+  precioTotal      Decimal          @db.Decimal(10, 2)
+  /// Estado en la estación de preparación
+  estado           EstadoItemPedido @default(PENDIENTE)
+  /// Indicaciones (ej. "Poco ají")
+  notas            String?
+  /// A qué impresora/pantalla KDS se envió
+  areaPreparacion  AreaPreparacion  @default(COCINA)
+  /// Hora exacta en la que se comandó
+  enviadoACocinaEn DateTime?
+
+  pedido        Pedido                  @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  producto      Producto                @relation(fields: [productoId], references: [id])
+  variante      VarianteProducto?       @relation(fields: [varianteId], references: [id])
+  modificadores ModificadorItemPedido[]
+
+  @@map("items_pedido")
+}
+
+/// Modificador específico elegido para un ItemPedido
+model ModificadorItemPedido {
+  id            String  @id @default(uuid())
+  itemPedidoId  String
+  modificadorId String
+  /// Precio cobrado por este extra
+  precio        Decimal @db.Decimal(10, 2)
+
+  itemPedido  ItemPedido  @relation(fields: [itemPedidoId], references: [id], onDelete: Cascade)
+  modificador Modificador @relation(fields: [modificadorId], references: [id])
+
+  @@map("modificadores_item_pedido")
+}
+
+// ------------------------------------------
+// MÉTODOS DE PAGO (TABLA DINÁMICA)
+// ------------------------------------------
+
+/// Formas de pago aceptadas (Dinámico para poder activar/desactivar)
+model MetodoPago {
+  /// ID único del método
+  id          String   @id @default(uuid())
+  /// Nombre visible (ej. "Efectivo", "Transbank", "MercadoPago")
+  nombre      String   @unique 
+  /// Código interno 
+  codigo      String   @unique 
+  /// Indica si el cajero puede ver esta opción
+  activo      Boolean  @default(true)
+  
+  pagos       Pago[]
+
+  @@map("metodos_pago")
+}
+
+/// Abono o pago realizado a un pedido
+model Pago {
+  /// ID del registro de pago
+  id               String     @id @default(uuid())
+  /// A qué pedido pertenece
+  pedidoId         String
+  /// En qué turno de caja se recibió
+  turnoId          String
+  /// Cuánto se pagó
+  monto            Decimal    @db.Decimal(10, 2)
+  /// ID del Método de pago usado
+  metodoPagoId     String
+  /// Nro de voucher o transferencia
+  numeroReferencia String?    
+  /// Hora del pago
+  creadoEn         DateTime   @default(now())
+
+  pedido     Pedido    @relation(fields: [pedidoId], references: [id])
+  turno      TurnoCaja @relation(fields: [turnoId], references: [id])
+  metodoPago MetodoPago @relation(fields: [metodoPagoId], references: [id])
+
+  @@map("pagos")
+}
+
+/// Estado de la caja registradora
+enum EstadoTurno {
+  ABIERTO
+  CERRADO
+}
+
+/// Control de apertura y cierre de caja
+model TurnoCaja {
+  /// ID del turno
+  id               String      @id @default(uuid())
+  /// Cajero responsable
+  usuarioId        String
+  /// Hora en que abrió
+  abiertoEn        DateTime    @default(now())
+  /// Hora del cierre
+  cerradoEn        DateTime?
+  /// Con cuánto sencillo empezó
+  efectivoInicial  Decimal     @db.Decimal(10, 2)
+  /// Cuánto debería haber según el sistema
+  efectivoEsperado Decimal?    @db.Decimal(10, 2)
+  /// Cuánto contó el cajero físicamente
+  efectivoReal     Decimal?    @db.Decimal(10, 2)
+  /// Sobrante o Faltante
+  diferencia       Decimal?    @db.Decimal(10, 2)
+  /// Estado actual de este turno
+  estado           EstadoTurno @default(ABIERTO)
+  /// Justificaciones de descuadres
+  notas            String?
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+  pagos   Pago[]
+
+  @@map("turnos_caja")
+}
+
+// ------------------------------------------
+// 6. IMPRESORAS Y CONFIGURACIÓN DEL LOCAL
+// ------------------------------------------
+
+/// Cómo se comunica el POS con la impresora
+enum TipoConexion {
+  RED_IP
+  USB_AGENTE_LOCAL
+}
+
+/// Configuración de puntos de impresión
+model ConfiguracionImpresora {
+  /// ID de impresora
+  id             String           @id @default(uuid())
+  /// Ej: "Impresora Barra", "Impresora Cocina"
+  nombre         String           
+  /// Qué platos manda a imprimir acá
+  areaDestino    AreaPreparacion?
+  /// RED_IP o USB
+  tipoConexion   TipoConexion     @default(RED_IP)
+  /// IP (si es de red)
+  direccionIp    String?          
+  /// Puerto
+  puerto         Int              @default(9100)
+  /// 80mm o 58mm
+  anchoPapelMm   Int              @default(80) 
+  /// Si es la que emite boletas principales
+  esPosPrincipal Boolean          @default(false)
+  /// Si está encendida/operativa
+  activa         Boolean          @default(true)
+
+  @@map("configuraciones_impresora")
+}
+
+/// Datos principales de la empresa (aparecen en ticket)
+model ConfiguracionEmpresa {
+  id                 String  @id @default(uuid())
+  /// Nombre o Razón Social
+  nombreEmpresa      String
+  /// RUT / NIT / RUC
+  ruc                String  
+  /// Dirección matriz
+  direccion          String
+  /// Número de contacto
+  telefono           String
+  /// Símbolo de peso/dólar
+  simboloMoneda      String  @default("$")
+  /// IVA / IGV
+  porcentajeImpuesto Decimal @default(18.00) @db.Decimal(5, 2) 
+  /// Mensaje superior del ticket
+  cabeceraImpresion  String? @db.Text
+  /// Mensaje de agradecimiento
+  pieImpresion       String? @db.Text
+
+  @@map("configuracion_empresa")
+}
