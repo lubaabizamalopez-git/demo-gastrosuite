@@ -1,0 +1,196 @@
+<div class="h-full flex flex-col gap-6 overflow-hidden pr-2">
+  <!-- Header & Filters -->
+  <div class="flex justify-between items-end">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Órdenes</h1>
+      <p class="text-gray-500 mt-1">Gestiona los pedidos activos y el historial completo.</p>
+    </div>
+    
+    <!-- Controls -->
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" placeholder="Buscar orden #, mesa..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange w-64 bg-white shadow-sm">
+      </div>
+      
+      <div class="flex bg-gray-100 p-1 rounded-lg">
+        <button class="px-4 py-1.5 bg-white text-gray-900 text-sm font-medium rounded-md shadow-sm">Activas</button>
+        <button class="px-4 py-1.5 text-gray-500 hover:text-gray-900 text-sm font-medium rounded-md transition-colors">Historial</button>
+      </div>
+      
+      <button class="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-gray-800 transition-colors flex items-center">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+        Filtros
+      </button>
+    </div>
+  </div>
+
+  <!-- Status Cards -->
+  <div class="grid grid-cols-4 gap-4">
+    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
+      <div>
+        <p class="text-sm font-medium text-gray-500">Nuevas</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">12</p>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      </div>
+    </div>
+    
+    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
+      <div>
+        <p class="text-sm font-medium text-gray-500">Preparando</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">8</p>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-orange-50 text-brand-orange flex items-center justify-center">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/></svg>
+      </div>
+    </div>
+    
+    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
+      <div>
+        <p class="text-sm font-medium text-gray-500">Listas</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">4</p>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-green-50 text-green-500 flex items-center justify-center">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      </div>
+    </div>
+    
+    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
+      <div>
+        <p class="text-sm font-medium text-gray-500">Entregadas Hoy</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">134</p>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div class="flex-1 bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+    <div class="overflow-x-auto flex-1">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-50/50 border-b border-gray-100">
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Orden</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Mesa/Cliente</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Monto</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Estado</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Tiempo</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          
+          <!-- Row 1 -->
+          <tr class="hover:bg-gray-50/50 transition-colors cursor-pointer group">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-orange-50 text-brand-orange flex items-center justify-center font-bold">
+                  #142
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-gray-900">4 items</p>
+                  <p class="text-xs text-gray-500">Para llevar</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <p class="text-sm font-bold text-gray-900">Juan Pérez</p>
+              <p class="text-xs text-gray-500">Recogida: 12:45 PM</p>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <p class="text-sm font-bold text-gray-900">$34.50</p>
+              <p class="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded inline-flex mt-1">Pagado</p>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-full border border-blue-100">Nueva</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <p class="text-sm text-gray-900 font-medium">Hace 2 min</p>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right">
+              <button class="text-brand-orange hover:text-orange-600 font-medium text-sm px-3 py-1.5 border border-brand-orange rounded-lg transition-colors group-hover:bg-brand-orange group-hover:text-white">Preparar</button>
+            </td>
+          </tr>
+
+          <!-- Row 2 -->
+          <tr class="hover:bg-gray-50/50 transition-colors cursor-pointer group">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center font-bold">
+                  #141
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-gray-900">2 items</p>
+                  <p class="text-xs text-gray-500">Salón</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <p class="text-sm font-bold text-gray-900">Mesa 5</p>
+              <p class="text-xs text-gray-500">Mesero: Carlos</p>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <p class="text-sm font-bold text-gray-900">$18.20</p>
+              <p class="text-xs text-orange-600 font-medium bg-orange-50 px-2 py-0.5 rounded inline-flex mt-1">Pendiente</p>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-3 py-1 bg-orange-50 text-brand-orange text-xs font-bold rounded-full border border-orange-100">Preparando</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <p class="text-sm text-gray-900 font-medium">Hace 12 min</p>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right">
+              <button class="text-green-600 hover:text-green-700 font-medium text-sm px-3 py-1.5 border border-green-600 rounded-lg transition-colors group-hover:bg-green-600 group-hover:text-white">Marcar Lista</button>
+            </td>
+          </tr>
+          
+          <!-- Row 3 -->
+          <tr class="hover:bg-gray-50/50 transition-colors cursor-pointer group">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center font-bold">
+                  #140
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-gray-900">6 items</p>
+                  <p class="text-xs text-gray-500">Delivery</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <p class="text-sm font-bold text-gray-900">UberEats #A4B2</p>
+              <p class="text-xs text-gray-500">Repartidor en camino</p>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <p class="text-sm font-bold text-gray-900">$56.00</p>
+              <p class="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded inline-flex mt-1">Pagado</p>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-full border border-green-100">Lista</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <p class="text-sm text-gray-900 font-medium">Hace 18 min</p>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right">
+              <button class="text-gray-600 hover:text-gray-900 font-medium text-sm px-3 py-1.5 border border-gray-200 rounded-lg transition-colors group-hover:bg-gray-100">Entregar</button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="border-t border-gray-100 px-6 py-4 flex items-center justify-between bg-gray-50/30">
+      <p class="text-sm text-gray-500 font-medium">Mostrando <span class="font-bold text-gray-900">1</span> a <span class="font-bold text-gray-900">3</span> de <span class="font-bold text-gray-900">24</span> activas</p>
+      <div class="flex gap-2">
+        <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-400 bg-white cursor-not-allowed">Anterior</button>
+        <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">Siguiente</button>
+      </div>
+    </div>
+  </div>
+</div>

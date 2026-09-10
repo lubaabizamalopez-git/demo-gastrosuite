@@ -5,7 +5,6 @@
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -32,6 +31,8 @@ enum NombreRol {
 model Usuario {
   /// Identificador único del usuario (UUID)
   id              String             @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// RUT sin dígito verificador
   rut             String?            @unique
   /// Dígito verificador del RUT
@@ -67,6 +68,8 @@ model Usuario {
 model Rol {
   /// Identificador único del rol
   id          String       @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Nombre del rol (ej. ADMINISTRADOR)
   nombre      NombreRol    @unique
   /// Breve descripción de los permisos del rol
@@ -99,6 +102,8 @@ model UsuarioRol {
 model Categoria {
   /// Identificador único de la categoría
   id          String     @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Nombre visible de la categoría
   nombre      String
   /// Nombre del ícono para mostrar en el frontend
@@ -117,6 +122,8 @@ model Categoria {
 model Producto {
   /// Identificador único del producto
   id              String           @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// ID de la categoría a la que pertenece
   categoriaId     String
   /// Nombre del producto
@@ -155,6 +162,8 @@ enum AreaPreparacion {
 model VarianteProducto {
   /// Identificador único de la variante
   id         String   @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Producto padre
   productoId String
   /// Nombre de la variante (ej. "Familiar")
@@ -174,6 +183,8 @@ model VarianteProducto {
 model GrupoModificador {
   /// ID único del grupo
   id           String     @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Producto al que pertenece este grupo
   productoId   String
   /// Nombre de la instrucción (ej. "Elige 2 salsas")
@@ -195,6 +206,8 @@ model GrupoModificador {
 model Modificador {
   /// ID único
   id                 String        @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Grupo al que pertenece
   grupoModificadorId String
   /// Nombre de la opción
@@ -230,6 +243,8 @@ enum UnidadMedida {
 model Insumo {
   /// ID del insumo
   id             String        @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Nombre del insumo (ej. "Tomate", "Carne Molida")
   nombre         String
   /// Unidad en la que se mide su stock
@@ -251,6 +266,8 @@ model Insumo {
 model RecetaProducto {
   /// ID único
   id         String   @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Producto final
   productoId String
   /// Insumo requerido
@@ -277,6 +294,8 @@ enum TipoMovimiento {
 model MovimientoInventario {
   /// ID único del movimiento
   id        String         @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Insumo modificado
   insumoId  String
   /// Empleado que registró o provocó el movimiento
@@ -315,6 +334,8 @@ enum EstadoMesa {
 model AreaSalon {
   /// ID del área
   id        String  @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Nombre del área
   nombre    String  
   /// Orden para mostrar en pestañas
@@ -329,6 +350,8 @@ model AreaSalon {
 model Mesa {
   /// ID único de la mesa
   id          String     @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// ID del área a la que pertenece
   areaSalonId String
   /// Identificador visible (ej. "Mesa 5", "T-12")
@@ -421,6 +444,8 @@ enum EstadoItemPedido {
 model ItemPedido {
   /// ID del ítem
   id               String           @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Pedido al que pertenece
   pedidoId         String
   /// Qué producto es
@@ -453,6 +478,8 @@ model ItemPedido {
 /// Modificador específico elegido para un ItemPedido
 model ModificadorItemPedido {
   id            String  @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   itemPedidoId  String
   modificadorId String
   /// Precio cobrado por este extra
@@ -472,6 +499,8 @@ model ModificadorItemPedido {
 model MetodoPago {
   /// ID único del método
   id          String   @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Nombre visible (ej. "Efectivo", "Transbank", "MercadoPago")
   nombre      String   @unique 
   /// Código interno 
@@ -488,6 +517,8 @@ model MetodoPago {
 model Pago {
   /// ID del registro de pago
   id               String     @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// A qué pedido pertenece
   pedidoId         String
   /// En qué turno de caja se recibió
@@ -518,6 +549,8 @@ enum EstadoTurno {
 model TurnoCaja {
   /// ID del turno
   id               String      @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Cajero responsable
   usuarioId        String
   /// Hora en que abrió
@@ -557,6 +590,8 @@ enum TipoConexion {
 model ConfiguracionImpresora {
   /// ID de impresora
   id             String           @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Ej: "Impresora Barra", "Impresora Cocina"
   nombre         String           
   /// Qué platos manda a imprimir acá
@@ -580,6 +615,8 @@ model ConfiguracionImpresora {
 /// Datos principales de la empresa (aparecen en ticket)
 model ConfiguracionEmpresa {
   id                 String  @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int              @unique @default(autoincrement())
   /// Nombre o Razón Social
   nombreEmpresa      String
   /// RUT / NIT / RUC
