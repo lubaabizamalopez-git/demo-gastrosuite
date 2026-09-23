@@ -142,6 +142,7 @@ export class ModalCategoriaComponent implements OnInit {
     const datosRaw = this.form.value;
     const datos = {
       ...datosRaw,
+      orden: Number(datosRaw.orden),
       activo: datosRaw.activo ? 'A' : 'I'
     };
 

@@ -122,6 +122,10 @@ export class ModalProductoComponent implements OnInit {
     if (this.form.invalid) return;
 
     const formVal = this.form.value;
+    formVal.orden = Number(formVal.orden);
+    if (formVal.nuevaCategoriaOrden) {
+      formVal.nuevaCategoriaOrden = Number(formVal.nuevaCategoriaOrden);
+    }
     
     // Verificar si el orden ya está en uso por OTRO producto en la misma categoría
     if (formVal.categoriaSeleccionada !== 'OTRA') {
