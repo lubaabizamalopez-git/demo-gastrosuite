@@ -185,6 +185,16 @@
           background-size: cover;
           background-position: center;
           background-color: var(--neutral-border);
+
+          &.fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--brand-primary);
+            font-size: 2rem;
+            text-transform: uppercase;
+          }
         }
 
         .prod-details {

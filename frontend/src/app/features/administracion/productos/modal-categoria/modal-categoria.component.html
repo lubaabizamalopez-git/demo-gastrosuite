@@ -26,7 +26,7 @@
         <h3 class="text-lg text-text-title font-bold mb-4 m-0 flex items-center">
           {{ categoriaEnEdicion ? 'Editar Categoría' : 'Nueva Categoría' }}
           <span *ngIf="categoriaEnEdicion" class="ml-3 text-sm font-medium text-text-muted bg-neutral-bg px-3 py-1 rounded-full border border-neutral-border shadow-sm">
-            {{ categoriaEnEdicion.productos?.length || 0 }} {{ (categoriaEnEdicion.productos?.length || 0) === 1 ? 'artículo' : 'artículos' }}
+            {{ categoriaEnEdicion.productos.length || 0 }} {{ (categoriaEnEdicion.productos.length || 0) === 1 ? 'artículo' : 'artículos' }}
           </span>
         </h3>
         <form [formGroup]="form" (ngSubmit)="guardar()" class="flex flex-col gap-4">

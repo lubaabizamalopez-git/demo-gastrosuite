@@ -51,7 +51,8 @@
       
       <div class="productos-grid">
         <div *ngFor="let prod of cat.productos" class="producto-item clickable" (click)="abrirDetalle(prod, $event)">
-          <div class="prod-img" [style.background-image]="'url(' + (prod.imagen ? 'http://localhost:3000' + prod.imagen : 'assets/placeholder.png') + ')'"></div>
+          <div *ngIf="prod.imagen" class="prod-img" [style.background-image]="'url(http://localhost:3000' + prod.imagen + ')'"></div>
+          <div *ngIf="!prod.imagen" class="prod-img fallback">{{ prod.nombre.charAt(0) }}</div>
           <div class="prod-details">
             <h3>{{ prod.nombre }}</h3>
             <p class="precio">${{ prod.precio }}</p>
