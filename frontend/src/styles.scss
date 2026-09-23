@@ -4,8 +4,177 @@
 @tailwind components;
 @tailwind utilities;
 
+/* --- PALETA DE COLORES GASTROSUITE --- */
+:root {
+  /* Marca (Naranjas Orgánicos) */
+  --brand-primary: #FF6B00;
+  --brand-dark: #CC5500;
+  --brand-soft: #FFBD80;
+  --brand-cream: #FFF5F0;
+
+  /* Estructura (Modo Híbrido Anti-Brillo) */
+  --neutral-bg: #FAF7F2;
+  --neutral-surface: #FFFFFF;
+  --neutral-border: #E6DFD5;
+
+  /* Tipografía (Estilo Gastronómico de Alta Fidelidad) */
+  --text-title: #231E1B;
+  --text-body: #5C534E;
+  --text-muted: #91857F;
+
+  /* Estados Semánticos (Gastronómicos) */
+  --success-bg: #E6F4EA;
+  --success-text: #137333;
+  --error-bg: #FCE8E6;
+  --error-text: #C5221F;
+}
+
 @layer base {
   body {
-    @apply font-sans bg-brand-light text-brand-text antialiased;
+    @apply font-sans antialiased;
+    background-color: var(--neutral-bg);
+    color: var(--text-body);
   }
+}
+
+/* --- TOOLTIPS PERSONALIZADOS --- */
+.custom-tooltip {
+  position: relative;
+  display: inline-block;
+}
+.custom-tooltip .tooltip-text {
+  visibility: hidden;
+  width: max-content;
+  max-width: 250px;
+  background-color: var(--text-title);
+  color: var(--neutral-surface);
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 10px;
+  position: absolute;
+  z-index: 100;
+  bottom: 125%; 
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.75rem;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  pointer-events: none;
+}
+.custom-tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* --- TÍTULOS DE MODALES --- */
+.custom-modal-title {
+    font-family: var(--mat-dialog-subhead-font, var(--mat-sys-headline-small-font, inherit));
+    line-height: var(--mat-dialog-subhead-line-height, var(--mat-sys-headline-small-line-height, 1.5rem));
+    font-size: var(--mat-dialog-subhead-size, var(--mat-sys-headline-small-size, 1.5rem));
+    font-weight: var(--mat-dialog-subhead-weight, var(--mat-sys-headline-small-weight, 700));
+    letter-spacing: var(--mat-dialog-subhead-tracking, var(--mat-sys-headline-small-tracking, 0.03125em));
+}
+
+/* --- COMPONENTE SWITCH GLOBAL --- */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  
+  input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #91857F;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #ffffff;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--success-text);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--success-text);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.slider.round {
+  border-radius: 24px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* ==========================================================================
+   COMPONENT: GASTROSUITE PREMIUM TOOLTIP (Para inyectar en tu archivo CSS)
+   ========================================================================== */
+ 
+/* 1. Contenedor del texto del Tooltip */
+.gs-tooltip-box {
+  background-color: #1A1715 !important; /* Café profundo de alta cocina */
+  color: #FAF7F2 !important;            /* Texto crema claro */
+  border: 1px solid rgba(255, 189, 128, 0.2) !important; /* Borde brand-soft sutil */
+  border-radius: 12px !important;       /* Bordes suavizados redondeados */
+  padding: 14px !important;             /* Espaciado interno generoso */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important; /* Sombra profunda */
+  font-family: sans-serif;
+  max-width: 260px;
+}
+ 
+/* Título destacado dentro del tooltip (Pídeselo a la IA si aplica) */
+.gs-tooltip-title {
+  color: #FFBD80 !important;            /* Naranja suave de acento */
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  margin-bottom: 4px !important;
+  display: block;
+}
+ 
+/* Descripción secundaria dentro del tooltip */
+.gs-tooltip-desc {
+  color: #91857F !important;            /* Gris orgánico secundario */
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  display: block;
+}
+ 
+/* 2. Flecha indicadora del Tooltip */
+.gs-tooltip-arrow {
+  background-color: #1A1715 !important;
+  border-right: 1px solid rgba(255, 189, 128, 0.2) !important;
+  border-bottom: 1px solid rgba(255, 189, 128, 0.2) !important;
+  transform: rotate(45deg);
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  bottom: -6px;
+  left: calc(50% - 6px);
 }

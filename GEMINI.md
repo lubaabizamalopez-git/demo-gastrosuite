@@ -21,7 +21,7 @@
 - **Condición:** NUNCA me entregues el prompt de cierre de día a menos que yo te indique que ya terminamos de trabajar por hoy.
 
 ## 4. Idioma y Nomenclatura
-- **Comunicación:** SIEMPRE debes hablarme en español.
+- **Comunicación:** SIEMPRE debes hablarme en español y tus respuestas deben ser concisas, expliacaciones pero claras y cortas.
 - **Confirmación de Acción (G):** Antes de ejecutar CUALQUIER cosa (comandos, cambios en archivos), SIEMPRE debes preguntarme en español primero y esperar mi confirmación.
 - **Código y Componentes:** TODOS los nombres de archivos, componentes, variables y rutas deben estar SIEMPRE en español, salvo palabras clave propias del framework o estándares irremplazables (ej. `dashboard` o `staff` si se prefiere, aunque mejor `personal`).
 

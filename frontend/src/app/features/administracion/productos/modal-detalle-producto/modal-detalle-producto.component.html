@@ -1,0 +1,36 @@
+<div class="modal-overlay" (click)="onCerrar()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="btn-close" (click)="onCerrar()">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+
+    <div class="product-hero">
+      <div class="img-container" *ngIf="producto.imagen" [style.background-image]="'url(' + producto.imagen + ')'"></div>
+      <div class="img-placeholder" *ngIf="!producto.imagen">
+        {{ producto.nombre.charAt(0) }}
+      </div>
+      <div class="hero-content">
+        <span class="badge" [ngClass]="producto.activo ? 'activo' : 'inactivo'">
+          {{ producto.activo ? 'Activo' : 'Inactivo' }}
+        </span>
+        <h2>{{ producto.nombre }}</h2>
+        <p class="price">${{ producto.precio }}</p>
+      </div>
+    </div>
+
+    <div class="product-info">
+      <div class="info-group">
+        <label>SKU</label>
+        <p>{{ producto.sku || 'No asignado' }}</p>
+      </div>
+      <div class="info-group">
+        <label>Área de Preparación</label>
+        <p>{{ producto.areaPreparacion || 'N/A' }}</p>
+      </div>
+      <div class="info-group full-width">
+        <label>Descripción</label>
+        <p class="desc">{{ producto.descripcion || 'Sin descripción detallada.' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

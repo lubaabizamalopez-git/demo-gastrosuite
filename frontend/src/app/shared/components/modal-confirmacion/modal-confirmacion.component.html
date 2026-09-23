@@ -1,0 +1,31 @@
+<div class="modal-overlay" (click)="onCancelar()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 bg-white border-b border-[#FFBD80]/30 rounded-t-xl">
+      <h2 class="text-xl font-bold text-[#c45302] tracking-tight m-0">
+        {{ titulo }}
+      </h2>
+      <button 
+        type="button" 
+        (click)="onCancelar()"
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[#91857F] hover:text-[#FF6B00] hover:bg-[#FFF5F0] transition-colors duration-200 focus:outline-none"
+        aria-label="Cerrar modal">
+        <i class="fas fa-times text-base"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <ng-container *ngIf="mensajePersonalizado; else mensajePorDefecto">
+        <p>{{ mensajePersonalizado }}</p>
+      </ng-container>
+      <ng-template #mensajePorDefecto>
+        <p>¿Estás seguro de que deseas eliminar {{ item.tipo === 'categoria' ? 'la categoría' : 'el producto' }} <strong>"{{ item.nombre }}"</strong>?</p>
+        <p class="warning-text">Esta acción no se puede deshacer.</p>
+      </ng-template>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="onCancelar()">Cancelar</button>
+      <button class="btn-delete" (click)="onConfirmar()">{{ textoBoton }}</button>
+    </div>
+  </div>
+</div>

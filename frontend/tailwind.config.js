@@ -7,10 +7,26 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          dark: '#1a1c23', // Sidebar background
-          orange: '#ff6b00', // Primary accent
-          light: '#f4f5f7', // Main background
-          text: '#2d3748', // Text color
+          primary: 'var(--brand-primary)',
+          dark: 'var(--brand-dark)',
+          soft: 'var(--brand-soft)',
+          cream: 'var(--brand-cream)',
+        },
+        neutral: {
+          bg: 'var(--neutral-bg)',
+          surface: 'var(--neutral-surface)',
+          border: 'var(--neutral-border)',
+        },
+        text: {
+          title: 'var(--text-title)',
+          body: 'var(--text-body)',
+          muted: 'var(--text-muted)',
+        },
+        status: {
+          'success-bg': 'var(--success-bg)',
+          'success-text': 'var(--success-text)',
+          'error-bg': 'var(--error-bg)',
+          'error-text': 'var(--error-text)',
         }
       },
       fontFamily: {

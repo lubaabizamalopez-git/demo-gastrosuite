@@ -1,0 +1,109 @@
+@import '../modal-categoria/modal-categoria.component.scss';
+
+.modal-container {
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+form {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--neutral-border);
+  background-color: var(--brand-cream);
+
+  h2 {
+    margin: 0;
+    color: var(--brand-primary); /* Naranja Gastrosuite */
+    font-weight: 700;
+  }
+}
+
+.modal-footer {
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--neutral-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  background: var(--neutral-bg);
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .form-group {
+    margin-bottom: 0;
+  }
+}
+
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+
+textarea.form-control {
+  resize: vertical;
+}
+
+.tooltip-icon {
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: help;
+  transition: color 0.2s;
+  position: relative;
+  z-index: 10;
+  margin-left: 4px;
+
+  &:hover {
+    color: var(--text-body);
+  }
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+
+  &.btn-secondary {
+    background: var(--neutral-surface);
+    border: 1px solid var(--neutral-border);
+    color: var(--text-body);
+
+    &:hover {
+      background: var(--brand-cream);
+    }
+  }
+
+  &.btn-primary {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-dark) 100%);
+    color: var(--neutral-surface);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(255, 107, 0, 0.2);
+    }
+
+    &:disabled {
+      background: var(--neutral-border);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+  }
+}

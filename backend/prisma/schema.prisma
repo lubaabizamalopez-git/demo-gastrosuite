@@ -33,7 +33,9 @@ model Usuario {
   id              String             @id @default(uuid())
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids             Int              @unique @default(autoincrement())
-  /// RUT sin dígito verificador
+  /// Tipo de documento (RUT, PASAPORTE, DNI, etc.)
+  tipoDocumento   String           @default("RUT")
+  /// Número de documento (RUT sin dígito verificador, o número de pasaporte)
   rut             String?            @unique
   /// Dígito verificador del RUT
   dv              String?
@@ -50,7 +52,7 @@ model Usuario {
   /// PIN de 4 dígitos para acceso rápido en la caja (POS)
   codigoPin       String?            
   /// Indica si el usuario puede acceder al sistema
-  activo          Boolean            @default(true)
+  activo          String             @default("A") @db.Char(1)
   /// Fecha de creación del registro
   creadoEn        DateTime           @default(now())
   /// Fecha de última modificación
@@ -110,8 +112,8 @@ model Categoria {
   icono       String?
   /// Número para ordenar la categoría en el menú
   orden       Int        @default(0)
-  /// Si es falso, la categoría y sus productos no se muestran
-  activo      Boolean    @default(true)
+  /// Estado (A = Activo, I = Inactivo)
+  activo      String     @default("A") @db.Char(1)
   
   productos   Producto[]
 
@@ -136,10 +138,12 @@ model Producto {
   sku             String?          @unique
   /// URL de la foto del producto
   imagen          String?
-  /// Indica si el producto está disponible para la venta
-  activo          Boolean          @default(true)
+  /// Estado (A = Activo, I = Inactivo)
+  activo          String           @default("A") @db.Char(1)
   /// Área donde se prepara este producto (ej. COCINA, BAR)
   areaPreparacion AreaPreparacion  @default(COCINA)
+  /// Orden del producto para mostrarse
+  orden           Int              @default(0)
 
   categoria           Categoria           @relation(fields: [categoriaId], references: [id])
   variantes           VarianteProducto[]
@@ -505,8 +509,8 @@ model MetodoPago {
   nombre      String   @unique 
   /// Código interno 
   codigo      String   @unique 
-  /// Indica si el cajero puede ver esta opción
-  activo      Boolean  @default(true)
+  /// Estado (A = Activo, I = Inactivo)
+  activo      String   @default("A") @db.Char(1)
   
   pagos       Pago[]
 
@@ -606,8 +610,8 @@ model ConfiguracionImpresora {
   anchoPapelMm   Int              @default(80) 
   /// Si es la que emite boletas principales
   esPosPrincipal Boolean          @default(false)
-  /// Si está encendida/operativa
-  activa         Boolean          @default(true)
+  /// Estado (A = Activo, I = Inactivo)
+  activa         String           @default("A") @db.Char(1)
 
   @@map("configuraciones_impresora")
 }

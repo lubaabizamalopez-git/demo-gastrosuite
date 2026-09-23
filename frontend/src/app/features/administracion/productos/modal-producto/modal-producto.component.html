@@ -1,0 +1,141 @@
+<div class="modal-backdrop" (click)="onCerrar()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 pt-6 bg-white rounded-t-xl">
+      <h2 class="custom-modal-title text-[#c45302] m-0">
+        {{ producto ? 'Editar Producto' : 'Nuevo Producto' }}
+      </h2>
+      <button 
+        type="button" 
+        (click)="onCerrar()"
+        class="flex items-center justify-center w-8 h-8 rounded-full text-[#91857F] hover:text-[#FF6B00] hover:bg-[#FFF5F0] transition-colors duration-200 focus:outline-none"
+        aria-label="Cerrar modal">
+        <i class="fas fa-times text-base"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()">
+      <div class="modal-body">
+        <div style="max-width: 580px; margin: 0 auto; width: 100%;">
+          
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label>Categoría</label>
+              <select formControlName="categoriaSeleccionada" class="form-control">
+                <option *ngFor="let cat of categorias" [value]="cat.id">{{ cat.nombre }}</option>
+                <option value="OTRA">+ Nueva Categoría (Otros)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row" *ngIf="form.get('categoriaSeleccionada')?.value === 'OTRA'" style="background-color: var(--brand-cream); border: 1px solid var(--neutral-border); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <div class="form-group flex-2">
+              <label>Nombre de Nueva Categoría</label>
+              <input type="text" formControlName="nuevaCategoriaNombre" placeholder="Ej: Bebidas Frías" class="form-control">
+            </div>
+            <div class="form-group flex-1">
+              <label>Orden</label>
+              <select formControlName="nuevaCategoriaOrden" class="form-control" style="cursor: pointer;">
+                <option *ngFor="let i of opcionesOrdenCategoria" [value]="i">{{ i }}</option>
+              </select>
+            </div>
+          </div>
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>Nombre del Producto</label>
+            <input type="text" formControlName="nombre" placeholder="Ej: Lomo Saltado" class="form-control" [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+          </div>
+          <div class="form-group flex-1">
+            <label>Precio</label>
+            <input type="number" formControlName="precio" placeholder="0.00" class="form-control" [class.is-invalid]="form.get('precio')?.invalid && form.get('precio')?.touched">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea formControlName="descripcion" placeholder="Ingredientes o descripción breve..." class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label style="display: flex; align-items: center; gap: 6px;">
+              SKU (Opcional)
+              <div class="custom-tooltip">
+                <i class="fa-solid fa-circle-info tooltip-icon"></i>
+                <div class="tooltip-text gs-tooltip-box">
+                  <span class="gs-tooltip-title">Stock Keeping Unit (SKU)</span>
+                  <span class="gs-tooltip-desc">Código interno único para control de inventario o código de barras.</span>
+                  <div class="gs-tooltip-arrow"></div>
+                </div>
+              </div>
+            </label>
+            <input type="text" formControlName="sku" placeholder="Ej: P001" class="form-control">
+          </div>
+          <div class="form-group flex-1">
+            <label>Área de Preparación</label>
+            <select formControlName="areaPreparacion" class="form-control">
+              <option value="COCINA">Cocina</option>
+              <option value="BAR">Bar</option>
+              <option value="POSTRES">Postres</option>
+              <option value="PARRILLA">Parrilla</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Imagen del Producto (Opcional)</label>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-control" style="padding: 0.4rem;">
+          <small *ngIf="producto?.imagen" style="color: #6b7280; margin-top: 4px; display: block;">
+            Ya tiene una imagen subida. Selecciona otra para reemplazarla.
+          </small>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label style="display: flex; align-items: center; gap: 6px;">
+              Orden de Prioridad
+              <div class="custom-tooltip">
+                <i class="fa-solid fa-circle-info tooltip-icon"></i>
+                <div class="tooltip-text gs-tooltip-box">
+                  <span class="gs-tooltip-desc">El orden en el que aparecerá (Menor = Arriba)</span>
+                  <div class="gs-tooltip-arrow"></div>
+                </div>
+              </div>
+            </label>
+            <select formControlName="orden" class="form-control" style="cursor: pointer;">
+              <option *ngFor="let i of opcionesOrden" [value]="i">{{ i }}</option>
+            </select>
+          </div>
+          <div class="form-group flex-1" style="padding-left: 2rem;">
+            <label style="display: flex; align-items: center; gap: 6px; margin-bottom: 0.5rem;">
+              Estado
+              <div class="custom-tooltip">
+                <i class="fa-solid fa-circle-info tooltip-icon"></i>
+                <div class="tooltip-text gs-tooltip-box">
+                  <span class="gs-tooltip-desc">Producto Activo (Visible a la venta)</span>
+                  <div class="gs-tooltip-arrow"></div>
+                </div>
+              </div>
+            </label>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label class="switch" style="margin-bottom: 0;">
+                <input type="checkbox" formControlName="activo">
+                <span class="slider round"></span>
+              </label>
+              <span style="font-weight: 500; font-size: 0.95rem;">{{ form.get('activo')?.value ? 'Activo' : 'Inactivo' }}</span>
+            </div>
+          </div>
+        </div>
+        
+        </div> <!-- Fin del wrapper centrado -->
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="onCerrar()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || guardando || subiendoImagen">
+          {{ (guardando || subiendoImagen) ? 'Guardando...' : (producto ? 'Actualizar Producto' : 'Crear Producto') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

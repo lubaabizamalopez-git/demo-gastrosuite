@@ -1,0 +1,159 @@
+<div class="gestion-productos-container">
+  <div class="header">
+    <div class="header-titles">
+      <h1>Gestión de Catálogo y Productos</h1>
+      <p class="subtitle">Gestiona los productos, categorías y precios.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-hybrid outline" (click)="abrirModalCategoria()">Categorías</button>
+      <button class="btn-hybrid primary" (click)="abrirModalProducto('')"><i class="fa-solid fa-plus" style="margin-right: 0.5rem;"></i> Nuevo Producto</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="view-toggle">
+      <button [class.active]="vistaActual === 'grilla'" (click)="cambiarVista('grilla')">Vista por Categoría</button>
+      <button [class.active]="vistaActual === 'lista'" (click)="cambiarVista('lista')">Vista por Producto</button>
+    </div>
+
+    <div class="filters">
+      <input 
+        type="text" 
+        class="search-input form-control" 
+        placeholder="Buscar producto o SKU..." 
+        [(ngModel)]="terminoBusqueda"
+      />
+      <select class="filter-select form-control" [(ngModel)]="filtroEstado">
+        <option value="todos">Todos los Estados</option>
+        <option value="activos">Solo Activos</option>
+        <option value="inactivos">Solo Inactivos</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cargando catálogo...</p>
+  </div>
+
+  <!-- VISTA GRILLA -->
+  <div *ngIf="!cargando && vistaActual === 'grilla'" class="categorias-list">
+    <div *ngFor="let cat of categoriasFiltradas" class="categoria-card">
+      <div class="categoria-header">
+        <div class="cat-info" style="display: flex; align-items: center;">
+          <h2 style="margin: 0;">{{ cat.nombre }}</h2>
+        </div>
+        <div class="actions">
+          <button class="btn-icon" (click)="abrirModalCategoria(cat)" title="Editar"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-icon danger" (click)="solicitarEliminacion(cat.id, 'categoria', cat.nombre)" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      
+      <div class="productos-grid">
+        <div *ngFor="let prod of cat.productos" class="producto-item clickable" (click)="abrirDetalle(prod, $event)">
+          <div class="prod-img" [style.background-image]="'url(' + (prod.imagen ? 'http://localhost:3000' + prod.imagen : 'assets/placeholder.png') + ')'"></div>
+          <div class="prod-details">
+            <h3>{{ prod.nombre }}</h3>
+            <p class="precio">${{ prod.precio }}</p>
+          </div>
+          <div class="prod-actions">
+            <button class="btn-icon small" (click)="abrirModalProducto(cat.id, prod); $event.stopPropagation()" title="Editar"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-icon small danger" (click)="solicitarEliminacion(prod.id, 'producto', prod.nombre, $event)" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+
+        <div class="add-producto-btn" (click)="abrirModalProducto(cat.id)">
+          <span><i class="fa-solid fa-plus"></i> Agregar Producto</span>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="categoriasFiltradas.length === 0" class="empty-state" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+      No se encontraron categorías o productos con los filtros actuales.
+    </div>
+  </div>
+
+  <!-- VISTA LISTA -->
+  <div *ngIf="!cargando && vistaActual === 'lista'" class="table-container">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="table-header">
+          <th>Producto</th>
+          <th>Categoría</th>
+          <th>Precio Base</th>
+          <th>Orden</th>
+          <th>Estado</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="productosFiltradosLista.length === 0">
+          <td colspan="5" class="empty-state">No se encontraron productos.</td>
+        </tr>
+        <tr *ngFor="let prod of productosPaginadosLista; trackBy: trackByProducto" class="table-row clickable" (click)="abrirDetalle(prod, $event)">
+          <td>
+            <div class="flex items-center gap-4">
+              <img *ngIf="prod.imagen" [src]="'http://localhost:3000' + prod.imagen" [alt]="prod.nombre" class="table-img">
+              <div *ngIf="!prod.imagen" class="table-img-placeholder">
+                {{ prod.nombre.charAt(0) }}
+              </div>
+              <div>
+                <p class="font-bold text-gray-900">{{ prod.nombre }}</p>
+                <p class="text-xs text-gray-500">SKU: {{ prod.sku || 'N/A' }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="text-gray-600">{{ prod.categoriaNombre }}</td>
+          <td class="font-bold text-brand-orange">${{ prod.precio }}</td>
+          <td class="text-gray-600">{{ prod.orden }}</td>
+          <td (click)="$event.stopPropagation()">
+            <label class="switch" style="transform: scale(0.8); margin: 0;">
+              <input type="checkbox" [checked]="prod.activo === 'A'" (change)="intentarToggleEstadoProducto(prod, $event)">
+              <span class="slider round"></span>
+            </label>
+          </td>
+          <td class="text-right actions-cell">
+            <button class="btn-icon small" (click)="abrirModalProducto(prod.categoriaId, prod); $event.stopPropagation()" title="Editar"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-icon small danger" (click)="solicitarEliminacion(prod.id, 'producto', prod.nombre, $event)" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Paginación -->
+    <div class="pagination-controls" *ngIf="totalPaginasProductos > 1" style="display: flex; justify-content: center; align-items: center; padding: 1rem; background: #fff; border-top: 1px solid #e5e7eb;">
+      <button class="btn-icon small" [disabled]="paginaActualProductos === 1" (click)="cambiarPaginaProductos(-1)" style="padding: 0.25rem 0.75rem;">Anterior</button>
+      <span style="font-size: 0.9rem; margin: 0 1rem;">Página {{ paginaActualProductos }} de {{ totalPaginasProductos }}</span>
+      <button class="btn-icon small" [disabled]="paginaActualProductos === totalPaginasProductos" (click)="cambiarPaginaProductos(1)" style="padding: 0.25rem 0.75rem;">Siguiente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modales -->
+<app-modal-categoria
+  *ngIf="mostrarModalCategoria"
+  [categoria]="categoriaSeleccionada"
+  (cerrar)="cerrarModalCategoria($event)">
+</app-modal-categoria>
+
+<app-modal-producto
+  *ngIf="mostrarModalProducto"
+  [categoriaId]="categoriaIdParaProducto!"
+  [producto]="productoSeleccionado"
+  (cerrar)="cerrarModalProducto($event)">
+</app-modal-producto>
+
+<app-modal-confirmacion
+  *ngIf="mostrarModalConfirmacion"
+  [item]="itemAEliminar!"
+  [titulo]="itemAEliminar?.tipo === 'categoria_desactivar' ? 'Confirmar Desactivación' : 'Confirmar Eliminación'"
+  [textoBoton]="itemAEliminar?.tipo === 'categoria_desactivar' ? 'Desactivar' : 'Eliminar'"
+  [mensajePersonalizado]="itemAEliminar?.tipo === 'categoria_desactivar' ? 'Al desactivar esta categoría, todos sus productos también se desactivarán. ¿Deseas continuar?' : null"
+  (confirmar)="confirmarEliminacion($event)">
+</app-modal-confirmacion>
+
+<app-modal-detalle-producto
+  *ngIf="mostrarModalDetalle"
+  [producto]="productoParaDetalle!"
+  (cerrar)="cerrarDetalle()">
+</app-modal-detalle-producto>
