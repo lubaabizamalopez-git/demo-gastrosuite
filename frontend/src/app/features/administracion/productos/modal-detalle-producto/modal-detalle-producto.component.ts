@@ -16,4 +16,10 @@ export class ModalDetalleProductoComponent {
   onCerrar(): void {
     this.cerrar.emit();
   }
+
+  getImageUrl(url: string | undefined): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `http://localhost:3000${url.startsWith('/') ? '' : '/'}${url}`;
+  }
 }

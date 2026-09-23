@@ -33,7 +33,7 @@ export class ModalCategoriaComponent implements OnInit {
 
   // Confirmación
   mostrarModalConfirmacion = false;
-  accionPendiente: { id: string, nombre: string, tipoAccion: 'eliminar' | 'desactivar' | 'swap_orden', catRef?: Categoria, datosGuardar?: any } | null = null;
+  accionPendiente: { id: string, nombre: string, tipoAccion: 'eliminar' | 'desactivar' | 'swap_orden' | 'desactivar_editar', catRef?: Categoria, datosGuardar?: any } | null = null;
 
   opcionesOrden: number[] = [1];
 
@@ -146,6 +146,22 @@ export class ModalCategoriaComponent implements OnInit {
       activo: datosRaw.activo ? 'A' : 'I'
     };
 
+    // 1. Verificar desactivación (si estaba activa y ahora está inactiva)
+    if (this.categoriaEnEdicion && this.categoriaEnEdicion.activo === 'A' && datos.activo === 'I') {
+      this.accionPendiente = {
+        id: this.categoriaEnEdicion.id,
+        nombre: this.categoriaEnEdicion.nombre,
+        tipoAccion: 'desactivar_editar',
+        datosGuardar: datos
+      };
+      this.mostrarModalConfirmacion = true;
+      return;
+    }
+
+    this.validarOrdenYGuardar(datos);
+  }
+
+  private validarOrdenYGuardar(datos: any): void {
     // Verificar si el orden ya está en uso por OTRA categoría
     const ordenSolicitado = datos.orden;
     const categoriaConflicto = this.categorias.find(c => c.orden === ordenSolicitado && c.id !== this.categoriaEnEdicion?.id);
@@ -216,6 +232,8 @@ export class ModalCategoriaComponent implements OnInit {
         this.actualizarEstadoInmediato(this.accionPendiente.id, 'I');
       } else if (this.accionPendiente.tipoAccion === 'swap_orden') {
         this.ejecutarGuardado(this.accionPendiente.datosGuardar);
+      } else if (this.accionPendiente.tipoAccion === 'desactivar_editar') {
+        this.validarOrdenYGuardar(this.accionPendiente.datosGuardar);
       }
     }
     this.accionPendiente = null;
