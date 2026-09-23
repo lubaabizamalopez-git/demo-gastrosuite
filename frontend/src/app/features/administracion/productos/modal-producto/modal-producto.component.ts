@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MenuService, Producto, Categoria } from '../../../../core/services/menu.service';
 import { switchMap } from 'rxjs';
+import { ModalConfirmacionComponent } from '../../../../shared/components/modal-confirmacion/modal-confirmacion.component';
 
 @Component({
   selector: 'app-modal-producto',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ModalConfirmacionComponent],
   templateUrl: './modal-producto.component.html',
   styleUrls: ['./modal-producto.component.scss']
 })
@@ -27,6 +28,10 @@ export class ModalProductoComponent implements OnInit {
   opcionesOrden: number[] = [1];
   opcionesOrdenCategoria: number[] = [1];
   categorias: Categoria[] = [];
+
+  // Confirmación
+  mostrarModalConfirmacion = false;
+  accionPendiente: { id: string, nombre: string, tipoAccion: 'swap_orden', datosGuardar?: any } | null = null;
 
   constructor() {
     this.form = this.fb.group({
@@ -84,20 +89,20 @@ export class ModalProductoComponent implements OnInit {
 
     if (catId === 'OTRA') {
       this.opcionesOrden = [1];
-      this.form.patchValue({ orden: 1, nuevaCategoriaOrden: 1 });
+      this.form.patchValue({ orden: 1, nuevaCategoriaOrden: totalCat + 1 });
       return;
     }
     
     const categoria = this.categorias.find(c => c.id === catId);
     if (categoria) {
-      const total = categoria.productos?.length || 0;
+      const maxOrdenActual = categoria.productos?.length > 0 ? Math.max(...categoria.productos.map(p => p.orden || 0)) : 0;
       const esMismaCat = this.producto && this.categoriaId === catId;
-      const max = esMismaCat ? Math.max(total, 1) : total + 1;
-      this.opcionesOrden = Array.from({length: max}, (_, i) => i + 1);
+      const maxOpcion = esMismaCat ? Math.max(maxOrdenActual, 1) : maxOrdenActual + 1;
+      this.opcionesOrden = Array.from({length: maxOpcion}, (_, i) => i + 1);
       
       const ordenActual = this.form.get('orden')?.value;
       if (!esMismaCat || !ordenActual || ordenActual === 0 || !this.opcionesOrden.includes(ordenActual)) {
-        this.form.patchValue({ orden: max });
+        this.form.patchValue({ orden: maxOpcion });
       }
     }
   }
@@ -116,13 +121,49 @@ export class ModalProductoComponent implements OnInit {
   guardar(): void {
     if (this.form.invalid) return;
 
+    const formVal = this.form.value;
+    
+    // Verificar si el orden ya está en uso por OTRO producto en la misma categoría
+    if (formVal.categoriaSeleccionada !== 'OTRA') {
+      const categoria = this.categorias.find(c => c.id === formVal.categoriaSeleccionada);
+      if (categoria && categoria.productos) {
+        const ordenSolicitado = formVal.orden;
+        const productoConflicto = categoria.productos.find(p => p.orden === ordenSolicitado && p.id !== this.producto?.id);
+
+        if (productoConflicto) {
+          this.accionPendiente = {
+            id: productoConflicto.id,
+            nombre: productoConflicto.nombre,
+            tipoAccion: 'swap_orden',
+            datosGuardar: formVal
+          };
+          this.mostrarModalConfirmacion = true;
+          return;
+        }
+      }
+    }
+
+    this.continuarConGuardado(formVal);
+  }
+
+  confirmarAccion(confirmado: boolean): void {
+    this.mostrarModalConfirmacion = false;
+    
+    if (confirmado && this.accionPendiente && this.accionPendiente.tipoAccion === 'swap_orden') {
+      this.continuarConGuardado(this.accionPendiente.datosGuardar);
+    }
+    this.accionPendiente = null;
+  }
+
+  private continuarConGuardado(formVal: any): void {
     if (this.archivoSeleccionado) {
       this.subiendoImagen = true;
       this.menuService.subirImagen(this.archivoSeleccionado).subscribe({
         next: (res) => {
           this.subiendoImagen = false;
+          formVal.imagen = res.url;
           this.form.patchValue({ imagen: res.url });
-          this.procesarGuardado();
+          this.procesarGuardado(formVal);
         },
         error: (err) => {
           console.error('Error subiendo imagen', err);
@@ -130,13 +171,12 @@ export class ModalProductoComponent implements OnInit {
         }
       });
     } else {
-      this.procesarGuardado();
+      this.procesarGuardado(formVal);
     }
   }
 
-  private procesarGuardado(): void {
+  private procesarGuardado(formVal: any): void {
     this.guardando = true;
-    const formVal = this.form.value;
     
     if (formVal.categoriaSeleccionada === 'OTRA' && formVal.nuevaCategoriaNombre) {
       const nuevaCat = {

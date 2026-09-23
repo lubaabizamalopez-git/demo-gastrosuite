@@ -139,3 +139,12 @@
     </form>
   </div>
 </div>
+
+<app-modal-confirmacion
+  *ngIf="mostrarModalConfirmacion"
+  [item]="{ id: accionPendiente?.id || '', nombre: accionPendiente?.nombre || '', tipo: 'producto' }"
+  [titulo]="'Atención: Orden Ocupado'"
+  [textoBoton]="'Intercambiar'"
+  [mensajePersonalizado]="'El número de orden seleccionado ya está siendo usado por el producto \'' + (accionPendiente?.nombre || '') + '\' en esta categoría. De proseguir, se intercambiarán sus valores de orden. ¿Deseas continuar?'"
+  (confirmar)="confirmarAccion($event)">
+</app-modal-confirmacion>

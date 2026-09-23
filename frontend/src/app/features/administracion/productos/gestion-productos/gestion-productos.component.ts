@@ -95,17 +95,9 @@ export class GestionProductosComponent implements OnInit {
     filtradas = filtradas.filter(cat => {
       const matchBusqueda = term === '' || cat.nombre.toLowerCase().includes(term) || cat.productos.length > 0;
       
-      let matchEstado = this.cumpleFiltro(cat);
-      if (cat.productos.length > 0) {
-        matchEstado = true; // Si tiene productos que pasaron el filtro, la mostramos
-      }
+      // Si la categoría cumple el filtro de estado, o si tiene productos que cumplen el filtro
+      const matchEstado = this.cumpleFiltro(cat) || cat.productos.length > 0;
       
-      // Requerimiento: En vista por categoría, mostrar solo activas por defecto
-      if (this.vistaActual === 'grilla' && this.filtroEstado === 'todos' && term === '') {
-        matchEstado = cat.activo === 'A' || cat.productos.length > 0;
-      }
-      
-      // Si la categoría cumple el filtro de estado, y hace match o tiene productos que hacen match
       return matchEstado && matchBusqueda;
     });
 
@@ -159,14 +151,12 @@ export class GestionProductosComponent implements OnInit {
   intentarToggleEstadoProducto(prod: any, event: Event): void {
     event.stopPropagation(); // Evitar abrir modal de detalle
     
+    this.cargando = true; // Bloquea UI mientras hace la acción
     const estadoOriginal = prod.activo;
     const nuevoEstado = prod.activo === 'A' ? 'I' : 'A';
     
-    // Actualización optimista de la UI sin recargar toda la grilla
-    // IMPORTANTE: prod es una copia plana de la vista, debemos mutar el original
-    prod.activo = nuevoEstado; // Actualizamos la copia para reflejo inmediato
+    prod.activo = nuevoEstado; 
 
-    // Buscar y mutar el producto original en this.categorias para que no se pierda al reevaluar el getter
     const categoria = this.categorias.find(c => c.id === prod.categoriaId);
     let prodOriginal: Producto | undefined;
     if (categoria) {
@@ -178,13 +168,13 @@ export class GestionProductosComponent implements OnInit {
 
     this.menuService.actualizarProducto(prod.id, { activo: nuevoEstado }).subscribe({
       next: () => {
-        // Guardado exitoso en DB, no hacemos cargarDatos() para evitar el "salto" de la tabla
+        this.cargando = false;
       },
       error: (err) => {
         console.error('Error al actualizar estado:', err);
-        // Revertir si falla
         prod.activo = estadoOriginal;
         if (prodOriginal) prodOriginal.activo = estadoOriginal;
+        this.cargando = false;
       }
     });
   }
@@ -195,19 +185,10 @@ export class GestionProductosComponent implements OnInit {
     event.stopPropagation(); 
     
     if (cat.activo === 'A') {
-      // Intentando desactivar, requiere confirmación si queremos desactivar en cascada
-      this.itemAEliminar = { id: cat.id, nombre: cat.nombre, tipo: 'categoria' };
-      // Usaremos un truco: si pasamos un flag adicional o usamos el modal,
-      // pero como `itemAEliminar` ya existe, mejor añadimos un nuevo estado o usamos el mismo confirm con otro mensaje.
-      // Ya que el modal de confirmacion en app-gestion-productos solo asume "Eliminación", 
-      // lo vamos a adaptar o redirigir al mismo flujo pero con otro tipo de accion, pero requiere tocar shared.
-      // Para no complicar, llamaremos directamente al modal de categoria que YA tiene la lógica de confirmación y cascada? No, hagámoslo simple:
-      
-      // Como el user pidió confirmación:
       this.itemAEliminar = { id: cat.id, nombre: cat.nombre, tipo: 'categoria_desactivar' as any };
       this.mostrarModalConfirmacion = true;
     } else {
-      // Intentando activar, se hace directo
+      this.cargando = true;
       this.menuService.actualizarCategoria(cat.id, { activo: 'A' }).subscribe(() => {
         this.cargarDatos();
       });
@@ -263,6 +244,7 @@ export class GestionProductosComponent implements OnInit {
   confirmarEliminacion(confirmado: boolean): void {
     this.mostrarModalConfirmacion = false;
     if (confirmado && this.itemAEliminar) {
+      this.cargando = true;
       const { id, tipo } = this.itemAEliminar;
       
       if (tipo === 'categoria') {

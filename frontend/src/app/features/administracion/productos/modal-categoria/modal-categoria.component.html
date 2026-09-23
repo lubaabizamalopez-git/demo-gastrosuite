@@ -137,8 +137,8 @@
 <app-modal-confirmacion
   *ngIf="mostrarModalConfirmacion"
   [item]="{ id: accionPendiente?.id || '', nombre: accionPendiente?.nombre || '', tipo: 'categoria' }"
-  [titulo]="accionPendiente?.tipoAccion === 'desactivar' ? 'Confirmar Desactivación' : 'Confirmar Eliminación'"
-  [textoBoton]="accionPendiente?.tipoAccion === 'desactivar' ? 'Desactivar' : 'Eliminar'"
-  [mensajePersonalizado]="accionPendiente?.tipoAccion === 'desactivar' ? 'Al desactivar esta categoría, todos sus productos también se desactivarán. ¿Deseas continuar?' : null"
+  [titulo]="accionPendiente?.tipoAccion === 'desactivar' ? 'Confirmar Desactivación' : (accionPendiente?.tipoAccion === 'swap_orden' ? 'Atención: Orden Ocupado' : 'Confirmar Eliminación')"
+  [textoBoton]="accionPendiente?.tipoAccion === 'desactivar' ? 'Desactivar' : (accionPendiente?.tipoAccion === 'swap_orden' ? 'Intercambiar' : 'Eliminar')"
+  [mensajePersonalizado]="accionPendiente?.tipoAccion === 'desactivar' ? 'Al desactivar esta categoría, todos sus productos también se desactivarán. ¿Deseas continuar?' : (accionPendiente?.tipoAccion === 'swap_orden' ? 'El número de orden seleccionado ya está siendo usado por la categoría \'' + (accionPendiente?.nombre || '') + '\'. De proseguir, se intercambiarán sus valores de orden. ¿Deseas continuar?' : null)"
   (confirmar)="confirmarAccion($event)">
 </app-modal-confirmacion>

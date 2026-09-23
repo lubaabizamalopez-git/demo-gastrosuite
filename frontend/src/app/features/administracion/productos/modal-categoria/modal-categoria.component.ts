@@ -33,7 +33,7 @@ export class ModalCategoriaComponent implements OnInit {
 
   // Confirmación
   mostrarModalConfirmacion = false;
-  accionPendiente: { id: string, nombre: string, tipoAccion: 'eliminar' | 'desactivar', catRef?: Categoria } | null = null;
+  accionPendiente: { id: string, nombre: string, tipoAccion: 'eliminar' | 'desactivar' | 'swap_orden', catRef?: Categoria, datosGuardar?: any } | null = null;
 
   opcionesOrden: number[] = [1];
 
@@ -93,15 +93,15 @@ export class ModalCategoriaComponent implements OnInit {
   }
 
   actualizarOpcionesOrden(): void {
-    const total = this.categorias.length;
-    const max = this.categoriaEnEdicion ? Math.max(total, 1) : total + 1;
-    this.opcionesOrden = Array.from({length: max}, (_, i) => i + 1);
+    const maxOrdenActual = this.categorias.length > 0 ? Math.max(...this.categorias.map(c => c.orden || 0)) : 0;
+    const maxOpcion = this.categoriaEnEdicion ? Math.max(maxOrdenActual, 1) : maxOrdenActual + 1;
+    this.opcionesOrden = Array.from({length: maxOpcion}, (_, i) => i + 1);
     
     // Asignar el último orden por defecto si es creación y el valor actual es 0 o null
     if (!this.categoriaEnEdicion) {
       const ordenActual = this.form.get('orden')?.value;
       if (!ordenActual || ordenActual === 0) {
-        this.form.patchValue({ orden: max });
+        this.form.patchValue({ orden: maxOpcion });
       }
     }
   }
@@ -139,13 +139,33 @@ export class ModalCategoriaComponent implements OnInit {
   guardar(): void {
     if (this.form.invalid) return;
 
-    this.guardando = true;
     const datosRaw = this.form.value;
     const datos = {
       ...datosRaw,
       activo: datosRaw.activo ? 'A' : 'I'
     };
 
+    // Verificar si el orden ya está en uso por OTRA categoría
+    const ordenSolicitado = datos.orden;
+    const categoriaConflicto = this.categorias.find(c => c.orden === ordenSolicitado && c.id !== this.categoriaEnEdicion?.id);
+
+    if (categoriaConflicto) {
+      // Pedir confirmación para el swap
+      this.accionPendiente = {
+        id: categoriaConflicto.id,
+        nombre: categoriaConflicto.nombre,
+        tipoAccion: 'swap_orden',
+        datosGuardar: datos
+      };
+      this.mostrarModalConfirmacion = true;
+      return;
+    }
+
+    this.ejecutarGuardado(datos);
+  }
+
+  private ejecutarGuardado(datos: any): void {
+    this.guardando = true;
     const peticion = this.categoriaEnEdicion 
       ? this.menuService.actualizarCategoria(this.categoriaEnEdicion.id, datos)
       : this.menuService.crearCategoria(datos);
@@ -193,6 +213,8 @@ export class ModalCategoriaComponent implements OnInit {
         });
       } else if (this.accionPendiente.tipoAccion === 'desactivar') {
         this.actualizarEstadoInmediato(this.accionPendiente.id, 'I');
+      } else if (this.accionPendiente.tipoAccion === 'swap_orden') {
+        this.ejecutarGuardado(this.accionPendiente.datosGuardar);
       }
     }
     this.accionPendiente = null;

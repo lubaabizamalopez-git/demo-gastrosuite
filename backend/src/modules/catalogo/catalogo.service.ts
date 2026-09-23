@@ -24,43 +24,77 @@ export class CatalogoService {
 
   // --- CATEGORÍAS ---
 
-  async crearCategoria(dto: CrearCategoriaDto) {
-    return this.prisma.categoria.create({
-      data: dto,
+  async obtenerSiguienteOrdenCategoria() {
+    const result = await this.prisma.categoria.aggregate({
+      _max: { orden: true }
     });
+    return (result._max.orden || 0) + 1;
+  }
+
+  async crearCategoria(dto: CrearCategoriaDto) {
+    if (dto.orden === undefined) {
+      dto.orden = await this.obtenerSiguienteOrdenCategoria();
+      return this.prisma.categoria.create({ data: dto });
+    }
+
+    const categoriaConflicto = await this.prisma.categoria.findFirst({
+      where: { orden: dto.orden }
+    });
+
+    if (categoriaConflicto) {
+      const siguienteOrden = await this.obtenerSiguienteOrdenCategoria();
+      return this.prisma.$transaction(async (prisma) => {
+        // Intercambiar: la que estaba ocupando el lugar pasa al final
+        await prisma.categoria.update({
+          where: { id: categoriaConflicto.id },
+          data: { orden: siguienteOrden }
+        });
+        return prisma.categoria.create({ data: dto });
+      });
+    } else {
+      return this.prisma.categoria.create({ data: dto });
+    }
   }
 
   async actualizarCategoria(id: string, dto: ActualizarCategoriaDto) {
-    if (dto.orden !== undefined) {
-      const categoriaActual = await this.prisma.categoria.findUnique({ where: { id } });
-      if (categoriaActual && categoriaActual.orden !== dto.orden) {
-        const categoriaConflicto = await this.prisma.categoria.findFirst({
-          where: { orden: dto.orden, id: { not: id } }
-        });
-        
-        if (categoriaConflicto) {
-          await this.prisma.categoria.update({
-            where: { id: categoriaConflicto.id },
-            data: { orden: categoriaActual.orden }
+    return this.prisma.$transaction(async (prisma) => {
+      if (dto.orden !== undefined) {
+        const categoriaActual = await prisma.categoria.findUnique({ where: { id } });
+        if (categoriaActual && categoriaActual.orden !== dto.orden) {
+          const categoriaConflicto = await prisma.categoria.findFirst({
+            where: { orden: dto.orden, id: { not: id } }
           });
+          
+          if (categoriaConflicto) {
+            // Mover la actual a un temporal negativo para evitar conflictos UNIQUE
+            await prisma.categoria.update({
+              where: { id: categoriaActual.id },
+              data: { orden: -1 }
+            });
+            // Mover la conflicto al lugar que dejó la actual
+            await prisma.categoria.update({
+              where: { id: categoriaConflicto.id },
+              data: { orden: categoriaActual.orden }
+            });
+          }
         }
       }
-    }
 
-    const categoria = await this.prisma.categoria.update({
-      where: { id },
-      data: dto,
-    });
-
-    // Si el estado activo cambia, actualizar en cascada los productos asociados
-    if (dto.activo !== undefined) {
-      await this.prisma.producto.updateMany({
-        where: { categoriaId: id },
-        data: { activo: dto.activo },
+      const categoria = await prisma.categoria.update({
+        where: { id },
+        data: dto,
       });
-    }
 
-    return categoria;
+      // Si el estado activo cambia, actualizar en cascada los productos asociados
+      if (dto.activo !== undefined) {
+        await prisma.producto.updateMany({
+          where: { categoriaId: id },
+          data: { activo: dto.activo },
+        });
+      }
+
+      return categoria;
+    });
   }
 
   async eliminarCategoria(id: string) {
@@ -78,32 +112,67 @@ export class CatalogoService {
 
   // --- PRODUCTOS ---
 
-  async crearProducto(dto: CrearProductoDto) {
-    return this.prisma.producto.create({
-      data: dto,
+  async obtenerSiguienteOrdenProducto(categoriaId: string) {
+    const result = await this.prisma.producto.aggregate({
+      where: { categoriaId },
+      _max: { orden: true }
     });
+    return (result._max.orden || 0) + 1;
+  }
+
+  async crearProducto(dto: CrearProductoDto) {
+    if (dto.orden === undefined) {
+      dto.orden = await this.obtenerSiguienteOrdenProducto(dto.categoriaId);
+      return this.prisma.producto.create({ data: dto });
+    }
+
+    const productoConflicto = await this.prisma.producto.findFirst({
+      where: { orden: dto.orden, categoriaId: dto.categoriaId }
+    });
+
+    if (productoConflicto) {
+      const siguienteOrden = await this.obtenerSiguienteOrdenProducto(dto.categoriaId);
+      return this.prisma.$transaction(async (prisma) => {
+        // Intercambiar: la que estaba ocupando el lugar pasa al final
+        await prisma.producto.update({
+          where: { id: productoConflicto.id },
+          data: { orden: siguienteOrden }
+        });
+        return prisma.producto.create({ data: dto });
+      });
+    } else {
+      return this.prisma.producto.create({ data: dto });
+    }
   }
 
   async actualizarProducto(id: string, dto: ActualizarProductoDto) {
-    if (dto.orden !== undefined) {
-      const productoActual = await this.prisma.producto.findUnique({ where: { id } });
-      if (productoActual && productoActual.orden !== dto.orden) {
-        const productoConflicto = await this.prisma.producto.findFirst({
-          where: { orden: dto.orden, categoriaId: productoActual.categoriaId, id: { not: id } }
-        });
-        
-        if (productoConflicto) {
-          await this.prisma.producto.update({
-            where: { id: productoConflicto.id },
-            data: { orden: productoActual.orden }
+    return this.prisma.$transaction(async (prisma) => {
+      if (dto.orden !== undefined) {
+        const productoActual = await prisma.producto.findUnique({ where: { id } });
+        if (productoActual && productoActual.orden !== dto.orden) {
+          // Nota: Asumimos que no cambia de categoría, si cambiara la lógica sería más compleja
+          const categoriaId = dto.categoriaId || productoActual.categoriaId;
+          const productoConflicto = await prisma.producto.findFirst({
+            where: { orden: dto.orden, categoriaId: categoriaId, id: { not: id } }
           });
+          
+          if (productoConflicto) {
+            await prisma.producto.update({
+              where: { id: productoActual.id },
+              data: { orden: -1 }
+            });
+            await prisma.producto.update({
+              where: { id: productoConflicto.id },
+              data: { orden: productoActual.orden }
+            });
+          }
         }
       }
-    }
 
-    return this.prisma.producto.update({
-      where: { id },
-      data: dto,
+      return prisma.producto.update({
+        where: { id },
+        data: dto,
+      });
     });
   }
 

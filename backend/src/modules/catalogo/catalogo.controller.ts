@@ -19,6 +19,12 @@ export class CatalogoController {
 
   // --- CATEGORÍAS ---
 
+  @Get('categorias/siguiente-orden')
+  async obtenerSiguienteOrdenCategoria() {
+    const orden = await this.catalogoService.obtenerSiguienteOrdenCategoria();
+    return { orden };
+  }
+
   @Post('categorias')
   async crearCategoria(@Body() dto: CrearCategoriaDto) {
     return this.catalogoService.crearCategoria(dto);
@@ -35,6 +41,12 @@ export class CatalogoController {
   }
 
   // --- PRODUCTOS ---
+
+  @Get('productos/siguiente-orden/:categoriaId')
+  async obtenerSiguienteOrdenProducto(@Param('categoriaId') categoriaId: string) {
+    const orden = await this.catalogoService.obtenerSiguienteOrdenProducto(categoriaId);
+    return { orden };
+  }
 
   @Post('productos')
   async crearProducto(@Body() dto: CrearProductoDto) {
