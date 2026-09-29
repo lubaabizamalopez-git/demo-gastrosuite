@@ -18,8 +18,9 @@ export interface Usuario {
   rut?: string;
   dv?: string;
   correo: string;
-  activo: string;
+  estado: string;
   codigoPin?: string;
+  imagenUrl?: string; // Opcional, para controlar las fotos de perfil
   rolesUsuario: { rol: Rol }[];
 }
 

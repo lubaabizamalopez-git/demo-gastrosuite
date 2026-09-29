@@ -1,18 +1,18 @@
 <div *ngIf="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-300">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-fade-in-up border border-gray-100 flex flex-col max-h-[90vh]">
+  <div class="bg-neutral-surface rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-fade-in-up border border-neutral-border flex flex-col max-h-[90vh]">
     
     <!-- HEADER ESTANDAR -->
-    <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
+    <div class="bg-neutral-bg px-6 py-4 border-b border-neutral-border flex justify-between items-center sticky top-0 z-10">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-brand-orange/10 flex items-center justify-center text-brand-orange">
+        <div class="w-10 h-10 rounded-full bg-brand-soft flex items-center justify-center text-brand-primary">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
         </div>
         <div>
-          <h2 class="text-xl font-bold text-gray-900 tracking-tight">{{ editMode ? 'Editar Empleado' : 'Nuevo Empleado' }}</h2>
-          <p class="text-sm text-gray-500 font-medium">{{ editMode ? 'Modifica los datos del usuario' : 'Agrega un nuevo miembro a tu equipo' }}</p>
+          <h2 class="text-xl font-bold text-text-title tracking-tight">{{ editMode ? 'Editar Empleado' : 'Nuevo Empleado' }}</h2>
+          <p class="text-sm text-text-muted font-medium">{{ editMode ? 'Modifica los datos del usuario' : 'Agrega un nuevo miembro a tu equipo' }}</p>
         </div>
       </div>
-      <button (click)="cerrar()" class="text-gray-400 hover:text-gray-600 hover:bg-gray-200 p-2 rounded-full transition-colors">
+      <button (click)="cerrar()" class="text-text-muted hover:text-text-title hover:bg-neutral-border/50 p-2 rounded-full transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
@@ -30,60 +30,60 @@
           </div>
         </div>
 
-        <div class="bg-gray-50/50 rounded-xl p-5 border border-gray-100">
-          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Información Personal</h3>
+        <div class="bg-neutral-bg/50 rounded-xl p-5 border border-neutral-border">
+          <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">Información Personal</h3>
           
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre *</label>
-              <input type="text" formControlName="nombre" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-orange focus:border-brand-orange bg-white transition-shadow" placeholder="Ej. Carlos">
+              <label class="block text-sm font-semibold text-text-body mb-1">Nombre *</label>
+              <input type="text" formControlName="nombre" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface transition-shadow" placeholder="Ej. Carlos">
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Apellido Paterno *</label>
-              <input type="text" formControlName="apellidoPaterno" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-orange focus:border-brand-orange bg-white transition-shadow" placeholder="Ej. Mendoza">
+              <label class="block text-sm font-semibold text-text-body mb-1">Apellido Paterno *</label>
+              <input type="text" formControlName="apellidoPaterno" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface transition-shadow" placeholder="Ej. Mendoza">
             </div>
             <div class="col-span-2">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Apellido Materno</label>
-              <input type="text" formControlName="apellidoMaterno" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-orange focus:border-brand-orange bg-white transition-shadow">
+              <label class="block text-sm font-semibold text-text-body mb-1">Apellido Materno</label>
+              <input type="text" formControlName="apellidoMaterno" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface transition-shadow">
             </div>
           </div>
 
           <div class="grid grid-cols-12 gap-4">
             <div class="col-span-4">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo Documento *</label>
-              <select formControlName="tipoDocumento" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-orange focus:border-brand-orange bg-white transition-shadow">
+              <label class="block text-sm font-semibold text-text-body mb-1">Tipo Documento *</label>
+              <select formControlName="tipoDocumento" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface transition-shadow">
                 <option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{ tipo }}</option>
               </select>
             </div>
             <div class="col-span-6">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Número Documento</label>
-              <input type="text" formControlName="rut" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-orange focus:border-brand-orange bg-white transition-shadow" placeholder="Sin DV">
+              <label class="block text-sm font-semibold text-text-body mb-1">Número Documento</label>
+              <input type="text" formControlName="rut" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface transition-shadow" placeholder="Sin DV">
             </div>
             <div class="col-span-2" *ngIf="usuarioForm.get('tipoDocumento')?.value === 'RUT'">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">DV</label>
-              <input type="text" formControlName="dv" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-orange focus:border-brand-orange bg-white transition-shadow" placeholder="k">
+              <label class="block text-sm font-semibold text-text-body mb-1">DV</label>
+              <input type="text" formControlName="dv" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface transition-shadow" placeholder="k">
             </div>
           </div>
         </div>
 
-        <div class="bg-gray-50/50 rounded-xl p-5 border border-gray-100">
-          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Acceso al Sistema</h3>
+        <div class="bg-neutral-bg/50 rounded-xl p-5 border border-neutral-border">
+          <h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">Acceso al Sistema</h3>
           
           <div class="grid grid-cols-2 gap-4">
             <div class="col-span-2">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Correo Electrónico *</label>
-              <input type="email" formControlName="correo" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-orange focus:border-brand-orange bg-white transition-shadow" placeholder="empleado@gastrosuite.com">
+              <label class="block text-sm font-semibold text-text-body mb-1">Correo Electrónico *</label>
+              <input type="email" formControlName="correo" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface transition-shadow" placeholder="empleado@gastrosuite.com">
             </div>
             <div class="col-span-2">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Roles Asignados *</label>
-              <select multiple formControlName="roles" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-orange focus:border-brand-orange bg-white min-h-[100px] custom-scrollbar">
+              <label class="block text-sm font-semibold text-text-body mb-1">Roles Asignados *</label>
+              <select multiple formControlName="roles" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface min-h-[100px] custom-scrollbar">
                 <option *ngFor="let rol of rolesDisponibles" [value]="rol.id">{{ rol.nombre }}</option>
               </select>
-              <p class="text-xs text-gray-400 mt-1">Mantén presionado Ctrl (o Cmd) para seleccionar múltiples.</p>
+              <p class="text-xs text-text-muted mt-1">Mantén presionado Ctrl (o Cmd) para seleccionar múltiples.</p>
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1">PIN Rápido (Caja POS)</label>
-              <input type="text" formControlName="codigoPin" maxlength="4" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-orange focus:border-brand-orange bg-white transition-shadow text-center font-mono tracking-widest text-lg" placeholder="****">
+              <label class="block text-sm font-semibold text-text-body mb-1">PIN Rápido (Caja POS)</label>
+              <input type="text" formControlName="codigoPin" maxlength="4" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface transition-shadow text-center font-mono tracking-widest text-lg" placeholder="****">
             </div>
           </div>
         </div>
@@ -91,11 +91,11 @@
       </div>
 
       <!-- FOOTER -->
-      <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 mt-auto sticky bottom-0">
-        <button type="button" (click)="cerrar()" class="px-5 py-2.5 rounded-lg text-sm font-bold text-gray-600 bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
+      <div class="px-6 py-4 bg-neutral-bg border-t border-neutral-border flex justify-end gap-3 mt-auto sticky bottom-0">
+        <button type="button" (click)="cerrar()" class="px-5 py-2.5 rounded-lg text-sm font-bold text-text-body bg-neutral-surface border border-neutral-border shadow-sm hover:bg-neutral-bg transition-colors">
           Cancelar
         </button>
-        <button type="submit" [disabled]="usuarioForm.invalid" class="px-5 py-2.5 rounded-lg text-sm font-bold text-white bg-gray-900 shadow-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+        <button type="submit" [disabled]="usuarioForm.invalid" class="px-5 py-2.5 rounded-lg text-sm font-bold text-white bg-brand-primary shadow-md hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
           {{ editMode ? 'Guardar Cambios' : 'Crear Empleado' }}
         </button>
       </div>

@@ -15,5 +15,5 @@ export class CrearCategoriaDto {
 
   @IsString()
   @IsOptional()
-  activo?: string;
+  estado?: string;
 }

@@ -43,7 +43,7 @@ export class ModalProductoComponent implements OnInit {
       precio: [0, [Validators.required, Validators.min(0)]],
       sku: [''],
       imagen: [''],
-      activo: [true],
+      estado: [true],
       areaPreparacion: ['COCINA'],
       orden: [0, Validators.required]
     });
@@ -72,7 +72,7 @@ export class ModalProductoComponent implements OnInit {
         precio: this.producto.precio,
         sku: this.producto.sku,
         imagen: this.producto.imagen,
-        activo: this.producto.activo === 'A' ? true : (this.producto.activo === 'I' ? false : true),
+        estado: this.producto.estado === 'A' ? true : (this.producto.estado === 'I' ? false : true),
         areaPreparacion: (this.producto as any).areaPreparacion || 'COCINA',
         orden: this.producto.orden || 0
       });
@@ -186,7 +186,7 @@ export class ModalProductoComponent implements OnInit {
       const nuevaCat = {
         nombre: formVal.nuevaCategoriaNombre,
         orden: formVal.nuevaCategoriaOrden,
-        activo: 'A'
+        estado: 'A'
       };
       
       this.menuService.crearCategoria(nuevaCat).pipe(
@@ -212,7 +212,7 @@ export class ModalProductoComponent implements OnInit {
       precio: formVal.precio,
       sku: formVal.sku,
       imagen: formVal.imagen,
-      activo: formVal.activo ? 'A' : 'I',
+      estado: formVal.estado ? 'A' : 'I',
       areaPreparacion: formVal.areaPreparacion,
       orden: formVal.orden,
       categoriaId: catId

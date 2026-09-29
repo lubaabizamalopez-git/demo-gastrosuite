@@ -97,11 +97,11 @@ export class UsuariosService {
     const usuario = await this.prisma.usuario.findUnique({ where: { id } });
     if (!usuario) throw new BadRequestException('Usuario no encontrado');
 
-    const nuevoEstado = usuario.activo === 'A' ? 'I' : 'A';
+    const nuevoEstado = usuario.estado === 'A' ? 'I' : 'A';
     
     return this.prisma.usuario.update({
       where: { id },
-      data: { activo: nuevoEstado },
+      data: { estado: nuevoEstado },
       include: {
         rolesUsuario: { include: { rol: true } }
       }

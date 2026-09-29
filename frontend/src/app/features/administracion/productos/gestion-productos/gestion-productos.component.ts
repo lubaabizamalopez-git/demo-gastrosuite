@@ -136,8 +136,8 @@ export class GestionProductosComponent implements OnInit {
 
   private cumpleFiltro(item: any): boolean {
     if (this.filtroEstado === 'todos') return true;
-    if (this.filtroEstado === 'activos') return item.activo === 'A';
-    return item.activo === 'I';
+    if (this.filtroEstado === 'activos') return item.estado === 'A';
+    return item.estado === 'I';
   }
 
   cambiarVista(vista: 'grilla' | 'lista') {
@@ -152,28 +152,28 @@ export class GestionProductosComponent implements OnInit {
     event.stopPropagation(); // Evitar abrir modal de detalle
     
     this.cargando = true; // Bloquea UI mientras hace la acción
-    const estadoOriginal = prod.activo;
-    const nuevoEstado = prod.activo === 'A' ? 'I' : 'A';
+    const estadoOriginal = prod.estado;
+    const nuevoEstado = prod.estado === 'A' ? 'I' : 'A';
     
-    prod.activo = nuevoEstado; 
+    prod.estado = nuevoEstado; 
 
     const categoria = this.categorias.find(c => c.id === prod.categoriaId);
     let prodOriginal: Producto | undefined;
     if (categoria) {
       prodOriginal = categoria.productos.find(p => p.id === prod.id);
       if (prodOriginal) {
-        prodOriginal.activo = nuevoEstado;
+        prodOriginal.estado = nuevoEstado;
       }
     }
 
-    this.menuService.actualizarProducto(prod.id, { activo: nuevoEstado }).subscribe({
+    this.menuService.actualizarProducto(prod.id, { estado: nuevoEstado }).subscribe({
       next: () => {
         this.cargando = false;
       },
       error: (err) => {
         console.error('Error al actualizar estado:', err);
-        prod.activo = estadoOriginal;
-        if (prodOriginal) prodOriginal.activo = estadoOriginal;
+        prod.estado = estadoOriginal;
+        if (prodOriginal) prodOriginal.estado = estadoOriginal;
         this.cargando = false;
       }
     });
@@ -184,12 +184,12 @@ export class GestionProductosComponent implements OnInit {
     event.preventDefault(); 
     event.stopPropagation(); 
     
-    if (cat.activo === 'A') {
+    if (cat.estado === 'A') {
       this.itemAEliminar = { id: cat.id, nombre: cat.nombre, tipo: 'categoria_desactivar' as any };
       this.mostrarModalConfirmacion = true;
     } else {
       this.cargando = true;
-      this.menuService.actualizarCategoria(cat.id, { activo: 'A' }).subscribe(() => {
+      this.menuService.actualizarCategoria(cat.id, { estado: 'A' }).subscribe(() => {
         this.cargarDatos();
       });
     }
@@ -250,7 +250,7 @@ export class GestionProductosComponent implements OnInit {
       if (tipo === 'categoria') {
         this.menuService.eliminarCategoria(id).subscribe(() => this.cargarDatos());
       } else if (tipo === 'categoria_desactivar') {
-        this.menuService.actualizarCategoria(id, { activo: 'I' }).subscribe(() => this.cargarDatos());
+        this.menuService.actualizarCategoria(id, { estado: 'I' }).subscribe(() => this.cargarDatos());
       } else {
         this.menuService.eliminarProducto(id).subscribe(() => this.cargarDatos());
       }

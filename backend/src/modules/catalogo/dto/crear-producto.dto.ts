@@ -27,7 +27,7 @@ export class CrearProductoDto {
 
   @IsString()
   @IsOptional()
-  activo?: string;
+  estado?: string;
 
   @IsString()
   @IsOptional()

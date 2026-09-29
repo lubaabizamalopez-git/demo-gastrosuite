@@ -11,9 +11,29 @@
   </div>
 
   <div class="toolbar">
-    <div class="view-toggle">
-      <button [class.active]="vistaActual === 'grilla'" (click)="cambiarVista('grilla')">Vista por Categoría</button>
-      <button [class.active]="vistaActual === 'lista'" (click)="cambiarVista('lista')">Vista por Producto</button>
+    <!-- NUEVO DISEÑO TABS -->
+    <div class="flex items-center bg-neutral-surface border border-neutral-border p-1.5 rounded-full shadow-sm overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap max-w-full">
+      <div class="flex space-x-1">
+        <button 
+          (click)="cambiarVista('grilla')"
+          [ngClass]="{
+            'bg-brand-primary text-white border-brand-primary shadow-sm font-semibold': vistaActual === 'grilla',
+            'bg-transparent text-text-muted hover:text-text-title border-transparent hover:bg-neutral-bg': vistaActual !== 'grilla'
+          }"
+          class="flex items-center space-x-2 px-5 py-2 text-xs lg:text-sm font-medium rounded-full border transition-all duration-200 ease-in-out focus:outline-none cursor-pointer">
+          <span>Vista por Categoría</span>
+        </button>
+
+        <button 
+          (click)="cambiarVista('lista')"
+          [ngClass]="{
+            'bg-brand-primary text-white border-brand-primary shadow-sm font-semibold': vistaActual === 'lista',
+            'bg-transparent text-text-muted hover:text-text-title border-transparent hover:bg-neutral-bg': vistaActual !== 'lista'
+          }"
+          class="flex items-center space-x-2 px-5 py-2 text-xs lg:text-sm font-medium rounded-full border transition-all duration-200 ease-in-out focus:outline-none cursor-pointer">
+          <span>Vista por Producto</span>
+        </button>
+      </div>
     </div>
 
     <div class="filters">
@@ -109,7 +129,7 @@
           <td class="text-gray-600">{{ prod.orden }}</td>
           <td (click)="$event.stopPropagation()">
             <label class="switch" style="transform: scale(0.8); margin: 0;">
-              <input type="checkbox" [checked]="prod.activo === 'A'" (change)="intentarToggleEstadoProducto(prod, $event)">
+              <input type="checkbox" [checked]="prod.estado === 'A'" (change)="intentarToggleEstadoProducto(prod, $event)">
               <span class="slider round"></span>
             </label>
           </td>

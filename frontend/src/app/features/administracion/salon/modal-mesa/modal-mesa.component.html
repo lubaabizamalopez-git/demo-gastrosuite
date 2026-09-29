@@ -1,0 +1,44 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-300">
+  <div class="bg-neutral-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in-up border border-neutral-border flex flex-col">
+    
+    <div class="bg-neutral-bg px-6 py-4 border-b border-neutral-border flex justify-between items-center">
+      <h2 class="text-xl font-bold text-text-title tracking-tight">{{ editMode ? 'Editar Mesa' : 'Nueva Mesa' }}</h2>
+      <button (click)="onClose()" class="text-text-muted hover:text-text-title hover:bg-neutral-border/50 p-2 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <form [formGroup]="mesaForm" (ngSubmit)="guardar()" class="flex flex-col">
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-semibold text-text-body mb-1">Identificador de la Mesa *</label>
+          <input type="text" formControlName="numeroMesa" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface font-bold text-lg" placeholder="Ej. T-12">
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-text-body mb-1">Capacidad *</label>
+            <input type="number" formControlName="capacidad" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface" placeholder="4">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-text-body mb-1">Estado</label>
+            <select formControlName="estado" class="w-full border border-neutral-border rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-primary focus:border-brand-primary bg-neutral-surface">
+              <option value="LIBRE">Libre</option>
+              <option value="OCUPADA">Ocupada</option>
+              <option value="RESERVADA">Reservada</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 bg-neutral-bg border-t border-neutral-border flex justify-end gap-3">
+        <button type="button" (click)="onClose()" class="px-5 py-2.5 rounded-lg text-sm font-bold text-text-body bg-neutral-surface border border-neutral-border hover:bg-neutral-bg transition-colors">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="mesaForm.invalid" class="px-5 py-2.5 rounded-lg text-sm font-bold text-white bg-brand-primary shadow-md hover:bg-brand-dark disabled:opacity-50 transition-colors">
+          {{ editMode ? 'Guardar Cambios' : 'Crear Mesa' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

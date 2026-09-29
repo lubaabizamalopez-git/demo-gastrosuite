@@ -1,0 +1,236 @@
+<div class="flex h-screen bg-neutral-bg font-sans text-text-body p-6 space-x-6">
+ 
+  <!-- ==========================================
+       PANEL LATERAL: ELEMENTOS ARRASTRABLES (Req. 1)
+       ========================================== -->
+  <div class="w-80 bg-neutral-surface border border-neutral-border rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+    <div>
+      <h3 class="text-lg font-bold text-text-title mb-1 flex items-center space-x-2">
+        <i class="fas fa-layer-group text-brand-primary"></i>
+        <span>Diseñador de Salón</span>
+      </h3>
+      <p class="text-xs text-text-muted mb-6">Arrastra las formas arquitectónicas directamente al plano activo.</p>
+      
+      <!-- Listado de tipos de mesas para arrastrar -->
+      <div class="space-y-4">
+        <!-- Mesa Cuadrada -->
+        <div draggable="true" (dragstart)="onDragStartNuevo($event, 'cuadrada')" class="flex items-center justify-between p-4 bg-neutral-bg border border-neutral-border rounded-xl cursor-grab hover:border-brand-primary transition-colors group">
+          <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 bg-neutral-surface border-2 border-dashed border-text-muted rounded-xl flex items-center justify-center group-hover:border-brand-primary">
+              <i class="fas fa-th-large text-text-muted group-hover:text-brand-primary"></i>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-text-title">Mesa Cuadrada</p>
+              <p class="text-xs text-text-muted">Estándar 2-4 Pax</p>
+            </div>
+          </div>
+          <i class="fas fa-grip-vertical text-text-muted" title="Arrastrar al plano"></i>
+        </div>
+ 
+        <!-- Mesa Redonda -->
+        <div draggable="true" (dragstart)="onDragStartNuevo($event, 'redonda')" class="flex items-center justify-between p-4 bg-neutral-bg border border-neutral-border rounded-xl cursor-grab hover:border-brand-primary transition-colors group">
+          <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 bg-neutral-surface border-2 border-dashed border-text-muted rounded-full flex items-center justify-center group-hover:border-brand-primary">
+              <i class="fas fa-circle text-text-muted group-hover:text-brand-primary"></i>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-text-title">Mesa Redonda</p>
+              <p class="text-xs text-text-muted">Familiar 4-6 Pax</p>
+            </div>
+          </div>
+          <i class="fas fa-grip-vertical text-text-muted" title="Arrastrar al plano"></i>
+        </div>
+ 
+        <!-- Barra de Servicio -->
+        <div draggable="true" (dragstart)="onDragStartNuevo($event, 'barra')" class="flex items-center justify-between p-4 bg-neutral-bg border border-neutral-border rounded-xl cursor-grab hover:border-brand-primary transition-colors group">
+          <div class="flex items-center space-x-3">
+            <div class="w-12 h-6 bg-neutral-surface border-2 border-dashed border-text-muted rounded-md flex items-center justify-center group-hover:border-brand-primary">
+              <i class="fas fa-columns text-text-muted group-hover:text-brand-primary"></i>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-text-title">Módulo de Barra</p>
+              <p class="text-xs text-text-muted">Individual 1 Pax</p>
+            </div>
+          </div>
+          <i class="fas fa-grip-vertical text-text-muted" title="Arrastrar al plano"></i>
+        </div>
+
+        <!-- Mesa Rectangular -->
+        <div draggable="true" (dragstart)="onDragStartNuevo($event, 'rectangular')" class="flex items-center justify-between p-4 bg-neutral-bg border border-neutral-border rounded-xl cursor-grab hover:border-brand-primary transition-colors group">
+          <div class="flex items-center space-x-3">
+            <div class="w-14 h-8 bg-neutral-surface border-2 border-dashed border-text-muted rounded-lg flex items-center justify-center group-hover:border-brand-primary">
+              <i class="fas fa-equals text-text-muted group-hover:text-brand-primary"></i>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-text-title">Mesa Rectangular</p>
+              <p class="text-xs text-text-muted">Familiar 6 Pax</p>
+            </div>
+          </div>
+          <i class="fas fa-grip-vertical text-text-muted" title="Arrastrar al plano"></i>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Gestión Express de Zonas (Req. 2) -->
+    <div class="pt-4 border-t border-neutral-border">
+      <label class="block text-xs font-bold uppercase tracking-wider text-text-muted mb-2">Crear Nueva Área</label>
+      <div class="flex space-x-2">
+        <input #nuevaZonaInput type="text" placeholder="Ej. Zona VIP" class="flex-1 px-3 py-2 text-sm bg-neutral-bg border border-neutral-border rounded-lg focus:outline-none focus:border-brand-primary">
+        <button (click)="agregarNuevaZona(nuevaZonaInput.value); nuevaZonaInput.value=''" class="bg-brand-primary hover:bg-brand-dark text-white px-3 rounded-lg transition-colors">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- ==========================================
+       ÁREA PRINCIPAL DEL PLANO DEL SALÓN
+       ========================================== -->
+  <div class="flex-1 flex flex-col space-y-4">
+    
+    <!-- Filtros Superiores y Select de Áreas Dinámicas (Req. 2) -->
+    <div class="flex items-center justify-between bg-neutral-surface border border-neutral-border p-4 rounded-2xl shadow-sm">
+      <div class="flex items-center space-x-4">
+        <span class="text-sm font-semibold text-text-muted">Área Activa:</span>
+        <select [value]="zonaSeleccionada()" (change)="seleccionarZona(+$any($event.target).value)" class="bg-neutral-bg border border-neutral-border text-text-title px-4 py-2 text-sm rounded-xl focus:outline-none font-medium">
+          <option *ngFor="let zona of zonas()" [value]="zona.ids">{{ zona.nombre }}</option>
+        </select>
+      </div>
+ 
+      <button class="bg-status-success-text hover:bg-green-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm flex items-center space-x-2">
+        <i class="fas fa-check-circle"></i>
+        <span>Diseño Finalizado</span>
+      </button>
+    </div>
+ 
+    <!-- Contenedor Maestro / Tapiz Interactivo del Plano -->
+    <div class="flex-1 bg-neutral-surface border border-neutral-border rounded-2xl p-6 relative overflow-hidden shadow-sm"
+         (dragover)="onDragOver($event)"
+         (drop)="onDrop($event)">
+      
+      <!-- ESTADO VACÍO (Si no hay mesas) -->
+      <div *ngIf="mesas().length === 0" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 pointer-events-none">
+        <div class="w-20 h-20 bg-brand-soft/20 rounded-full flex items-center justify-center mb-4">
+          <i class="fas fa-layer-group text-brand-primary text-3xl opacity-50"></i>
+        </div>
+        <h3 class="text-xl font-bold text-text-title mb-2">Diseña tu Área</h3>
+        <p class="text-sm text-text-muted max-w-sm">Esta es tu primera vez aquí. Arrastra cualquiera de las mesas del panel izquierdo y crea tu plano de zona.</p>
+      </div>
+
+      <!-- Mesas Posicionadas por Coordenadas (Absolute) -->
+      <div *ngIf="mesas().length > 0" class="relative w-full h-full">
+        <div *ngFor="let mesa of mesas()" 
+             draggable="true"
+             (dragstart)="onDragStartMesaExistente($event, mesa.ids)"
+             class="absolute bg-neutral-bg border border-neutral-border rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-brand-primary transition-all flex flex-col items-center justify-between min-w-[140px] cursor-grab active:cursor-grabbing"
+             [style.left.px]="mesa.posX"
+             [style.top.px]="mesa.posY"
+             [style.transform]="'translate(-50%, -50%)'">
+          
+          <!-- Botón Flotante de Historial (Req. 5) -->
+          <button (click)="abrirHistorial(mesa.id)" class="absolute top-2 right-2 text-text-muted hover:text-brand-primary w-6 h-6 bg-neutral-surface border border-neutral-border rounded-full flex items-center justify-center transition-colors shadow-sm" title="Ver Historial">
+            <i class="fas fa-history text-[10px]"></i>
+          </button>
+ 
+          <!-- Ícono de Estado Dinámico Superior (Req. 4) -->
+          <div class="mt-1 w-10 h-10 rounded-full flex items-center justify-center">
+            <i class="fas text-xl" [ngClass]="{
+              'fa-money-bill-wave text-status-success-text': mesa.estado === 'cuenta',
+              'fa-user-friends text-status-error-text': mesa.estado === 'ocupada',
+              'fa-chair text-brand-primary': mesa.estado === 'libre',
+              'fa-clock text-text-muted': mesa.estado === 'reservada'
+            }"></i>
+          </div>
+ 
+          <!-- Información Central de la Mesa -->
+          <div class="text-center my-2 select-none">
+            <h4 class="text-base font-bold text-text-title">Mesa {{ mesa.numeroMesa }}</h4>
+            <p class="text-xs text-text-muted">{{ mesa.capacidad }} Pax</p>
+            <p *ngIf="$any(mesa).monto" class="text-sm font-bold text-brand-primary mt-1">${{ $any(mesa).monto | number:'1.2-2' }}</p>
+          </div>
+ 
+          <!-- Píldora de Estado Inferior Vinculada (Fuertes, no pastel) -->
+          <div class="px-3 py-1 text-2xs font-bold uppercase rounded-full tracking-wider select-none"
+               [ngClass]="{
+                 'bg-brand-primary text-white': mesa.estado === 'libre',
+                 'bg-status-error-text text-white': mesa.estado === 'ocupada',
+                 'bg-status-success-text text-white': mesa.estado === 'cuenta',
+                 'bg-text-muted text-white': mesa.estado === 'reservada'
+               }">
+            {{ mesa.estado === 'cuenta' ? 'Cobrando' : mesa.estado }}
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Barra de Estados Integrada en el Contenedor (Req. 3 - Fija, No Flotante para mejor UX) -->
+      <div class="absolute bottom-4 right-4 bg-neutral-surface border border-neutral-border px-4 py-2.5 rounded-xl shadow-md flex items-center space-x-4 text-xs">
+        <div *ngFor="let estado of estados()" class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full" [ngClass]="estado.colorBg"></span>
+          <span class="font-medium text-text-body">{{ estado.nombre }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<!-- ==========================================
+     MODAL DE HISTORIAL DE LA MESA (Req. 5)
+     ========================================== -->
+<div *ngIf="modalHistorialAbierto()" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+  <div class="bg-neutral-surface border border-neutral-border rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden animate-fade-in">
+    
+    <!-- Header del Modal -->
+    <div class="flex items-center justify-between p-5 border-b border-neutral-border bg-neutral-bg">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 bg-brand-soft rounded-lg flex items-center justify-center text-brand-primary">
+          <i class="fas fa-history"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-text-title">Historial de Operaciones</h3>
+          <p class="text-xs text-text-muted">Registros y auditoría de la mesa seleccionada</p>
+        </div>
+      </div>
+      <button (click)="cerrarHistorial()" class="text-text-muted hover:text-text-title transition-colors">
+        <i class="fas fa-times text-lg"></i>
+      </button>
+    </div>
+ 
+    <!-- Tabla de Paginación del Historial -->
+    <div class="p-6">
+      <div class="overflow-x-auto border border-neutral-border rounded-xl">
+        <table class="w-full text-left text-sm border-collapse">
+          <thead>
+            <tr class="bg-neutral-bg border-b border-neutral-border text-text-muted uppercase text-xs tracking-wider">
+              <th class="px-4 py-3 font-semibold">Fecha/Hora</th>
+              <th class="px-4 py-3 font-semibold">Operación</th>
+              <th class="px-4 py-3 font-semibold">Usuario</th>
+              <th class="px-4 py-3 font-semibold text-right">Monto</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-neutral-border">
+            <tr class="hover:bg-neutral-bg transition-colors">
+              <td class="px-4 py-3 text-text-body">Hoy 15:42</td>
+              <td class="px-4 py-3 font-medium text-text-title">Apertura de Mesa</td>
+              <td class="px-4 py-3 text-text-body">Juan P.</td>
+              <td class="px-4 py-3 text-right text-text-body">-</td>
+            </tr>
+            <tr class="hover:bg-neutral-bg transition-colors">
+              <td class="px-4 py-3 text-text-body">Hoy 16:15</td>
+              <td class="px-4 py-3 font-medium text-text-title">Cuenta Solicitada</td>
+              <td class="px-4 py-3 text-text-body">Ana G.</td>
+              <td class="px-4 py-3 text-right text-brand-primary font-bold">$125.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Paginación -->
+      <div class="mt-4 flex items-center justify-between text-xs text-text-muted">
+        <span>Mostrando 1 a 2 de 2 registros</span>
+        <div class="flex space-x-1">
+          <button class="px-3 py-1.5 border border-neutral-border rounded-md hover:bg-neutral-bg disabled:opacity-50" disabled>Anterior</button>
+          <button class="px-3 py-1.5 border border-neutral-border rounded-md hover:bg-neutral-bg disabled:opacity-50" disabled>Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

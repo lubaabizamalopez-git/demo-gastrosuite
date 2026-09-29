@@ -9,13 +9,13 @@ import { ActualizarProductoDto } from './dto/actualizar-producto.dto';
 export class CatalogoService {
   constructor(private prisma: PrismaService) {}
 
-  async obtenerCategoriasConProductos(incluirInactivos = false) {
+  async obtenerCategoriasConProductos(incluirInestados = false) {
     return this.prisma.categoria.findMany({
-      where: incluirInactivos ? {} : { activo: 'A' },
+      where: incluirInestados ? {} : { estado: 'A' },
       orderBy: { orden: 'asc' },
       include: {
         productos: {
-          where: incluirInactivos ? {} : { activo: 'A' },
+          where: incluirInestados ? {} : { estado: 'A' },
           orderBy: { orden: 'asc' }
         },
       },
@@ -85,11 +85,11 @@ export class CatalogoService {
         data: dto,
       });
 
-      // Si el estado activo cambia, actualizar en cascada los productos asociados
-      if (dto.activo !== undefined) {
+      // Si el estado estado cambia, actualizar en cascada los productos asociados
+      if (dto.estado !== undefined) {
         await prisma.producto.updateMany({
           where: { categoriaId: id },
-          data: { activo: dto.activo },
+          data: { estado: dto.estado },
         });
       }
 
@@ -98,15 +98,15 @@ export class CatalogoService {
   }
 
   async eliminarCategoria(id: string) {
-    // Soft delete (marcar como inactivo) en cascada
+    // Soft delete (marcar como inestado) en cascada
     await this.prisma.producto.updateMany({
       where: { categoriaId: id },
-      data: { activo: 'I' },
+      data: { estado: 'I' },
     });
 
     return this.prisma.categoria.update({
       where: { id },
-      data: { activo: 'I' },
+      data: { estado: 'I' },
     });
   }
 
@@ -180,7 +180,7 @@ export class CatalogoService {
     // Soft delete
     return this.prisma.producto.update({
       where: { id },
-      data: { activo: 'I' },
+      data: { estado: 'I' },
     });
   }
 }

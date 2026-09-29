@@ -10,8 +10,8 @@
         {{ producto.nombre.charAt(0) }}
       </div>
       <div class="hero-content">
-        <span class="badge" [ngClass]="producto.activo ? 'activo' : 'inactivo'">
-          {{ producto.activo ? 'Activo' : 'Inactivo' }}
+        <span class="badge" [ngClass]="producto.estado ? 'activo' : 'inactivo'">
+          {{ producto.estado ? 'Activo' : 'Inactivo' }}
         </span>
         <h2>{{ producto.nombre }}</h2>
         <p class="price">${{ producto.precio }}</p>

@@ -41,7 +41,7 @@ export class PersonalComponent implements OnInit {
   aplicarFiltros(): void {
     this.usuariosFiltrados = this.usuarios.filter(u => {
       // Filtro por Estado
-      const cumpleEstado = this.filtroEstado === 'todos' || u.activo === this.filtroEstado;
+      const cumpleEstado = this.filtroEstado === 'todos' || u.estado === this.filtroEstado;
       
       // Filtro por Rol
       let cumpleRol = true;
@@ -68,20 +68,20 @@ export class PersonalComponent implements OnInit {
 
   toggleEstadoUsuario(usuario: Usuario): void {
     // UI Optimista
-    const estadoOriginal = usuario.activo;
+    const estadoOriginal = usuario.estado;
     const nuevoEstado = estadoOriginal === 'A' ? 'I' : 'A';
-    usuario.activo = nuevoEstado;
+    usuario.estado = nuevoEstado;
     this.aplicarFiltros(); // Refiltrar si es necesario
 
     this.personalService.toggleEstado(usuario.id).subscribe({
       next: (res) => {
         // Confirmado por el backend
-        usuario.activo = res.activo;
+        usuario.estado = res.estado;
       },
       error: (err) => {
         console.error('Error al cambiar estado', err);
         // Revertir
-        usuario.activo = estadoOriginal;
+        usuario.estado = estadoOriginal;
         this.aplicarFiltros();
       }
     });
@@ -122,5 +122,15 @@ export class PersonalComponent implements OnInit {
 
   getAvatarInitials(usuario: Usuario): string {
     return `${usuario.nombre.charAt(0)}${usuario.apellidoPaterno.charAt(0)}`.toUpperCase();
+  }
+
+  getRolClase(usuario: Usuario): string {
+    const rolesStr = this.getRolesString(usuario).toLowerCase();
+    if (rolesStr.includes('admin')) {
+      return 'bg-status-error-bg text-status-error-text'; // Color rojo para admins
+    } else if (rolesStr.includes('mesero') || rolesStr.includes('cajero')) {
+      return 'bg-brand-soft text-brand-primary';
+    }
+    return 'bg-neutral-border text-text-muted'; // Default
   }
 }

@@ -8,7 +8,7 @@ export interface Producto {
   precio: number;
   imagen?: string;
   sku?: string;
-  activo?: string;
+  estado?: string;
   orden?: number;
   descripcion?: string;
   areaPreparacion?: string;
@@ -19,7 +19,7 @@ export interface Categoria {
   nombre: string;
   icono?: string;
   orden: number;
-  activo?: string;
+  estado?: string;
   productos: Producto[];
 }
 
@@ -30,8 +30,8 @@ export class MenuService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/api/v1/catalogos';
 
-  obtenerCategorias(incluirInactivos = false): Observable<Categoria[]> {
-    return this.http.get<Categoria[]>(`${this.apiUrl}/obtener-categorias?incluirInactivos=${incluirInactivos}`);
+  obtenerCategorias(incluirInestados = false): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${this.apiUrl}/obtener-categorias?incluirInestados=${incluirInestados}`);
   }
 
   // --- CATEGORÍAS ---

@@ -40,7 +40,7 @@ export class ModalCategoriaComponent implements OnInit {
   constructor() {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
-      activo: [true],
+      estado: [true],
       orden: [0, Validators.required]
     });
   }
@@ -111,7 +111,7 @@ export class ModalCategoriaComponent implements OnInit {
     this.actualizarOpcionesOrden();
     this.form.patchValue({
       nombre: cat.nombre,
-      activo: cat.activo === 'A' ? true : (cat.activo === 'I' ? false : true),
+      estado: cat.estado === 'A' ? true : (cat.estado === 'I' ? false : true),
       orden: cat.orden || 1
     });
     
@@ -128,7 +128,7 @@ export class ModalCategoriaComponent implements OnInit {
     this.categoriaEnEdicion = null;
     this.actualizarOpcionesOrden();
     const defaultOrden = this.opcionesOrden.length > 0 ? this.opcionesOrden[this.opcionesOrden.length - 1] : 1;
-    this.form.reset({ activo: true, orden: defaultOrden });
+    this.form.reset({ estado: true, orden: defaultOrden });
   }
 
   onCerrar(): void {
@@ -143,11 +143,11 @@ export class ModalCategoriaComponent implements OnInit {
     const datos = {
       ...datosRaw,
       orden: Number(datosRaw.orden),
-      activo: datosRaw.activo ? 'A' : 'I'
+      estado: datosRaw.estado ? 'A' : 'I'
     };
 
     // 1. Verificar desactivación (si estaba activa y ahora está inactiva)
-    if (this.categoriaEnEdicion && this.categoriaEnEdicion.activo === 'A' && datos.activo === 'I') {
+    if (this.categoriaEnEdicion && this.categoriaEnEdicion.estado === 'A' && datos.estado === 'I') {
       this.accionPendiente = {
         id: this.categoriaEnEdicion.id,
         nombre: this.categoriaEnEdicion.nombre,
@@ -209,7 +209,7 @@ export class ModalCategoriaComponent implements OnInit {
 
   intentarToggleEstado(cat: Categoria, event: Event): void {
     event.preventDefault(); // Evita que el checkbox cambie visualmente hasta confirmar
-    if (cat.activo === 'A') {
+    if (cat.estado === 'A') {
       // Intentando desactivar, requiere confirmación
       this.accionPendiente = { id: cat.id, nombre: cat.nombre, tipoAccion: 'desactivar', catRef: cat };
       this.mostrarModalConfirmacion = true;
@@ -240,7 +240,7 @@ export class ModalCategoriaComponent implements OnInit {
   }
 
   private actualizarEstadoInmediato(id: string, nuevoEstado: 'A' | 'I'): void {
-    this.menuService.actualizarCategoria(id, { activo: nuevoEstado }).subscribe(() => {
+    this.menuService.actualizarCategoria(id, { estado: nuevoEstado }).subscribe(() => {
       this.huboCambios = true;
       this.cargarCategorias();
     });

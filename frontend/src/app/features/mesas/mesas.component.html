@@ -1,17 +1,50 @@
 <div class="h-full flex flex-col gap-6 overflow-hidden pr-2">
-  <!-- Header -->
-  <div class="flex justify-between items-end">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Salón y Mesas</h1>
-      <p class="text-gray-500 mt-1">Supervisa la distribución y estado de las mesas en tiempo real.</p>
-    </div>
+  <!-- Header Híbrido Optimizado -->
+  <div class="w-full flex flex-col md:flex-row md:items-center md:justify-between border-b border-neutral-border pb-4 font-sans">
     
-    <div class="flex items-center gap-3">
-      <div class="flex bg-gray-100 p-1 rounded-lg">
-        <button class="px-4 py-1.5 bg-white text-gray-900 text-sm font-medium rounded-md shadow-sm">Salón Principal</button>
-        <button class="px-4 py-1.5 text-gray-500 hover:text-gray-900 text-sm font-medium rounded-md transition-colors">Terraza</button>
-        <button class="px-4 py-1.5 text-gray-500 hover:text-gray-900 text-sm font-medium rounded-md transition-colors">VIP</button>
+    <!-- Título y Subtítulo de la Vista (Previene colisiones) -->
+    <div class="mb-4 md:mb-0">
+      <h1 class="text-xl md:text-2xl font-bold text-text-title tracking-tight">Salón y Mesas</h1>
+      <p class="text-xs md:text-sm text-text-muted mt-0.5">Supervise la distribución y estado de las mesas en tiempo real.</p>
+    </div>
+
+    <!-- ==========================================
+         SELECTOR CONTENEDOR DE PESTAÑAS (TABS)
+         ========================================== -->
+    <div class="relative max-w-full md:max-w-xl lg:max-w-2xl">
+      
+      <!-- VISTA MÓVIL: Dropdown elegante (Se muestra solo en pantallas < md) -->
+      <div class="block md:hidden w-full">
+        <select 
+          [value]="zonaActivaId()" 
+          (change)="cambiarZona(+$any($event.target).value)"
+          class="w-full bg-neutral-surface border border-neutral-border text-text-title px-4 py-3 text-sm rounded-xl focus:outline-none font-medium shadow-sm transition-all focus:border-brand-primary">
+          <option *ngFor="let zona of zonas()" [value]="zona.ids">{{ zona.nombre }}</option>
+        </select>
       </div>
+
+      <!-- VISTA ESCRITORIO: Scroll Horizontal Suave con Desvanecimiento (Se muestra de md en adelante) -->
+      <div class="hidden md:flex items-center bg-neutral-surface border border-neutral-border p-1.5 rounded-full shadow-sm overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap max-w-full">
+        <div class="flex space-x-1">
+          
+          <!-- Iteración de Botones con Contraste Mejorado -->
+          <button 
+            *ngFor="let zona of zonas()" 
+            (click)="cambiarZona(zona.ids)"
+            [ngClass]="{
+              'bg-brand-soft/60 text-brand-dark border-brand-soft shadow-xs font-semibold': zonaActivaId() === zona.ids,
+              'bg-transparent text-text-muted hover:text-text-title border-transparent hover:bg-neutral-bg': zonaActivaId() !== zona.ids
+            }"
+            class="flex items-center space-x-2 px-5 py-2 text-xs lg:text-sm font-medium rounded-full border transition-all duration-200 ease-in-out focus:outline-none cursor-pointer">
+            
+            <!-- Icono Dinámico FontAwesome -->
+            <i class="fas text-xs" [ngClass]="getIcono(zona.nombre)"></i>
+            
+            <span>{{ zona.nombre }}</span>
+          </button>
+        </div>
+      </div>
+      
     </div>
   </div>
 
