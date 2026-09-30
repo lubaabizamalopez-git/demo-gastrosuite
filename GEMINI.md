@@ -21,7 +21,7 @@
 - **Condición:** NUNCA me entregues el prompt de cierre de día a menos que yo te indique que ya terminamos de trabajar por hoy.
 
 ## 4. Idioma y Nomenclatura
-- **Comunicación:** SIEMPRE debes hablarme en español y tus respuestas deben ser concisas, explicaciones pero claras y cortas.
+- **Comunicación:** SIEMPRE debes hablarme en español. **Tus respuestas deben ser extremadamente breves, directas y concisas, dando solo la información estrictamente necesaria.**
 - **Confirmación de Acción (G):** Para la *ejecución técnica* (modificar archivos, comandos locales), toma el control y procede sin preguntar paso a paso. Sin embargo, para la *planificación estratégica* (qué vista construir, qué funcionalidades incluir, qué diseño usar), SIEMPRE debemos hablarlo y acordarlo primero. Una vez que te dé el "procede", ejecutas todo el plan técnico sin detenerte. La única otra excepción de confirmación obligatoria es antes de un `commit` o `push` a Git.
 - **Pull Obligatorio (G):** SIEMPRE debes ejecutar un pull antes de hacer cualquier cosa, tanto para sincronizar Prisma (`npx prisma db pull`) como para sincronizar Git (`git pull`).
 - **Código y Componentes:** TODOS los nombres de archivos, componentes, variables y rutas deben estar SIEMPRE en español, salvo palabras clave propias del framework o estándares irremplazables (ej. `dashboard` o `staff` si se prefiere, aunque mejor `personal`).

@@ -135,10 +135,12 @@
           <!-- Ícono de Estado Dinámico Superior (Req. 4) -->
           <div class="mt-1 w-10 h-10 rounded-full flex items-center justify-center">
             <i class="fas text-xl" [ngClass]="{
-              'fa-money-bill-wave text-status-success-text': mesa.estado === 'cuenta',
-              'fa-user-friends text-status-error-text': mesa.estado === 'ocupada',
-              'fa-chair text-brand-primary': mesa.estado === 'libre',
-              'fa-clock text-text-muted': mesa.estado === 'reservada'
+              'fa-money-bill-wave text-[#F43F5E] animate-bounce': mesa.estado === 'CS',
+              'fa-user-friends text-[#FF6B00]': mesa.estado === 'O',
+              'fa-chair text-[#10B981]': mesa.estado === 'D',
+              'fa-clock text-[#4A7C9D]': mesa.estado === 'R',
+              'fa-broom text-[#34D399] animate-pulse': mesa.estado === 'L',
+              'fa-wrench text-[#91857F]': mesa.estado === 'EM'
             }"></i>
           </div>
  
@@ -152,12 +154,21 @@
           <!-- Píldora de Estado Inferior Vinculada (Fuertes, no pastel) -->
           <div class="px-3 py-1 text-2xs font-bold uppercase rounded-full tracking-wider select-none"
                [ngClass]="{
-                 'bg-brand-primary text-white': mesa.estado === 'libre',
-                 'bg-status-error-text text-white': mesa.estado === 'ocupada',
-                 'bg-status-success-text text-white': mesa.estado === 'cuenta',
-                 'bg-text-muted text-white': mesa.estado === 'reservada'
+                 'bg-[#10B981] text-white': mesa.estado === 'D',
+                 'bg-[#FF6B00] text-white': mesa.estado === 'O',
+                 'bg-[#F43F5E] text-white': mesa.estado === 'CS',
+                 'bg-[#4A7C9D] text-white': mesa.estado === 'R',
+                 'bg-[#34D399] text-white': mesa.estado === 'L',
+                 'bg-[#91857F] text-white': mesa.estado === 'EM'
                }">
-            {{ mesa.estado === 'cuenta' ? 'Cobrando' : mesa.estado }}
+            {{
+              mesa.estado === 'D' ? 'Disponible' :
+              mesa.estado === 'O' ? 'Ocupada' :
+              mesa.estado === 'CS' ? 'Cuenta Solicitada' :
+              mesa.estado === 'R' ? 'Reservada' :
+              mesa.estado === 'L' ? 'Limpiando' :
+              'En Mantención'
+            }}
           </div>
         </div>
       </div>

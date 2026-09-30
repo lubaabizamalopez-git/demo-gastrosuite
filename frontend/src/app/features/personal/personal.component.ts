@@ -1,136 +1,126 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { PersonalService, Usuario } from './personal.service';
-import { ModalPersonalComponent } from './modal-personal/modal-personal.component';
+
+export interface EmpleadoVista {
+  id: string;
+  ids: number;
+  nombre: string;
+  rol: string;
+  rut: string;
+  correo: string;
+  activo: boolean;
+  foto: string | null;
+  codigoPin: string;
+}
 
 @Component({
   selector: 'app-personal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalPersonalComponent],
+  imports: [CommonModule],
   templateUrl: './personal.component.html',
   styleUrls: ['./personal.component.scss']
 })
 export class PersonalComponent implements OnInit {
-  usuarios: Usuario[] = [];
-  usuariosFiltrados: Usuario[] = [];
-  
-  filtroRol: string = 'todos';
-  filtroEstado: string = 'todos'; // 'todos' o 'A' o 'I'
+  private personalService = inject(PersonalService);
 
-  isModalOpen = false;
-  isEditMode = false;
-  usuarioSeleccionado: Usuario | null = null;
+  // Signals reactivos para el listado maestro de empleados
+  public empleados = signal<EmpleadoVista[]>([]);
 
-  constructor(private personalService: PersonalService) {}
+  // Controladores de estado para la visibilidad del modal y el enfoque de edición
+  public modalAbierto = signal<boolean>(false);
+  public empleadoSeleccionado = signal<EmpleadoVista | null>(null);
 
   ngOnInit(): void {
-    this.cargarUsuarios();
+    this.cargarEmpleados();
   }
 
-  cargarUsuarios(): void {
+  cargarEmpleados(): void {
     this.personalService.getUsuarios().subscribe({
       next: (data) => {
-        this.usuarios = data;
-        this.aplicarFiltros();
+        const mapeados: EmpleadoVista[] = data.map(u => ({
+          id: u.id,
+          ids: u.ids,
+          nombre: `${u.nombre} ${u.apellidoPaterno}`,
+          rol: u.rolesUsuario.length > 0 ? u.rolesUsuario[0].rol.nombre : 'Sin Rol',
+          rut: u.rut || 'No definido',
+          correo: u.correo,
+          activo: u.estado === 'A',
+          foto: u.imagenUrl || null,
+          codigoPin: u.codigoPin || ''
+        }));
+        this.empleados.set(mapeados);
       },
-      error: (err) => console.error('Error cargando usuarios', err)
+      error: (err) => console.error('Error al cargar empleados', err)
     });
   }
 
-  aplicarFiltros(): void {
-    this.usuariosFiltrados = this.usuarios.filter(u => {
-      // Filtro por Estado
-      const cumpleEstado = this.filtroEstado === 'todos' || u.estado === this.filtroEstado;
-      
-      // Filtro por Rol
-      let cumpleRol = true;
-      if (this.filtroRol !== 'todos') {
-        cumpleRol = u.rolesUsuario.some(ru => ru.rol.nombre === this.filtroRol);
-      }
-
-      return cumpleEstado && cumpleRol;
-    });
-  }
-
-  getRolesDisponibles(): string[] {
-    // Extraer roles únicos de la lista actual de usuarios
-    const roles = new Set<string>();
-    this.usuarios.forEach(u => {
-      u.rolesUsuario.forEach(ru => roles.add(ru.rol.nombre));
-    });
-    return Array.from(roles);
-  }
-
-  trackByFn(index: number, item: Usuario): string {
-    return item.id;
-  }
-
-  toggleEstadoUsuario(usuario: Usuario): void {
+  // Alternador de estado de actividad sincronizado en tiempo real
+  public toggleEstado(id: string): void {
+    const empleadoActual = this.empleados().find(e => e.id === id);
+    if (!empleadoActual) return;
+    
+    const nuevoEstadoBool = !empleadoActual.activo;
+    
     // UI Optimista
-    const estadoOriginal = usuario.estado;
-    const nuevoEstado = estadoOriginal === 'A' ? 'I' : 'A';
-    usuario.estado = nuevoEstado;
-    this.aplicarFiltros(); // Refiltrar si es necesario
+    this.empleados.update(lista => 
+      lista.map(emp => emp.id === id ? { ...emp, activo: nuevoEstadoBool } : emp)
+    );
+    
+    const actualSeleccionado = this.empleadoSeleccionado();
+    if (actualSeleccionado && actualSeleccionado.id === id) {
+      this.empleadoSeleccionado.set({ ...actualSeleccionado, activo: nuevoEstadoBool });
+    }
 
-    this.personalService.toggleEstado(usuario.id).subscribe({
-      next: (res) => {
-        // Confirmado por el backend
-        usuario.estado = res.estado;
-      },
+    // Persistir en Backend
+    this.personalService.toggleEstado(id).subscribe({
       error: (err) => {
-        console.error('Error al cambiar estado', err);
+        console.error('Error cambiando estado', err);
         // Revertir
-        usuario.estado = estadoOriginal;
-        this.aplicarFiltros();
+        this.empleados.update(lista => 
+          lista.map(emp => emp.id === id ? { ...emp, activo: !nuevoEstadoBool } : emp)
+        );
+        if (actualSeleccionado && actualSeleccionado.id === id) {
+          this.empleadoSeleccionado.set({ ...actualSeleccionado, activo: !nuevoEstadoBool });
+        }
       }
     });
   }
 
-  abrirModalNuevo(): void {
-    this.isEditMode = false;
-    this.usuarioSeleccionado = null;
-    this.isModalOpen = true;
+  // Disparadores de apertura y cierre de modal
+  public abrirEdicion(empleado: EmpleadoVista): void {
+    this.empleadoSeleccionado.set({ ...empleado });
+    this.modalAbierto.set(true);
   }
 
-  abrirModalEditar(usuario: Usuario): void {
-    this.isEditMode = true;
-    this.usuarioSeleccionado = usuario;
-    this.isModalOpen = true;
+  public cerrarModal(): void {
+    this.modalAbierto.set(false);
+    this.empleadoSeleccionado.set(null);
   }
 
-  cerrarModal(): void {
-    this.isModalOpen = false;
-    this.usuarioSeleccionado = null;
-  }
-
-  onSaveSuccess(usuarioActualizado: Usuario): void {
-    if (this.isEditMode) {
-      const index = this.usuarios.findIndex(u => u.id === usuarioActualizado.id);
-      if (index !== -1) {
-        this.usuarios[index] = usuarioActualizado;
-      }
-    } else {
-      this.usuarios.push(usuarioActualizado);
+  // Procesador central de lógica para persistencia con la API del Backend (Node.js)
+  public ejecutarAccion(tipo: 'guardar' | 'eliminar'): void {
+    const empleado = this.empleadoSeleccionado();
+    if (!empleado) return;
+    
+    switch (tipo) {
+      case 'guardar':
+        // Aquí iría el llamado al backend this.personalService.updateUsuario(...)
+        console.log('Guardar cambios aún no implementado en backend para:', empleado.id);
+        this.empleados.update(lista =>
+          lista.map(emp => emp.id === empleado.id ? { ...empleado } : emp)
+        );
+        this.cerrarModal();
+        break;
+        
+      case 'eliminar':
+        if (confirm(`¿Estás seguro de eliminar a ${empleado.nombre}?`)) {
+          // Aquí iría el llamado al backend para eliminar
+          console.log('Eliminar aún no implementado en backend para:', empleado.id);
+          this.empleados.update(lista => lista.filter(emp => emp.id !== empleado.id));
+          this.cerrarModal();
+        }
+        break;
     }
-    this.aplicarFiltros();
-  }
-
-  getRolesString(usuario: Usuario): string {
-    return usuario.rolesUsuario.map(r => r.rol.nombre).join(', ') || 'Sin Rol';
-  }
-
-  getAvatarInitials(usuario: Usuario): string {
-    return `${usuario.nombre.charAt(0)}${usuario.apellidoPaterno.charAt(0)}`.toUpperCase();
-  }
-
-  getRolClase(usuario: Usuario): string {
-    const rolesStr = this.getRolesString(usuario).toLowerCase();
-    if (rolesStr.includes('admin')) {
-      return 'bg-status-error-bg text-status-error-text'; // Color rojo para admins
-    } else if (rolesStr.includes('mesero') || rolesStr.includes('cajero')) {
-      return 'bg-brand-soft text-brand-primary';
-    }
-    return 'bg-neutral-border text-text-muted'; // Default
   }
 }
