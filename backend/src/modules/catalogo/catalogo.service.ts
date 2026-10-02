@@ -15,11 +15,11 @@ export class CatalogoService {
       orderBy: { orden: 'asc' },
       include: {
         productos: {
-          where: incluirInestados ? {} : { estado: 'A' },
+          where: incluirInestados ? undefined : { estado: 'A' },
           orderBy: { orden: 'asc' }
         },
-      },
-    });
+      }
+    } as any);
   }
 
   // --- CATEGORÍAS ---

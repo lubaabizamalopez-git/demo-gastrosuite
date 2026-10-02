@@ -1,0 +1,37 @@
+<div class="fixed inset-0 z-50 bg-[#231E1B]/30 backdrop-blur-sm flex items-center justify-center p-4 font-sans antialiased select-none">
+  <div 
+    [ngClass]="{'border-[#10B981]/20': type() === 'success', 'border-red-200': type() === 'error'}"
+    class="bg-white border border-solid rounded-2xl p-6 shadow-2xl w-full max-w-xs text-center flex flex-col items-center gap-4 transition-all transform scale-100 animate-fadeIn"
+  >
+    <!-- Contenedor con letra integrada para simular el ícono de forma limpia -->
+    @if (type() === 'success') {
+      <div class="w-11 h-11 bg-[#E6F4EA] text-[#10B981] rounded-full flex items-center justify-center font-bold text-sm select-none">
+        <span>{{ iconLetter() }}</span>
+      </div>
+    } @else {
+      <div class="w-11 h-11 bg-red-50 text-red-500 rounded-full flex items-center justify-center font-bold text-sm select-none">
+        <span>{{ iconLetter() }}</span>
+      </div>
+    }
+
+    <div class="flex flex-col gap-1">
+      <h3 class="text-[#231E1B] font-bold text-base tracking-tight m-0 p-0">
+        {{ title() }}
+      </h3>
+      @if (message()) {
+        <p class="text-[#5C534E] text-sm font-medium m-0 tracking-wide opacity-90 leading-relaxed">
+          {{ message() }}
+        </p>
+      }
+    </div>
+
+    <button
+      type="button"
+      (click)="onConfirm()"
+      [ngClass]="{'bg-[#10B981] shadow-[#10B981]/15': type() === 'success', 'bg-red-500 shadow-red-500/15': type() === 'error'}"
+      class="w-full text-white font-bold text-sm py-2.5 rounded-xl border-none cursor-pointer transition-all duration-200 shadow-md outline-none"
+    >
+      {{ buttonLabel() }}
+    </button>
+  </div>
+</div>

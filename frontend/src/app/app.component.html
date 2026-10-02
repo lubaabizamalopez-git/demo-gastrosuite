@@ -1,15 +1,21 @@
-<div class="flex h-screen bg-brand-light">
-  <!-- Sidebar -->
-  <app-sidebar class="w-64 flex-shrink-0 hidden md:block"></app-sidebar>
+<ng-container *ngIf="!isLoginRoute; else loginOnly">
+  <div class="flex h-screen bg-brand-light">
+    <!-- Sidebar -->
+    <app-sidebar class="w-64 flex-shrink-0 hidden md:block"></app-sidebar>
 
-  <!-- Main Content -->
-  <div class="flex-1 flex flex-col overflow-hidden">
-    <!-- Navbar -->
-    <app-navbar></app-navbar>
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Navbar -->
+      <app-navbar></app-navbar>
 
-    <!-- Page Content -->
-    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-brand-light p-6">
-      <router-outlet></router-outlet>
-    </main>
+      <!-- Page Content -->
+      <main class="flex-1 overflow-x-hidden overflow-y-auto bg-brand-light p-6">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
   </div>
-</div>
+</ng-container>
+
+<ng-template #loginOnly>
+  <router-outlet></router-outlet>
+</ng-template>

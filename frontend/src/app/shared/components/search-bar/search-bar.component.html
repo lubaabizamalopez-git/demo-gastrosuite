@@ -1,0 +1,40 @@
+<div class="w-full bg-white border border-solid border-[#FFBD80]/30 rounded-2xl p-4 shadow-sm shadow-black/5 flex flex-col gap-4 font-sans antialiased">
+  
+  <!-- Fila Superior: Buscador + Botón Gatillo -->
+  <div class="w-full flex items-center gap-3">
+    <div class="relative flex items-center flex-grow w-full">
+      <div class="absolute left-4 flex items-center justify-center pointer-events-none text-[#91857F]">
+        <i class="fas fa-search text-sm"></i>
+      </div>
+      <input
+        type="text"
+        [placeholder]="placeholder()"
+        [ngModel]="query()"
+        (ngModelChange)="onInputValueChange($event)"
+        class="w-full pl-11 pr-4 py-2.5 text-sm rounded-xl border border-solid border-[#91857F]/15 bg-[#FAF7F2] text-[#231E1B] font-medium outline-none transition-all duration-200 placeholder-[#91857F]/60 focus:border-[#FF6B00] focus:bg-white focus:ring-2 focus:ring-[#FF6B00]/10"
+      />
+    </div>
+
+    @if (showFilterButton()) {
+      <button
+        type="button"
+        (click)="toggleFilters()"
+        [ngClass]="{'bg-[#FF6B00] text-white border-[#FF6B00]': isExpanded(), 'bg-[#FFF5F0] text-[#CC5500] border-[#FFBD80]/40': !isExpanded()}"
+        class="inline-flex items-center justify-center font-bold text-sm border border-solid px-4 py-2.5 rounded-xl gap-2 transition-all duration-200 cursor-pointer shadow-sm outline-none whitespace-nowrap select-none"
+      >
+        <i class="fas fa-sliders-h text-sm"></i>
+        <span>Filtros</span>
+      </button>
+    }
+  </div>
+
+  <!-- Fila Inferior: Panel Colapsable Premium (Fondo Melocotón Suave Gastrosuite) -->
+  @if (isExpanded() && showFilterButton()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-[#FFF5F0] border border-solid border-[#FFBD80]/40 rounded-xl transition-all duration-300">
+      
+      <!-- Espacio para proyectar selectores o inputs de filtrado avanzados -->
+      <ng-content select="[filters]"></ng-content>
+      
+    </div>
+  }
+</div>

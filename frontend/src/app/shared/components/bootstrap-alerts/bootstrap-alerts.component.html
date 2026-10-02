@@ -1,0 +1,71 @@
+<div class="w-full max-w-xl bg-white border border-[#DEE2E6] rounded-2xl p-5 shadow-lg font-sans antialiased select-none flex flex-col gap-3">
+  
+  <!-- Header del Contenedor Muestrario -->
+  <div class="flex items-center justify-between border-b border-solid border-[#DEE2E6] pb-2 mb-1">
+    <span class="text-xs font-bold text-[#495057] tracking-wide uppercase">Bootstrap Alerts Replicas</span>
+    <span class="text-[10px] text-[#6C757D] bg-[#F8F9FA] px-2 py-0.5 rounded border border-[#DEE2E6] font-semibold">Antigravity Ready</span>
+  </div>
+
+  <!-- ALERT CONTENIDO EXTENSO (IMAGEN 1) -->
+  @if (showAlertSuccessLong()) {
+    <div class="relative bg-[#D1E7DD] border border-[#BADBCC] text-[#0F5132] p-4 pr-12 rounded-lg text-sm transition-all duration-200">
+      <h4 class="margin-0 mb-2 text-ece text-xl font-medium text-[#0F5132]">Well done!</h4>
+      <p class="margin-0 mb-4 leading-relaxed">
+        Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.
+      </p>
+      <hr class="border-0 border-t border-[#BADBCC] margin-0 mb-4">
+      <p class="margin-0 font-normal">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+      <!-- Bot�n X de Cierre -->
+      <button (click)="closeAlert('success-long')" class="absolute top-4 right-4 bg-transparent border-0 text-[#0F5132] text-xl font-bold opacity-50 hover:opacity-100 cursor-pointer transition-opacity duration-150 leading-none">�</button>
+    </div>
+  }
+
+  <!-- ALERT INFO (IMAGEN 2 - TOP) -->
+  @if (showAlertInfo()) {
+    <div class="relative bg-[#CFF4FC] border border-[#B6EFFB] text-[#055160] py-3 pl-4 pr-10 rounded text-sm transition-all duration-200">
+      This is a primary alert with <strong class="font-bold underline">an example link</strong>. Give it a click if you like.
+      <button (click)="closeAlert('info')" class="absolute top-2.5 right-4 bg-transparent border-0 text-[#055160] text-xl font-bold opacity-50 hover:opacity-100 cursor-pointer transition-opacity duration-150">�</button>
+    </div>
+  }
+
+  <!-- ALERT SECONDARY (IMAGEN 2 - FILA 2) -->
+  @if (showAlertSecondary()) {
+    <div class="relative bg-[#E2E3E5] border border-[#D3D6D8] text-[#41464B] py-3 pl-4 pr-10 rounded text-sm transition-all duration-200">
+      This is a secondary alert with <strong class="font-bold underline">an example link</strong>. Give it a click if you like.
+      <button (click)="closeAlert('secondary')" class="absolute top-2.5 right-4 bg-transparent border-0 text-[#41464B] text-xl font-bold opacity-50 hover:opacity-100 cursor-pointer transition-opacity duration-150">�</button>
+    </div>
+  }
+
+  <!-- ALERT DANGER (IMAGEN 2 - FILA 4) -->
+  @if (showAlertDanger()) {
+    <div class="relative bg-[#F8D7DA] border border-[#F5C2C7] text-[#842029] py-3 pl-4 pr-10 rounded text-sm transition-all duration-200">
+      This is a danger alert with <strong class="font-bold underline">an example link</strong>. Give it a click if you like.
+      <button (click)="closeAlert('danger')" class="absolute top-2.5 right-4 bg-transparent border-0 text-[#842029] text-xl font-bold opacity-50 hover:opacity-100 cursor-pointer transition-opacity duration-150">�</button>
+    </div>
+  }
+
+  <!-- ALERT WARNING / HOLY GUACAMOLE (IMAGEN 3) -->
+  @if (showAlertWarning()) {
+    <div class="relative bg-[#FFF3CD] border border-[#FFECB5] text-[#664D03] py-3 pl-4 pr-10 rounded text-sm transition-all duration-200">
+      <strong class="font-bold">Holy guacamole!</strong> You should check in on some of those fields below.
+      <button (click)="closeAlert('warning')" class="absolute top-2.5 right-4 bg-transparent border-0 text-[#664D03] text-xl font-bold opacity-50 hover:opacity-100 cursor-pointer transition-opacity duration-150">�</button>
+    </div>
+  }
+
+  <!-- ALERT LIGHT (IMAGEN 2 - FILA 7) -->
+  @if (showAlertLight()) {
+    <div class="relative bg-[#F8F9FA] border border-[#E2E3E5] text-[#212529] py-3 pl-4 pr-10 rounded text-sm transition-all duration-200">
+      This is a light alert with <strong class="font-bold underline">an example link</strong>. Give it a click if you like.
+      <button (click)="closeAlert('light')" class="absolute top-2.5 right-4 bg-transparent border-0 text-[#212529] text-xl font-bold opacity-50 hover:opacity-100 cursor-pointer transition-opacity duration-150">�</button>
+    </div>
+  }
+
+  <!-- ALERT DARK (IMAGEN 2 - FILA 8) -->
+  @if (showAlertDark()) {
+    <div class="relative bg-[#212529] border border-[#212529] text-[#F8F9FA] py-3 pl-4 pr-10 rounded text-sm transition-all duration-200">
+      This is a dark alert with <strong class="font-bold underline">an example link</strong>. Give it a click if you like.
+      <button (click)="closeAlert('dark')" class="absolute top-2.5 right-4 bg-transparent border-0 text-[#F8F9FA] text-xl font-bold opacity-50 hover:opacity-100 cursor-pointer transition-opacity duration-150">�</button>
+    </div>
+  }
+
+</div>

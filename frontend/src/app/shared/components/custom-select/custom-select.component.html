@@ -1,0 +1,60 @@
+<div class="flex flex-col w-full gap-1.5 font-sans relative" (click)="$event.stopPropagation()">
+  
+  <!-- Título del selector -->
+  @if (label()) {
+    <label [class]="error() ? 'text-red-500 font-bold' : 'text-[#5C534E] font-medium'" class="text-xs select-none">
+      {{ label() }}
+    </label>
+  }
+
+  <div class="relative w-full">
+    <!-- Botón disparador con la estética premium de Gastrosuite -->
+    <button
+      type="button"
+      (click)="toggleDropdown()"
+      [disabled]="disabled()"
+      [ngClass]="{
+        'border-red-400 bg-red-50': error(),
+        'border-[#91857F]/25 bg-white': !error()
+      }"
+      [class]="icon() ? 'pl-10' : 'pl-4'"
+      class="w-full pr-10 py-2.5 text-sm rounded-xl border border-solid text-left font-semibold text-[#231E1B] outline-none transition-all duration-200 cursor-pointer flex items-center justify-between shadow-sm focus:ring-2 focus:ring-[#FF6B00]/15"
+    >
+      <!-- Icono decorativo de FontAwesome -->
+      @if (icon()) {
+        <div [class]="error() ? 'text-red-400' : 'text-[#91857F]'" class="absolute left-3.5 flex items-center justify-center pointer-events-none">
+          <i [class]="'fas ' + icon() + ' text-sm'"></i>
+        </div>
+      }
+
+      <span [ngClass]="{'text-[#91857F]/60': selectedValue() === ''}">{{ selectedLabel() }}</span>
+      <i class="fas fa-chevron-down text-xs text-[#91857F] transition-transform duration-200" [class.rotate-180]="isOpen()"></i>
+    </button>
+
+    <!-- Menú Desplegable Flotante Premium con Esquinas Redondeadas Suaves -->
+
+    @if (isOpen() && options().length > 0) {
+      <div class="absolute left-0 right-0 mt-1.5 bg-white border border-[#FFBD80]/50 rounded-xl shadow-xl overflow-hidden z-50 max-h-60 overflow-y-auto transition-all animate-fadeIn">
+        @for (opt of options(); track opt.value) {
+          <div
+            (click)="selectOption(opt)"
+            [ngClass]="{
+              'bg-[#FFF5F0] text-[#FF6B00] font-bold': selectedValue() === opt.value
+            }"
+            class="px-4 py-2.5 text-sm text-[#5C534E] hover:bg-[#FF6B00] hover:text-white cursor-pointer transition-colors duration-150 font-medium"
+          >
+            {{ opt.label }}
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Indicador del mensaje de validación de error -->
+  @if (error()) {
+    <span class="text-[11px] text-red-500 font-semibold flex items-center gap-1 mt-0.5">
+      <i class="fas fa-exclamation-circle text-xs"></i>
+      {{ error() }}
+    </span>
+  }
+</div>

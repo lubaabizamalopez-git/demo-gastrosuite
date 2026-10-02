@@ -1,0 +1,10 @@
+<button 
+  [class]="buttonClasses" 
+  [disabled]="disabled()"
+  (click)="onClick()"
+>
+  @if (icon()) {
+    <i [class]="'fas ' + icon() + (size() === 'sm' ? ' text-[11px]' : ' text-sm')"></i>
+  }
+  <span>{{ label() }}</span>
+</button>

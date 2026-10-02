@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { LoginComponent } from './features/auth/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { PosComponent } from './features/pos/pos.component';
 import { OrdenesComponent } from './features/ordenes/ordenes.component';
@@ -10,19 +11,27 @@ import { PersonalComponent } from './features/personal/personal.component';
 import { ConfiguracionComponent } from './features/configuracion/configuracion.component';
 import { GestionProductosComponent } from './features/administracion/productos/gestion-productos/gestion-productos.component';
 import { SalonMaestroComponent } from './features/administracion/salon-maestro/salon-maestro.component';
+import { authGuard } from './core/guards/auth.guard';
+
+import { IndexSharedComponent } from './shared/index-shared/index-shared.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'pos', component: PosComponent },
-  { path: 'ordenes', component: OrdenesComponent },
-  { path: 'mesas', component: SalonMaestroComponent },
+  { path: 'shared', component: IndexSharedComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+  { path: 'pos', component: PosComponent, canActivate: [authGuard] },
+  { path: 'ordenes', component: OrdenesComponent, canActivate: [authGuard] },
+  { path: 'mesas', component: SalonMaestroComponent, canActivate: [authGuard] },
 
-  { path: 'inventario', component: InventarioComponent },
-  { path: 'clientes', component: ClientesComponent },
-  { path: 'reportes', component: ReportesComponent },
-  { path: 'personal', component: PersonalComponent },
-  { path: 'configuracion', component: ConfiguracionComponent },
-  { path: 'administracion/productos', component: GestionProductosComponent },
-  { path: 'administracion/salon', component: MesasComponent }
+  { path: 'inventario', component: InventarioComponent, canActivate: [authGuard] },
+  { path: 'clientes', component: ClientesComponent, canActivate: [authGuard] },
+  { path: 'reportes', component: ReportesComponent, canActivate: [authGuard] },
+  { path: 'personal', component: PersonalComponent, canActivate: [authGuard] },
+  { path: 'configuracion', component: ConfiguracionComponent, canActivate: [authGuard] },
+  { path: 'administracion/productos', component: GestionProductosComponent, canActivate: [authGuard] },
+  { path: 'administracion/salon', component: MesasComponent, canActivate: [authGuard] },
+  
+  // Cualquier ruta desconocida también rebota al login
+  { path: '**', redirectTo: 'login' }
 ];

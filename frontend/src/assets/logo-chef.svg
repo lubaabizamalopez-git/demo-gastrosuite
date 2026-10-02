@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Puffs del gorro -->
+  <path d="M6 16.5C3 16.5 2 13 4.5 11C4 7 7 4 12 4C17 4 20 7 19.5 11C22 13 21 16.5 18 16.5" />
+  <!-- Base del gorro -->
+  <rect x="6" y="16.5" width="12" height="4.5" rx="1.5" />
+  <!-- Línea decorativa en la base -->
+  <line x1="6" y1="16.5" x2="18" y2="16.5" />
+</svg>

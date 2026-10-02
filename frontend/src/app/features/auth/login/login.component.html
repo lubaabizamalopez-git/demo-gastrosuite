@@ -1,0 +1,57 @@
+<div class="login-container">
+  <div class="glass-card">
+    <div class="brand">
+      <div class="logo">
+        <i class="fa-solid fa-utensils"></i>
+      </div>
+      <h1>Gastro Suite</h1>
+      <p>Bienvenido al sistema</p>
+    </div>
+
+    <!-- Toggle entre Modos -->
+    <div class="mode-toggle">
+      <button [class.active]="loginMode() === 'pos'" (click)="setMode('pos')">Punto de Venta</button>
+      <button [class.active]="loginMode() === 'admin'" (click)="setMode('admin')">Administración</button>
+    </div>
+
+    <!-- MODO CAJA / MESERO (TECLADO NUMÉRICO) -->
+    <div class="login-form pos-mode" *ngIf="loginMode() === 'pos'">
+      <div class="pin-display">
+        <div class="dot" [class.filled]="pin().length >= 1"></div>
+        <div class="dot" [class.filled]="pin().length >= 2"></div>
+        <div class="dot" [class.filled]="pin().length >= 3"></div>
+        <div class="dot" [class.filled]="pin().length >= 4"></div>
+      </div>
+      <p class="hint">Ingresa tu PIN de 4 dígitos</p>
+      
+      <div class="numpad">
+        <button (click)="appendPin(1)">1</button>
+        <button (click)="appendPin(2)">2</button>
+        <button (click)="appendPin(3)">3</button>
+        <button (click)="appendPin(4)">4</button>
+        <button (click)="appendPin(5)">5</button>
+        <button (click)="appendPin(6)">6</button>
+        <button (click)="appendPin(7)">7</button>
+        <button (click)="appendPin(8)">8</button>
+        <button (click)="appendPin(9)">9</button>
+        <button class="action-btn clear" (click)="clearPin()"><i class="fa-solid fa-delete-left"></i></button>
+        <button (click)="appendPin(0)">0</button>
+        <button class="action-btn submit" (click)="loginPos()"><i class="fa-solid fa-check"></i></button>
+      </div>
+    </div>
+
+    <!-- MODO ADMIN (CORREO Y CONTRASEÑA) -->
+    <div class="login-form admin-mode" *ngIf="loginMode() === 'admin'">
+      <div class="input-group">
+        <label>Correo Electrónico</label>
+        <input type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" placeholder="admin@gastrosuite.com">
+      </div>
+      <div class="input-group">
+        <label>Contraseña</label>
+        <input type="password" [ngModel]="password()" (ngModelChange)="password.set($event)" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" (click)="loginAdmin()">Ingresar al Panel</button>
+    </div>
+
+  </div>
+</div>

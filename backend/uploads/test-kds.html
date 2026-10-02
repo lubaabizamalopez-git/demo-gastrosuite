@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>KDS KDS - Prueba de WebSockets</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #FAF7F2; padding: 20px; }
+    .ticket { background: white; border-left: 5px solid #FF6B00; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <h1 style="color: #231E1B;">Monitor de Cocina (KDS) - Escuchando en vivo 📡</h1>
+  <p style="color: #5C534E;">Manten esta pestaña abierta. Cuando se envíe un pedido por API, aparecerá abajo automáticamente.</p>
+  <div id="tickets"></div>
+
+  <script>
+    // Conectar al backend (por defecto NestJS corre en el puerto 3000)
+    const socket = io('http://localhost:3000');
+    
+    socket.on('connect', () => {
+      console.log('Conectado exitosamente al túnel WebSockets');
+    });
+
+    // Escuchar el evento que configuramos en EventsGateway
+    socket.on('nuevo-pedido', (pedido) => {
+      console.log('Llegó un pedido:', pedido);
+      const div = document.createElement('div');
+      div.className = 'ticket';
+      div.innerHTML = `
+        <strong>Total:</strong> $${pedido.total} <br>
+        <strong>Estado:</strong> ${pedido.estado} <br>
+        <strong>Hora:</strong> ${new Date(pedido.creadoEn).toLocaleTimeString()}
+      `;
+      // Añadir al principio
+      document.getElementById('tickets').prepend(div);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<div class="w-full max-w-md bg-white border border-[#FFBD80]/30 rounded-3xl p-5 shadow-xl font-sans antialiased select-none flex flex-col gap-4">
+  
+  <!-- Encabezado de Control -->
+  <div class="flex items-center justify-between border-b border-dashed border-[#91857F]/15 pb-2.5">
+    <span class="text-[11px] font-bold text-[#FF6B00] tracking-wider uppercase">GastroSuite � Ecosistema de Switches</span>
+    <span class="text-[10px] text-[#91857F] bg-[#FAF7F2] px-2 py-0.5 rounded-md font-semibold">v1.2</span>
+  </div>
+
+  <!-- 01. ACCI�N PRINCIPAL (GRIS-NARANJO TERRACOTA) -->
+  <div class="flex flex-col gap-1.5">
+    <span class="text-[10px] font-bold text-[#91857F] uppercase tracking-wider">01. Acci�n Principal (Gris-Naranjo #CEBFB5)</span>
+    <div (click)="toggleAutoBilling()" class="bg-[#FAF7F2] border border-[#91857F]/5 p-3 rounded-2xl flex justify-between items-center cursor-pointer transition-colors duration-200 hover:bg-[#FFF5F0]/40">
+      <div class="flex flex-col gap-0.5 max-w-[75%]">
+        <span class="text-sm font-bold text-[#231E1B]">Facturaci�n Autom�tica</span>
+        <span class="text-xs text-[#5C534E]">Gris org�nico profundo terracota en estado inactivo.</span>
+      </div>
+      <!-- Contenedor del Switch -->
+      <div [style.background]="autoBilling() ? '#FF6B00' : '#CEBFB5'" 
+           class="w-10 h-6 rounded-full p-0.5 flex items-center box-border transition-colors duration-300">
+        <!-- Bot�n Interior Blanco -->
+        <div [class.translate-x-4]="autoBilling()" [class.translate-x-0]="!autoBilling()"
+             class="w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02. ESTADO OPERATIVO (GRIS-VERDE SALVIA) -->
+  <div class="flex flex-col gap-1.5">
+    <span class="text-[10px] font-bold text-[#91857F] uppercase tracking-wider">02. Estado Operativo (Gris-Verde #CAD6CF)</span>
+    <div (click)="toggleDeliveryOpen()" class="bg-[#FAF7F2] border border-[#91857F]/5 p-3 rounded-2xl flex justify-between items-center cursor-pointer transition-colors duration-200 hover:bg-[#FFF5F0]/40">
+      <div class="flex flex-col gap-0.5 max-w-[75%]">
+        <span class="text-sm font-bold text-[#231E1B]">Canal Delivery Abierto</span>
+        <span class="text-xs text-[#5C534E]">Gris-verde salvia calibrado para armon�a de �éxito.</span>
+      </div>
+      <!-- Contenedor del Switch -->
+      <div [style.background]="deliveryOpen() ? '#10B981' : '#CAD6CF'" 
+           class="w-10 h-6 rounded-full p-0.5 flex items-center box-border transition-colors duration-300">
+        <div [class.translate-x-4]="deliveryOpen()" [class.translate-x-0]="!deliveryOpen()"
+             class="w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03. VARIANTES MICRO (COMPACTO) -->
+  <div class="flex flex-col gap-1.5">
+    <span class="text-[10px] font-bold text-[#91857F] uppercase tracking-wider">03. Variantes Micro (Gris-Naranjo Compacto)</span>
+    <div class="bg-[#FFF5F0] border border-[#FFBD80]/30 p-3 rounded-2xl flex flex-col gap-2.5">
+      
+      <!-- Fila Micro 1 -->
+      <div class="flex justify-between items-center">
+        <span class="text-xs font-semibold text-[#5C534E]">Permitir notas en cocina</span>
+        <div (click)="toggleKitchenNotes()" [style.background]="kitchenNotes() ? '#FF6B00' : '#CEBFB5'" 
+             class="w-[34px] h-5 rounded-full p-0.5 flex items-center box-border cursor-pointer transition-colors duration-300">
+          <div [class.translate-x-3.5]="kitchenNotes()" [class.translate-x-0]="!kitchenNotes()"
+               class="w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
+          </div>
+        </div>
+      </div>
+
+      <!-- Separador Sutil Interior -->
+      <div class="h-px bg-[#91857F]/12"
+></div>
+
+      <!-- Fila Micro 2 -->
+      <div class="flex justify-between items-center">
+        <span class="text-xs font-semibold text-[#5C534E]">Alertar stock cr�tico (&lt; 5 uds)</span>
+        <div (click)="toggleCriticalStock()" [style.background]="criticalStock() ? '#FF6B00' : '#CEBFB5'" 
+             class="w-[34px] h-5 rounded-full p-0.5 flex items-center box-border cursor-pointer transition-colors duration-300">
+          <div [class.translate-x-3.5]="criticalStock()" [class.translate-x-0]="!criticalStock()"
+               class="w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

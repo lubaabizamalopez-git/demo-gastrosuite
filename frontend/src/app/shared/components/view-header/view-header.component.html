@@ -1,0 +1,14 @@
+<div class="w-full py-4 font-sans select-none flex flex-col gap-0.5 antialiased">
+  <!-- Agregada la clase antialiased para suavizar el contraste r�gido del navegador -->
+  @if (title()) {
+    <h1 class="text-[#231E1B] font-bold text-2xl tracking-tight m-0 p-0 antialiased">
+      {{ title() }}
+    </h1>
+  }
+  
+  @if (subtitle()) {
+    <p class="text-[#5C534E] text-sm font-medium m-0 tracking-wide opacity-95">
+      {{ subtitle() }}
+    </p>
+  }
+</div>

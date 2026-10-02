@@ -1,0 +1,205 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Imagen de fondo con overlay oscuro para mantener la elegancia y legibilidad */
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.8)),
+    url('/assets/images/login-bg-alt.jpg') center/cover no-repeat;
+    
+  position: relative;
+  overflow: hidden;
+
+  /* Decoración circular de luz naranja sutil */
+  &::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255,107,0,0.25) 0%, rgba(0,0,0,0) 70%);
+    top: -200px;
+    left: -200px;
+    border-radius: 50%;
+  }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 1;
+}
+
+@keyframes floatUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 30px;
+  color: white;
+
+  .logo {
+    width: 64px;
+    height: 64px;
+    background: #ff6b00;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 28px;
+    box-shadow: 0 10px 20px rgba(255, 107, 0, 0.3);
+  }
+
+  h1 { margin: 0; font-size: 24px; font-weight: 600; }
+  p { margin: 8px 0 0; color: rgba(255,255,255,0.6); font-size: 14px; }
+}
+
+.mode-toggle {
+  display: flex;
+  background: rgba(0,0,0,0.3);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 30px;
+
+  button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &.active {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+  }
+}
+
+.login-form {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.pin-display {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+
+  .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    transition: all 0.2s ease;
+
+    &.filled {
+      background: #ff6b00;
+      border-color: #ff6b00;
+      box-shadow: 0 0 10px rgba(255,107,0,0.5);
+    }
+  }
+}
+
+.hint {
+  text-align: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+
+  button {
+    aspect-ratio: 1;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.03);
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
+    &:active { transform: scale(0.95); }
+
+    &.action-btn { font-size: 20px; }
+    &.clear { color: #ef4444; }
+    &.submit { color: #10b981; }
+  }
+}
+
+.input-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    color: rgba(255,255,255,0.8);
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  input {
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: white;
+    font-size: 15px;
+    transition: all 0.3s;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none;
+      border-color: #ff6b00;
+      box-shadow: 0 0 0 3px rgba(255,107,0,0.2);
+    }
+  }
+}
+
+.btn-primary {
+  width: 100%;
+  background: #ff6b00;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+
+  &:hover {
+    background: #e66000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255,107,0,0.3);
+  }
+  &:active { transform: translateY(0); }
+}

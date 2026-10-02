@@ -1,0 +1,14 @@
+<div class="w-full py-2 font-sans select-none flex flex-col gap-0.5 mt-2 antialiased">
+  <!-- Escalado a text-xl (aprox 17px/18px) con font-semibold para ganar presencia sutil -->
+  @if (title()) {
+    <h2 class="text-[#231E1B] font-semibold text-xl tracking-tight m-0 p-0 antialiased">
+      {{ title() }}
+    </h2>
+  }
+  
+  @if (description()) {
+    <p class="text-[#91857F] text-xs font-medium m-0 tracking-wide">
+      {{ description() }}
+    </p>
+  }
+</div>
