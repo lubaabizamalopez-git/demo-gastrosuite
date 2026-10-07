@@ -20,4 +20,10 @@ export class SalonController {
   ) {
     return this.salonService.actualizarEstadoMesa(id, estado);
   }
+
+  // Obtiene los salones (áreas) del restaurante
+  @Get('areas')
+  async getAreas() {
+    return this.salonService.obtenerTodasLasAreas();
+  }
 }

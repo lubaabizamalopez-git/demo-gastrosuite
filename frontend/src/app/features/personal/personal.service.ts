@@ -21,6 +21,13 @@ export interface Usuario {
   estado: string;
   codigoPin?: string;
   imagenUrl?: string; // Opcional, para controlar las fotos de perfil
+  telefono?: string;
+  direccion?: string;
+  regionId?: number;
+  ciudadId?: number;
+  comunaId?: number;
+  contactoEmergenciaNombre?: string;
+  contactoEmergenciaTelefono?: string;
   rolesUsuario: { rol: Rol }[];
 }
 
@@ -50,5 +57,9 @@ export class PersonalService {
 
   toggleEstado(id: string): Observable<Usuario> {
     return this.http.patch<Usuario>(`${this.apiUrl}/${id}/estado`, {});
+  }
+
+  deleteUsuario(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

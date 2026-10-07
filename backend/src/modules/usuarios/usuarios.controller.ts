@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Patch, Delete } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
@@ -30,5 +30,10 @@ export class UsuariosController {
   @Patch(':id/estado')
   toggleEstado(@Param('id') id: string) {
     return this.usuariosService.toggleEstado(id);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usuariosService.remove(id);
   }
 }

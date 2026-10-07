@@ -9,37 +9,86 @@ datasource db {
 /// Representa a un empleado o persona con acceso al sistema
 model Usuario {
   /// Identificador único del usuario (UUID)
-  id              String       @id @default(uuid())
+  id                         String       @id @default(uuid())
   /// Número de documento (RUT sin dígito verificador, o número de pasaporte)
-  rut             String?      @unique
+  rut                        String?      @unique @default("NULL")
   /// Dígito verificador del RUT
-  dv              String?
+  dv                         String?      @default("NULL")
   /// Correo electrónico (usado para iniciar sesión)
-  correo          String?      @unique
+  correo                     String?      @unique @default("NULL")
   /// Contraseña encriptada
-  claveHash       String?
+  claveHash                  String?      @default("NULL")
   /// Primer y/o segundo nombre
-  nombre          String?
+  nombre                     String?      @default("NULL")
   /// Apellido Paterno
-  apellidoPaterno String?
+  apellidoPaterno            String?      @default("NULL")
   /// Apellido Materno
-  apellidoMaterno String?
+  apellidoMaterno            String?      @default("NULL")
   /// PIN de 4 dígitos para acceso rápido en la caja (POS)
-  codigoPin       String?
+  codigoPin                  String?      @default("NULL")
   /// Fecha de creación del registro
-  creadoEn        DateTime?
+  creadoEn                   DateTime?
   /// Fecha de última modificación
-  actualizadoEn   DateTime?    @updatedAt
+  actualizadoEn              DateTime?    @updatedAt
   /// Identificador secundario legible para humanos y uso en frontend/caja
-  ids             Int          @unique(map: "ids") @default(autoincrement())
+  ids                        Int          @unique(map: "ids") @default(autoincrement())
   /// Tipo de documento (RUT, PASAPORTE, DNI, etc.)
-  tipoDocumento   String       @default("RUT")
+  tipoDocumento              String       @default("RUT")
   /// Indica si el usuario puede acceder al sistema
-  estado          String?      @default("A") @db.Char(1)
-  pedidos         Pedido[]     @relation("PedidosMesero")
-  rolesUsuario    UsuarioRol[]
+  estado                     String?      @default("A") @db.Char(1)
+  imagenUrl                  String?      @default("NULL") @db.VarChar(255)
+  direccion                  String?      @default("NULL")
+  telefono                   String?      @default("NULL")
+  ciudadId                   Int?
+  comunaId                   Int?
+  contactoEmergenciaNombre   String?      @default("NULL")
+  contactoEmergenciaTelefono String?      @default("NULL")
+  regionId                   Int?
+  pedidos                    Pedido[]     @relation("PedidosMesero")
+  comuna                     Comuna?      @relation(fields: [comunaId], references: [id_comuna])
+  region                     Region?      @relation(fields: [regionId], references: [id_region])
+  ciudad                     Ciudad?      @relation(fields: [ciudadId], references: [id_ciudad])
+  rolesUsuario               UsuarioRol[]
 
+  @@index([comunaId], map: "usuarios_comunaId_fkey")
+  @@index([ciudadId], map: "usuarios_ciudadId_fkey")
+  @@index([regionId], map: "usuarios_regionId_fkey")
   @@map("usuarios")
+}
+
+model Region {
+  id_region     Int       @id @default(autoincrement())
+  descripcion   String?   @db.VarChar(100)
+  estado_region String?   @db.VarChar(50)
+  ciudades      Ciudad[]
+  usuarios      Usuario[]
+
+  @@map("region")
+}
+
+model Ciudad {
+  id_ciudad     Int       @id @default(autoincrement())
+  descripcion   String?   @db.VarChar(100)
+  estado_ciudad String?   @db.VarChar(50)
+  id_region     Int?
+  region        Region?   @relation(fields: [id_region], references: [id_region])
+  comunas       Comuna[]
+  usuarios      Usuario[]
+
+  @@index([id_region], map: "ciudad_id_region_fkey")
+  @@map("ciudad")
+}
+
+model Comuna {
+  id_comuna     Int       @id @default(autoincrement())
+  descripcion   String?   @db.VarChar(100)
+  estado_comuna String?   @db.VarChar(100)
+  id_ciudad     Int?
+  ciudad        Ciudad?   @relation(fields: [id_ciudad], references: [id_ciudad])
+  usuarios      Usuario[]
+
+  @@index([id_ciudad], map: "comuna_id_ciudad_fkey")
+  @@map("comuna")
 }
 
 /// Representa un rol o cargo dentro del sistema
@@ -47,9 +96,9 @@ model Rol {
   /// Identificador único del rol
   id           String       @id @default(uuid())
   /// Nombre del rol (ej. ADMINISTRADOR)
-  nombre       String?      @unique
+  nombre       String?      @unique @default("NULL")
   /// Breve descripción de los permisos del rol
-  descripcion  String?
+  descripcion  String?      @default("NULL")
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids          Int          @unique(map: "ids") @default(autoincrement())
   rolesUsuario UsuarioRol[]
@@ -78,7 +127,7 @@ model Categoria {
   /// Nombre visible de la categoría
   nombre String
   /// Nombre del ícono para mostrar en el frontend
-  icono  String?
+  icono  String? @default("NULL")
   /// Número para ordenar la categoría en el menú
   orden  Int     @default(0)
   /// Identificador secundario legible para humanos y uso en frontend/caja
@@ -98,13 +147,13 @@ model Producto {
   /// Nombre del producto
   nombre          String
   /// Descripción o ingredientes visibles para el cliente
-  descripcion     String?         @db.Text
+  descripcion     String?         @default("NULL") @db.Text
   /// Precio base de venta
   precio          Decimal         @db.Decimal(10, 2)
   /// Código de barra o identificador único de inventario
-  sku             String?         @unique
+  sku             String?         @unique @default("NULL")
   /// URL de la foto del producto
-  imagen          String?
+  imagen          String?         @default("NULL")
   /// Área donde se prepara este producto (ej. COCINA, BAR)
   areaPreparacion AreaPreparacion @default(COCINA)
   /// Identificador secundario legible para humanos y uso en frontend/caja
@@ -122,13 +171,13 @@ model VarianteProducto {
   /// Identificador único de la variante
   id          String       @id @default(uuid())
   /// Producto padre
-  productoId  String?
+  productoId  String?      @default("NULL")
   /// Nombre de la variante (ej. "Familiar")
-  nombre      String?
+  nombre      String?      @default("NULL")
   /// Precio de esta variante específica
   precio      Decimal?     @db.Decimal(10, 2)
   /// Código SKU específico
-  sku         String?
+  sku         String?      @default("NULL")
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids         Int          @unique(map: "ids") @default(autoincrement())
   itemsPedido ItemPedido[]
@@ -224,7 +273,7 @@ model MovimientoInventario {
   /// Costo total de este movimiento (si aplica)
   costo     Decimal?       @db.Decimal(10, 2)
   /// Motivo o razón (ej. "Tomates en mal estado")
-  notas     String?
+  notas     String?        @default("NULL")
   /// Fecha y hora exacta
   creadoEn  DateTime       @default(now())
   /// Identificador secundario legible para humanos y uso en frontend/caja
@@ -250,21 +299,21 @@ model AreaSalon {
 /// Mesa individual dentro de un área
 model Mesa {
   /// ID único de la mesa
-  id          String     @id @default(uuid())
+  id          String      @id @default(uuid())
   /// ID del área a la que pertenece
   areaSalonId String
   /// Identificador visible (ej. "Mesa 5", "T-12")
   numeroMesa  String
   /// Cuántas personas caben
-  capacidad   Int        @default(4)
+  capacidad   Int         @default(4)
   /// Si está libre, ocupada, etc.
-  estado      EstadoMesa @default(D)
+  estado      EstadoMesa? @default(D)
   /// Eje X en el mapa visual
-  posX        Int        @default(0)
+  posX        Int         @default(0)
   /// Eje Y en el mapa visual
-  posY        Int        @default(0)
+  posY        Int         @default(0)
   /// Identificador secundario legible para humanos y uso en frontend/caja
-  ids         Int        @unique(map: "ids") @default(autoincrement())
+  ids         Int         @unique(map: "ids") @default(autoincrement())
   pedidos     Pedido[]
 
   @@map("mesas")
@@ -281,13 +330,13 @@ model Pedido {
   /// Estado general del ticket
   estado          EstadoPedido @default(PENDIENTE)
   /// Si es SALON, qué mesa es
-  mesaId          String?
+  mesaId          String?      @default("NULL")
   /// Quién atendió la mesa
-  meseroId        String?
+  meseroId        String?      @default("NULL")
   /// Para delivery o para llevar
-  nombreCliente   String?
-  telefonoCliente String?
-  notas           String?
+  nombreCliente   String?      @default("NULL")
+  telefonoCliente String?      @default("NULL")
+  notas           String?      @default("NULL")
   /// Suma de precios sin impuesto
   subtotal        Decimal      @db.Decimal(10, 2)
   /// Monto de impuestos calculados
@@ -317,7 +366,7 @@ model ItemPedido {
   /// Qué producto es
   productoId       String
   /// Si eligió tamaño familiar, etc.
-  varianteId       String?
+  varianteId       String?                 @default("NULL")
   /// Cantidad pedida
   cantidad         Int                     @default(1)
   /// Precio de 1 unidad
@@ -327,7 +376,7 @@ model ItemPedido {
   /// Estado en la estación de preparación
   estado           EstadoItemPedido        @default(PENDIENTE)
   /// Indicaciones (ej. "Poco ají")
-  notas            String?
+  notas            String?                 @default("NULL")
   /// A qué impresora/pantalla KDS se envió
   areaPreparacion  AreaPreparacion         @default(COCINA)
   /// Hora exacta en la que se comandó
@@ -387,7 +436,7 @@ model Pago {
   /// ID del Método de pago usado
   metodoPagoId     String
   /// Nro de voucher o transferencia
-  numeroReferencia String?
+  numeroReferencia String?  @default("NULL")
   /// Hora del pago
   creadoEn         DateTime @default(now())
   /// Identificador secundario legible para humanos y uso en frontend/caja
@@ -401,7 +450,7 @@ model TurnoCaja {
   /// ID del turno
   id               String    @id @default(uuid())
   /// Cajero responsable
-  usuarioId        String?
+  usuarioId        String?   @default("NULL")
   /// Hora en que abrió
   abiertoEn        DateTime?
   /// Hora del cierre
@@ -415,9 +464,9 @@ model TurnoCaja {
   /// Sobrante o Faltante
   diferencia       Decimal?  @db.Decimal(10, 2)
   /// Estado actual de este turno
-  estado           String?
+  estado           String?   @default("NULL")
   /// Justificaciones de descuadres
-  notas            String?
+  notas            String?   @default("NULL")
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids              Int       @unique(map: "ids") @default(autoincrement())
 
@@ -435,7 +484,7 @@ model ConfiguracionImpresora {
   /// RED_IP o USB
   tipoConexion   TipoConexion     @default(RED_IP)
   /// IP (si es de red)
-  direccionIp    String?
+  direccionIp    String?          @default("NULL")
   /// Puerto
   puerto         Int              @default(9100)
   /// 80mm o 58mm
@@ -466,9 +515,9 @@ model ConfiguracionEmpresa {
   /// IVA / IGV
   porcentajeImpuesto Decimal @default(18.00) @db.Decimal(5, 2)
   /// Mensaje superior del ticket
-  cabeceraImpresion  String? @db.Text
+  cabeceraImpresion  String? @default("NULL") @db.Text
   /// Mensaje de agradecimiento
-  pieImpresion       String? @db.Text
+  pieImpresion       String? @default("NULL") @db.Text
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids                Int     @unique(map: "ids") @default(autoincrement())
 

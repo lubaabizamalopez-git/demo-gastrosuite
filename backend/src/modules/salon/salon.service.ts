@@ -32,4 +32,10 @@ export class SalonService {
     this.eventsGateway.server.emit('actualizacion-salon', { tipo: 'MESA_UPDATED', data: mesaActualizada });
     return mesaActualizada;
   }
+
+  async obtenerTodasLasAreas() {
+    return this.prisma.areaSalon.findMany({
+      orderBy: { orden: 'asc' }
+    });
+  }
 }

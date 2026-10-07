@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MenuService, Producto, Categoria } from '../../../../core/services/menu.service';
+import { MenúuService, Producto, Categoria } from '../../../../core/services/menu.service';
 import { switchMap } from 'rxjs';
 import { ModalConfirmacionComponent } from '../../../../shared/components/modal-confirmacion/modal-confirmacion.component';
 
@@ -18,7 +18,7 @@ export class ModalProductoComponent implements OnInit {
   @Output() cerrar = new EventEmitter<boolean>();
 
   private fb = inject(FormBuilder);
-  private menuService = inject(MenuService);
+  private menuService = inject(MenúuService);
 
   form: FormGroup;
   guardando = false;

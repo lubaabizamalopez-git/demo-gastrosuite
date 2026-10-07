@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Res } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 
 @Controller('api/pedidos')
@@ -13,5 +13,10 @@ export class OrdersController {
   @Get('kds/pendientes')
   async getPendingForKds() {
     return this.ordersService.getPendingOrders();
+  }
+
+  @Get()
+  async getAllOrders() {
+    return this.ordersService.getAllOrders();
   }
 }

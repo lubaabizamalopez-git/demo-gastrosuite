@@ -46,13 +46,21 @@ export class UsuariosService {
     const claveHash = await bcrypt.hash(passwordPlain, salt);
 
     const { roles, ...userData } = data;
+    
+    let rolIds: string[] = [];
+    if (roles && roles.length > 0) {
+      const dbRoles = await this.prisma.rol.findMany({
+        where: { nombre: { in: roles } }
+      });
+      rolIds = dbRoles.map(r => r.id);
+    }
 
     return this.prisma.usuario.create({
       data: {
         ...userData,
         claveHash,
-        rolesUsuario: roles && roles.length > 0 ? {
-          create: roles.map(rolId => ({ rolId }))
+        rolesUsuario: rolIds.length > 0 ? {
+          create: rolIds.map(rolId => ({ rolId }))
         } : undefined
       },
       include: {
@@ -62,20 +70,45 @@ export class UsuariosService {
   }
 
   async update(id: string, data: UpdateUsuarioDto) {
-    const { roles, ...userData } = data;
+    const { roles, clave, ...userData } = data;
+    
+    if (data.correo && data.correo.trim() !== '') {
+      const existeCorreo = await this.prisma.usuario.findFirst({
+        where: { correo: data.correo, id: { not: id } }
+      });
+      if (existeCorreo) {
+        throw new BadRequestException('El correo ya está registrado por otro usuario');
+      }
+    }
+    
+    let updateData: any = { ...userData };
+    
+    if (clave) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.claveHash = await bcrypt.hash(clave, salt);
+    }
     
     // Si se envían roles, actualizar la tabla intermedia
     if (roles) {
+      let rolIds: string[] = [];
+      if (roles.length > 0) {
+        const dbRoles = await this.prisma.rol.findMany({
+          where: { nombre: { in: roles } }
+        });
+        rolIds = dbRoles.map(r => r.id);
+      }
+      
       // Eliminar roles actuales y crear los nuevos
       await this.prisma.usuarioRol.deleteMany({
         where: { usuarioId: id }
       });
+
       return this.prisma.usuario.update({
         where: { id },
         data: {
-          ...userData,
+          ...updateData,
           rolesUsuario: {
-            create: roles.map(rolId => ({ rolId }))
+            create: rolIds.map(rolId => ({ rolId }))
           }
         },
         include: {
@@ -86,7 +119,7 @@ export class UsuariosService {
 
     return this.prisma.usuario.update({
       where: { id },
-      data: userData,
+      data: updateData,
       include: {
         rolesUsuario: { include: { rol: true } }
       }
@@ -105,6 +138,16 @@ export class UsuariosService {
       include: {
         rolesUsuario: { include: { rol: true } }
       }
+    });
+  }
+
+  async remove(id: string) {
+    // Delete roles first to avoid foreign key issues
+    await this.prisma.usuarioRol.deleteMany({
+      where: { usuarioId: id }
+    });
+    return this.prisma.usuario.delete({
+      where: { id }
     });
   }
 }

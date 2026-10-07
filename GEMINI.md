@@ -20,7 +20,11 @@
 - **Regla:** 脷nica y exclusivamente cuando yo te indique expl铆citamente la frase "ya finalizamos el d铆a laboral" o similar, deber谩s entregarme un prompt actualizado detallando el "Estatus Actual" (resumiendo todo lo hecho en las sesiones pasadas y en la de ese d铆a) y la "Siguiente Tarea", para no perder el hilo al iniciar al d铆a siguiente.
 - **Condici贸n:** NUNCA me entregues el prompt de cierre de d铆a a menos que yo te indique que ya terminamos de trabajar por hoy.
 
-## 4. Idioma y Nomenclatura
+## 4. Reutilizaci贸n de Componentes y UI Kit (G)
+- **UI Kit Compartido:** SIEMPRE debes verificar y priorizar el uso de los componentes existentes en el directorio `shared/components` (el UI Kit del proyecto, ej. selectores, modales, alertas, headers, etc.).
+- **Regla Estricta:** NUNCA crees componentes nativos gen茅ricos (como `<select>`, `<button>` sin clases del kit, o modales crudos) si ya existe una versi贸n configurada en el UI Kit. Todo lo que sea reutilizable debe salir de `shared` para mantener la consistencia visual.
+
+## 5. Idioma y Nomenclatura
 - **Comunicaci贸n:** SIEMPRE debes hablarme en espa帽ol. **Tus respuestas deben ser extremadamente breves, directas y concisas, dando solo la informaci贸n estrictamente necesaria.**
 - **Confirmaci贸n de Acci贸n (G):** Para la *ejecuci贸n t茅cnica* (modificar archivos, comandos locales), toma el control y procede sin preguntar paso a paso. Sin embargo, para la *planificaci贸n estrat茅gica* (qu茅 vista construir, qu茅 funcionalidades incluir, qu茅 dise帽o usar), SIEMPRE debemos hablarlo y acordarlo primero. Una vez que te d茅 el "procede", ejecutas todo el plan t茅cnico sin detenerte. La 煤nica otra excepci贸n de confirmaci贸n obligatoria es antes de un `commit` o `push` a Git.
 - **Pull Obligatorio (G):** SIEMPRE debes ejecutar un pull antes de hacer cualquier cosa, tanto para sincronizar Prisma (`npx prisma db pull`) como para sincronizar Git (`git pull`).
@@ -28,3 +32,8 @@
 
 ## 5. Consultas a la Base de Datos (G)
 - **Regla de Identificadores (G):** Para TODA consulta que se realice a la base de datos, se debe utilizar PRINCIPALMENTE el campo `ids` (entero autoincremental de lectura humana). Igualmente, puedes utilizar el `id` (UUID) que dejamos para manejo interno. Es decir, en las consultas utiliza AMBOS para asegurarnos de la integridad.
+
+## 6. UI Kit Estricto (G)
+- **Componentes:** ESTRICTAMENTE usa los componentes del UI Kit (pp-custom-select, el spinner oficial, etc.). NUNCA inventes nuevos dise駉s, clases nativas o colores dolorosos (ej. botones de archivo con colores chillones).
+- **Selects:** TODO select, sin excepci髇, debe tener como primera opci髇 "Seleccionar..." (o equivalente), y estar deshabilitada.
+- **Spinners y Carga:** Si vas a mostrar un estado de carga, USA EL SPINNER DEL KIT. No crees spinners nativos en HTML ni uses texto crudo como "Cargando...".

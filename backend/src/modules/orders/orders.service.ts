@@ -1,3 +1,4 @@
+// Restart watcher
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EventsGateway } from '../events/events.gateway';
@@ -22,7 +23,15 @@ export class OrdersService {
         impuestos: data.impuestos || 0,
         total: data.total || 0,
         items: {
-          create: data.items || [] // Asume que viene el array con productoId, cantidad, etc.
+          create: (data.items || []).map((item: any) => ({
+            productoId: item.productoId,
+            cantidad: item.cantidad,
+            precioUnitario: item.precioUnitario,
+            precioTotal: item.precioTotal,
+            areaPreparacion: item.areaPreparacion,
+            varianteId: item.varianteId || null,
+            notas: item.notas || null
+          }))
         }
       } as any,
       include: { 
@@ -49,4 +58,15 @@ export class OrdersService {
       orderBy: { creadoEn: 'asc' }
     });
   }
+
+  async getAllOrders() {
+    return this.prisma.pedido.findMany({
+      include: { 
+        items: { include: { producto: true } }, 
+        mesa: true 
+      } as any,
+      orderBy: { creadoEn: 'desc' }
+    });
+  }
 }
+

@@ -14,6 +14,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { SalonModule } from './modules/salon/salon.module';
 import { EventsModule } from './modules/events/events.module';
+import { GeografiaModule } from './modules/geografia/geografia.module';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { EventsModule } from './modules/events/events.module';
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
     }),
-    AuthModule, CatalogoModule, OrdersModule, PosModule, TablesModule, KdsModule, PrinterModule, PrismaModule, UsuariosModule, SalonModule, EventsModule
+    AuthModule, CatalogoModule, OrdersModule, PosModule, TablesModule, KdsModule, PrinterModule, PrismaModule, UsuariosModule, SalonModule, EventsModule, GeografiaModule
   ],
   controllers: [AppController],
   providers: [AppService],

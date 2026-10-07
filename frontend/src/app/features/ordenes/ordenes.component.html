@@ -30,7 +30,7 @@
     <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
       <div>
         <p class="text-sm font-medium text-gray-500">Nuevas</p>
-        <p class="text-2xl font-bold text-gray-900 mt-1">12</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ getNuevas() }}</p>
       </div>
       <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -40,7 +40,7 @@
     <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
       <div>
         <p class="text-sm font-medium text-gray-500">Preparando</p>
-        <p class="text-2xl font-bold text-gray-900 mt-1">8</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ getPreparando() }}</p>
       </div>
       <div class="w-10 h-10 rounded-full bg-orange-50 text-brand-orange flex items-center justify-center">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/></svg>
@@ -50,7 +50,7 @@
     <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
       <div>
         <p class="text-sm font-medium text-gray-500">Listas</p>
-        <p class="text-2xl font-bold text-gray-900 mt-1">4</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ getListas() }}</p>
       </div>
       <div class="w-10 h-10 rounded-full bg-green-50 text-green-500 flex items-center justify-center">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -60,7 +60,7 @@
     <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
       <div>
         <p class="text-sm font-medium text-gray-500">Entregadas Hoy</p>
-        <p class="text-2xl font-bold text-gray-900 mt-1">134</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1">{{ getEntregadas() }}</p>
       </div>
       <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
@@ -83,103 +83,57 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-          
-          <!-- Row 1 -->
+          @for (pedido of pedidos; track pedido.id) {
           <tr class="hover:bg-gray-50/50 transition-colors cursor-pointer group">
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-lg bg-orange-50 text-brand-orange flex items-center justify-center font-bold">
-                  #142
+                  #{{ pedido.numeroPedido }}
                 </div>
                 <div>
-                  <p class="text-sm font-bold text-gray-900">4 items</p>
-                  <p class="text-xs text-gray-500">Para llevar</p>
+                  <p class="text-sm font-bold text-gray-900">{{ pedido.items?.length || 0 }} items</p>
+                  <p class="text-xs text-gray-500">{{ pedido.tipoPedido === 'SALON' ? 'Para servir' : (pedido.tipoPedido === 'PARA_LLEVAR' ? 'Para llevar' : 'Delivery') }}</p>
                 </div>
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm font-bold text-gray-900">Juan Pérez</p>
-              <p class="text-xs text-gray-500">Recogida: 12:45 PM</p>
+              <p class="text-sm font-bold text-gray-900">{{ pedido.mesa ? 'Mesa ' + pedido.mesa.numeroMesa : (pedido.nombreCliente || 'Cliente Genérico') }}</p>
+              <p class="text-xs text-gray-500">{{ pedido.telefonoCliente || 'Sin teléfono' }}</p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm font-bold text-gray-900">$34.50</p>
-              <p class="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded inline-flex mt-1">Pagado</p>
+              <p class="text-sm font-bold text-gray-900">${{ pedido.total }}</p>
+              <p class="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded inline-flex mt-1">
+                {{ pedido.estado === 'PENDIENTE' ? 'Pendiente' : 'Pagado' }}
+              </p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-full border border-blue-100">Nueva</span>
+              <span class="px-3 py-1 text-xs font-bold rounded-full border"
+                    [ngClass]="{
+                      'bg-gray-100 text-gray-700 border-gray-200': pedido.estado === 'PENDIENTE',
+                      'bg-orange-50 text-brand-orange border-orange-100': pedido.estado === 'EN_COCINA',
+                      'bg-blue-50 text-blue-600 border-blue-100': pedido.estado === 'LISTO',
+                      'bg-green-50 text-green-600 border-green-100': pedido.estado === 'ENTREGADO'
+                    }">
+                {{ pedido.estado }}
+              </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm text-gray-900 font-medium">Hace 2 min</p>
+              <p class="text-sm text-gray-900 font-medium">Hace poco</p>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right">
-              <button class="text-brand-orange hover:text-orange-600 font-medium text-sm px-3 py-1.5 border border-brand-orange rounded-lg transition-colors group-hover:bg-brand-orange group-hover:text-white">Preparar</button>
+              <button class="text-brand-orange hover:text-orange-600 font-medium text-sm px-3 py-1.5 border border-brand-orange rounded-lg transition-colors group-hover:bg-brand-orange group-hover:text-white">
+                Ver Detalles
+              </button>
             </td>
           </tr>
-
-          <!-- Row 2 -->
-          <tr class="hover:bg-gray-50/50 transition-colors cursor-pointer group">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center font-bold">
-                  #141
-                </div>
-                <div>
-                  <p class="text-sm font-bold text-gray-900">2 items</p>
-                  <p class="text-xs text-gray-500">Salón</p>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm font-bold text-gray-900">Mesa 5</p>
-              <p class="text-xs text-gray-500">Mesero: Carlos</p>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm font-bold text-gray-900">$18.20</p>
-              <p class="text-xs text-orange-600 font-medium bg-orange-50 px-2 py-0.5 rounded inline-flex mt-1">Pendiente</p>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-3 py-1 bg-orange-50 text-brand-orange text-xs font-bold rounded-full border border-orange-100">Preparando</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm text-gray-900 font-medium">Hace 12 min</p>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right">
-              <button class="text-green-600 hover:text-green-700 font-medium text-sm px-3 py-1.5 border border-green-600 rounded-lg transition-colors group-hover:bg-green-600 group-hover:text-white">Marcar Lista</button>
-            </td>
-          </tr>
-          
-          <!-- Row 3 -->
-          <tr class="hover:bg-gray-50/50 transition-colors cursor-pointer group">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center font-bold">
-                  #140
-                </div>
-                <div>
-                  <p class="text-sm font-bold text-gray-900">6 items</p>
-                  <p class="text-xs text-gray-500">Delivery</p>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm font-bold text-gray-900">UberEats #A4B2</p>
-              <p class="text-xs text-gray-500">Repartidor en camino</p>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm font-bold text-gray-900">$56.00</p>
-              <p class="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded inline-flex mt-1">Pagado</p>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-full border border-green-100">Lista</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm text-gray-900 font-medium">Hace 18 min</p>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right">
-              <button class="text-gray-600 hover:text-gray-900 font-medium text-sm px-3 py-1.5 border border-gray-200 rounded-lg transition-colors group-hover:bg-gray-100">Entregar</button>
-            </td>
-          </tr>
-
+          }
+          @empty {
+            <tr>
+              <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                No hay órdenes para mostrar.
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>

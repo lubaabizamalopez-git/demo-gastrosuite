@@ -5,6 +5,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export interface SelectOption {
   value: any;
   label: string;
+  disabled?: boolean;
 }
 
 @Component({

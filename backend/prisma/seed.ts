@@ -29,12 +29,11 @@ async function main() {
   await prisma.rol.deleteMany();
 
   // 1. Roles
-  const roles = await Promise.all([
-    prisma.rol.create({ data: { nombre: 'SUPERADMIN', descripcion: 'Acceso total al sistema' } }),
-    prisma.rol.create({ data: { nombre: 'ADMINISTRADOR', descripcion: 'Administración del local' } }),
-    prisma.rol.create({ data: { nombre: 'CAJERO', descripcion: 'Acceso a caja y cobros' } }),
-    prisma.rol.create({ data: { nombre: 'MESERO', descripcion: 'Atención de mesas' } })
-  ]);
+  const roles = [];
+  roles.push(await prisma.rol.create({ data: { nombre: 'SUPERADMIN', descripcion: 'Acceso total al sistema' } }));
+  roles.push(await prisma.rol.create({ data: { nombre: 'ADMINISTRADOR', descripcion: 'Administración del local' } }));
+  roles.push(await prisma.rol.create({ data: { nombre: 'CAJERO', descripcion: 'Acceso a caja y cobros' } }));
+  roles.push(await prisma.rol.create({ data: { nombre: 'MESERO', descripcion: 'Atención de mesas' } }));
 
   // 2. Usuarios
   const admin = await prisma.usuario.create({
@@ -127,6 +126,65 @@ async function main() {
       areaPreparacion: AreaPreparacion.POSTRES
     }
   });
+  const prod6 = await prisma.producto.create({
+    data: {
+      sku: 'SKU-006',
+      categoriaId: catPizzas.id,
+      nombre: 'Pizza Pepperoni',
+      descripcion: 'Doble pepperoni, queso mozzarella y salsa de tomate casera.',
+      precio: 15.50,
+      imagen: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=600&auto=format&fit=crop',
+      areaPreparacion: AreaPreparacion.COCINA
+    }
+  });
+
+  const prod7 = await prisma.producto.create({
+    data: {
+      sku: 'SKU-007',
+      categoriaId: catHamburguesas.id,
+      nombre: 'Veggie Burger',
+      descripcion: 'Hamburguesa de lentejas, lechuga, tomate y mayonesa vegana.',
+      precio: 12.00,
+      imagen: 'https://images.unsplash.com/photo-1525059696034-4967a8e1dcae?q=80&w=600&auto=format&fit=crop',
+      areaPreparacion: AreaPreparacion.COCINA
+    }
+  });
+
+  const prod8 = await prisma.producto.create({
+    data: {
+      sku: 'SKU-008',
+      categoriaId: catBebidas.id,
+      nombre: 'Limonada Menta Jengibre',
+      descripcion: 'Refrescante limonada natural con toques de menta fresca y jengibre.',
+      precio: 5.00,
+      imagen: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600&auto=format&fit=crop',
+      areaPreparacion: AreaPreparacion.BAR
+    }
+  });
+
+  const prod9 = await prisma.producto.create({
+    data: {
+      sku: 'SKU-009',
+      categoriaId: catPostres.id,
+      nombre: 'Cheesecake de Frutos Rojos',
+      descripcion: 'Clásico cheesecake estilo NY con salsa de frambuesas y arándanos.',
+      precio: 6.50,
+      imagen: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?q=80&w=600&auto=format&fit=crop',
+      areaPreparacion: AreaPreparacion.POSTRES
+    }
+  });
+
+  const prod10 = await prisma.producto.create({
+    data: {
+      sku: 'SKU-010',
+      categoriaId: catBebidas.id,
+      nombre: 'Cerveza Artesanal IPA',
+      descripcion: 'Cerveza artesanal local, estilo India Pale Ale, 500ml.',
+      precio: 6.00,
+      imagen: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?q=80&w=600&auto=format&fit=crop',
+      areaPreparacion: AreaPreparacion.BAR
+    }
+  });
 
   // 7. Área Salón y Mesas (Distribución Realista)
   const salon = await prisma.areaSalon.create({ data: { nombre: 'Salón Principal', orden: 1 } });
@@ -142,7 +200,7 @@ async function main() {
   // 10. Pedidos de Ejemplo (Para dar vida al Dashboard y KDS)
   
   // Pedido 1: En preparación (Ideal para ver en el KDS)
-  await prisma.pedido.create({
+  const pedido1 = await prisma.pedido.create({
     data: {
       tipoPedido: TipoPedido.SALON,
       estado: EstadoPedido.EN_COCINA,
@@ -150,18 +208,19 @@ async function main() {
       meseroId: mesero.id,
       subtotal: 30.99,
       impuestos: 5.88,
-      total: 36.87,
-      items: {
-        create: [
-          { varianteId: null, productoId: prod1.id, cantidad: 2, precioUnitario: 14.99, precioTotal: 29.98, estado: EstadoItemPedido.PREPARANDO, areaPreparacion: AreaPreparacion.COCINA, notas: 'Una sin cebolla' },
-          { varianteId: null, productoId: prod4.id, cantidad: 1, precioUnitario: 7.50, precioTotal: 7.50, estado: EstadoItemPedido.LISTO, areaPreparacion: AreaPreparacion.BAR }
-        ]
-      }
-    } as any
+      total: 36.87
+    }
+  });
+
+  await prisma.itemPedido.createMany({
+    data: [
+      { varianteId: null, pedidoId: pedido1.id, productoId: prod1.id, cantidad: 2, precioUnitario: 14.99, precioTotal: 29.98, estado: EstadoItemPedido.PREPARANDO, areaPreparacion: AreaPreparacion.COCINA, notas: 'Una sin cebolla' },
+      { varianteId: null, pedidoId: pedido1.id, productoId: prod4.id, cantidad: 1, precioUnitario: 7.50, precioTotal: 7.50, estado: EstadoItemPedido.LISTO, areaPreparacion: AreaPreparacion.BAR }
+    ]
   });
 
   // Pedido 2: Recién ingresado (Pendiente)
-  await prisma.pedido.create({
+  const pedido2 = await prisma.pedido.create({
     data: {
       tipoPedido: TipoPedido.SALON,
       estado: EstadoPedido.PENDIENTE,
@@ -169,17 +228,18 @@ async function main() {
       meseroId: mesero.id,
       subtotal: 16.00,
       impuestos: 3.04,
-      total: 19.04,
-      items: {
-        create: [
-          { varianteId: null, productoId: prod3.id, cantidad: 1, precioUnitario: 16.00, precioTotal: 16.00, estado: EstadoItemPedido.PENDIENTE, areaPreparacion: AreaPreparacion.COCINA }
-        ]
-      }
-    } as any
+      total: 19.04
+    }
+  });
+
+  await prisma.itemPedido.createMany({
+    data: [
+      { varianteId: null, pedidoId: pedido2.id, productoId: prod3.id, cantidad: 1, precioUnitario: 16.00, precioTotal: 16.00, estado: EstadoItemPedido.PENDIENTE, areaPreparacion: AreaPreparacion.COCINA }
+    ]
   });
 
   // Pedido 3: Ya pagado (Para sumar métricas en el Dashboard de ventas)
-  await prisma.pedido.create({
+  const pedido3 = await prisma.pedido.create({
     data: {
       tipoPedido: TipoPedido.SALON,
       estado: EstadoPedido.PAGADO,
@@ -187,14 +247,15 @@ async function main() {
       meseroId: mesero.id,
       subtotal: 22.40,
       impuestos: 4.25,
-      total: 26.65,
-      items: {
-        create: [
-          { varianteId: null, productoId: prod2.id, cantidad: 1, precioUnitario: 13.50, precioTotal: 13.50, estado: EstadoItemPedido.SERVIDO, areaPreparacion: AreaPreparacion.COCINA },
-          { varianteId: null, productoId: prod5.id, cantidad: 1, precioUnitario: 8.90, precioTotal: 8.90, estado: EstadoItemPedido.SERVIDO, areaPreparacion: AreaPreparacion.POSTRES }
-        ]
-      }
-    } as any
+      total: 26.65
+    }
+  });
+
+  await prisma.itemPedido.createMany({
+    data: [
+      { varianteId: null, pedidoId: pedido3.id, productoId: prod2.id, cantidad: 1, precioUnitario: 13.50, precioTotal: 13.50, estado: EstadoItemPedido.SERVIDO, areaPreparacion: AreaPreparacion.COCINA },
+      { varianteId: null, pedidoId: pedido3.id, productoId: prod5.id, cantidad: 1, precioUnitario: 8.90, precioTotal: 8.90, estado: EstadoItemPedido.SERVIDO, areaPreparacion: AreaPreparacion.POSTRES }
+    ]
   });
 
   console.log('¡Seeding de Demo completado con éxito! Se inyectaron productos realistas y órdenes de prueba.');

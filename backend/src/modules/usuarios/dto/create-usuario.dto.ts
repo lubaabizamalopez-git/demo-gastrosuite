@@ -8,4 +8,11 @@ export class CreateUsuarioDto {
   correo: string;
   codigoPin?: string;
   roles?: string[];
+  telefono?: string;
+  direccion?: string;
+  regionId?: number;
+  comunaId?: number;
+  contactoEmergenciaNombre?: string;
+  contactoEmergenciaTelefono?: string;
+  imagenUrl?: string;
 }

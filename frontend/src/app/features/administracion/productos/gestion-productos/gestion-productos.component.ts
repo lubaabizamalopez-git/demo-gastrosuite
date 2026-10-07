@@ -1,21 +1,22 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MenuService, Categoria, Producto } from '../../../../core/services/menu.service';
+import { MenúuService, Categoria, Producto } from '../../../../core/services/menu.service';
 import { ModalCategoriaComponent } from '../modal-categoria/modal-categoria.component';
 import { ModalProductoComponent } from '../modal-producto/modal-producto.component';
 import { ModalConfirmacionComponent } from '../../../../shared/components/modal-confirmacion/modal-confirmacion.component';
 import { ModalDetalleProductoComponent } from '../modal-detalle-producto/modal-detalle-producto.component';
+import { GourmetSpinnerComponent } from '../../../../shared/components/gourmet-spinner/gourmet-spinner.component';
 
 @Component({
   selector: 'app-gestion-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalCategoriaComponent, ModalProductoComponent, ModalConfirmacionComponent, ModalDetalleProductoComponent],
+  imports: [CommonModule, FormsModule, ModalCategoriaComponent, ModalProductoComponent, ModalConfirmacionComponent, ModalDetalleProductoComponent, GourmetSpinnerComponent],
   templateUrl: './gestion-productos.component.html',
   styleUrls: ['./gestion-productos.component.scss']
 })
 export class GestionProductosComponent implements OnInit {
-  private menuService = inject(MenuService);
+  private menuService = inject(MenúuService);
   
   categorias: Categoria[] = [];
   cargando = true;
