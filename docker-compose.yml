@@ -16,7 +16,7 @@ services:
       DATABASE_URL: ${DATABASE_URL:-mysql://gastro_admin:lucas06122012@129.121.36.186:3306/gastrosuite_db}
       JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_gastrosuite_2026}
     ports:
-      - "3005:3000"
+      - "${PORT_BACKEND:-3890}:3000"
     networks:
       - gastrosuite_net
 
@@ -30,7 +30,7 @@ services:
     container_name: gastrosuite_frontend
     restart: always
     ports:
-      - "8085:80"
+      - "${PORT_FRONTEND:-8890}:80"
     depends_on:
       - backend
     networks:
