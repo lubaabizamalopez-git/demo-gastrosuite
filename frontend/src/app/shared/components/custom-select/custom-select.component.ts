@@ -1,4 +1,4 @@
-import { Component, input, forwardRef, signal, HostListener } from '@angular/core';
+import { Component, input, forwardRef, signal, computed, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -22,16 +22,23 @@ export interface SelectOption {
   ]
 })
 export class CustomSelectComponent implements ControlValueAccessor {
-  // Par�metros de personalizaci�n mediante Angular Signals
+  // Parámetros de personalización mediante Angular Signals
   label = input<string>('');
   icon = input<string>(''); 
   error = input<string | null>(null);
   options = input<SelectOption[]>([]);
+  placeholder = input<string>('Seleccionar...');
 
   // Estados reactivos internos del componente
   isOpen = signal<boolean>(false);
   selectedValue = signal<any>('');
-  selectedLabel = signal<string>('Selecciona una opci�n...');
+  
+  // Computamos la etiqueta basándonos en el valor seleccionado y las opciones actuales
+  selectedLabel = computed(() => {
+    const matchedOption = this.options().find(opt => opt.value === this.selectedValue());
+    return matchedOption ? matchedOption.label : this.placeholder();
+  });
+
   disabled = signal<boolean>(false);
 
   // Callbacks para enlazar con FormBuilder de Angular
@@ -46,23 +53,20 @@ export class CustomSelectComponent implements ControlValueAccessor {
 
   selectOption(option: SelectOption): void {
     this.selectedValue.set(option.value);
-    this.selectedLabel.set(option.label);
     this.isOpen.set(false);
     this.onChange(option.value);
     this.onTouch();
   }
 
-  // Cierra autom�ticamente el panel si haces click en cualquier otra parte fuera del dropdown
+  // Cierra automáticamente el panel si haces click en cualquier otra parte fuera del dropdown
   @HostListener('document:click', ['$event'])
   closeDropdown(event: Event): void {
     this.isOpen.set(false);
   }
 
-  // M�todos requeridos por la interfaz ControlValueAccessor de Angular
+  // Métodos requeridos por la interfaz ControlValueAccessor de Angular
   writeValue(val: any): void {
-    this.selectedValue.set(val || '');
-    const matchedOption = this.options().find(opt => opt.value === val);
-    this.selectedLabel.set(matchedOption ? matchedOption.label : 'Selecciona una opci�n...');
+    this.selectedValue.set(val !== undefined ? val : '');
   }
 
   registerOnChange(fn: any): void { this.onChange = fn; }

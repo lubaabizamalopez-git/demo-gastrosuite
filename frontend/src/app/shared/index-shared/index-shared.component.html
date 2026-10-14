@@ -41,14 +41,35 @@
   </div>
 
   <div class="flex flex-col gap-6">
-    <app-section-header title="2. Badges (Etiquetas)" description="Indicadores de estado"></app-section-header>
-    <div class="flex flex-wrap gap-4 p-6 bg-white rounded-2xl shadow-sm border border-[#FFBD80]/30">
-      <app-badge label="Completado" status="success" icon="fa-check-circle"></app-badge>
-      <app-badge label="Pendiente" status="warning" icon="fa-clock"></app-badge>
-      <app-badge label="Información" status="info" icon="fa-info-circle"></app-badge>
-      <app-badge label="Cancelado" status="danger" icon="fa-times-circle"></app-badge>
-      <app-badge label="Destacado" status="brand" icon="fa-star"></app-badge>
-      <app-badge label="Borrador" status="muted" shape="redonda"></app-badge>
+    <app-section-header title="2. Badges (Etiquetas)" description="Indicadores de estado genéricos y estados de pedidos"></app-section-header>
+    
+    <div class="flex flex-col gap-3">
+      <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Estados Genéricos</span>
+      <div class="flex flex-wrap gap-4 p-6 bg-white rounded-2xl shadow-sm border border-[#FFBD80]/30">
+        <app-badge label="Completado" status="success" icon="fa-check-circle"></app-badge>
+        <app-badge label="Pendiente" status="warning" icon="fa-clock"></app-badge>
+        <app-badge label="Información" status="info" icon="fa-info-circle"></app-badge>
+        <app-badge label="Cancelado" status="danger" icon="fa-times-circle"></app-badge>
+        <app-badge label="Destacado" status="brand" icon="fa-star"></app-badge>
+        <app-badge label="Borrador" status="muted" shape="redonda"></app-badge>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Estados de Pedidos (Matriz Hexadecimal)</span>
+      <div class="flex flex-wrap items-center gap-4 p-6 bg-white rounded-2xl shadow-sm border border-[#FFBD80]/30">
+        <app-badge label="Ingresado" status="INGRESADO"></app-badge>
+        <app-badge label="En Cocina" status="EN_COCINA"></app-badge>
+        <app-badge label="Listo Mesa" status="LISTO_MESA"></app-badge>
+        <app-badge label="Listo Retiro" status="LISTO_RETIRO"></app-badge>
+        <app-badge label="Listo Envío" status="LISTO_ENVIO"></app-badge>
+        <app-badge label="Servido" status="SERVIDO"></app-badge>
+        <app-badge label="En Camino" status="EN_CAMINO"></app-badge>
+        <app-badge label="Entregado" status="ENTREGADO"></app-badge>
+        <app-badge label="Pagado y Cerrado" status="PAGADO_CERRADO"></app-badge>
+        <app-badge label="Cancelado" status="CANCELADO"></app-badge>
+        <app-badge label="Retrasado" status="RETRASADO"></app-badge>
+      </div>
     </div>
   </div>
 

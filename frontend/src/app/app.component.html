@@ -1,15 +1,15 @@
 <ng-container *ngIf="!isLoginRoute; else loginOnly">
   <div class="flex h-screen bg-brand-light">
     <!-- Sidebar -->
-    <app-sidebar class="w-64 flex-shrink-0 hidden md:block"></app-sidebar>
+    <app-sidebar [class]="sidebarService.colapsado() ? 'w-20 flex-shrink-0 hidden md:block transition-all duration-300' : 'w-64 flex-shrink-0 hidden md:block transition-all duration-300'"></app-sidebar>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col overflow-hidden relative">
       <!-- Navbar -->
       <app-navbar></app-navbar>
 
       <!-- Page Content -->
-      <main class="flex-1 overflow-x-hidden overflow-y-auto bg-brand-light p-6">
+      <main class="flex-1 overflow-x-hidden overflow-y-auto bg-brand-light p-6 relative">
         <router-outlet></router-outlet>
       </main>
     </div>
@@ -17,5 +17,7 @@
 </ng-container>
 
 <ng-template #loginOnly>
-  <router-outlet></router-outlet>
+  <div class="relative w-full h-full">
+    <router-outlet></router-outlet>
+  </div>
 </ng-template>

@@ -1,108 +1,260 @@
-<div class="h-screen bg-[#1A1715] text-white flex flex-col w-64">
-  <!-- Logo Area -->
-  <div class="h-16 flex items-center px-6">
-    <!-- Chef Hat Icon -->
-    <svg class="w-8 h-8 text-brand-primary mr-1" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589c-.339-3.269-3.325-5.02-5.593-5.02-2.268 0-5.254 1.751-5.593 5.02a4 4 0 0 0-2.134 7.59c.411.196.727.583.727 1.04V20a1 1 0 0 0 1 1Z"/>
-      <path d="M6 17h12"/>
-    </svg>
-    <span class="text-xl font-bold tracking-tight text-white">
-      Gastro Suite
-    </span>
+<div [class]="sidebarService.colapsado() ? 'h-screen bg-[#1A1715] text-white flex flex-col w-20 transition-all duration-300 select-none' : 'h-screen bg-[#1A1715] text-white flex flex-col w-64 transition-all duration-300 select-none'">
+  <!-- Logo & Toggle Area -->
+  <div class="h-16 flex items-center justify-between px-4 border-b border-white/5 relative">
+    <!-- Logo -->
+    <div class="flex items-center min-w-0" [class.justify-center]="sidebarService.colapsado()" [class.w-full]="sidebarService.colapsado()">
+      <!-- Chef Hat Icon -->
+      <svg class="w-8 h-8 text-brand-primary shrink-0" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589c-.339-3.269-3.325-5.02-5.593-5.02-2.268 0-5.254 1.751-5.593 5.02a4 4 0 0 0-2.134 7.59c.411.196.727.583.727 1.04V20a1 1 0 0 0 1 1Z"/>
+        <path d="M6 17h12"/>
+      </svg>
+      @if (!sidebarService.colapsado()) {
+        <span class="text-xl font-bold tracking-tight text-white ml-2 truncate">
+          Gastro Suite
+        </span>
+      }
+    </div>
+
+    <!-- Toggle Button (Expand/Collapse) -->
+    @if (!sidebarService.colapsado()) {
+      <button 
+        (click)="sidebarService.toggle()" 
+        title="Colapsar menú lateral"
+        class="p-1.5 rounded-lg text-[#9C938E] hover:text-white hover:bg-white/10 transition-colors ml-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+        </svg>
+      </button>
+    }
   </div>
+
+  @if (sidebarService.colapsado()) {
+    <!-- Floating toggle button when collapsed -->
+    <div class="flex justify-center py-2 border-b border-white/5">
+      <button 
+        (click)="sidebarService.toggle()" 
+        title="Expandir menú lateral"
+        class="p-1.5 rounded-lg text-[#9C938E] hover:text-white hover:bg-white/10 transition-colors">
+        <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+        </svg>
+      </button>
+    </div>
+  }
 
   <!-- Navigation Links -->
   <nav class="flex-1 py-4 overflow-y-auto space-y-1 px-3 custom-scrollbar">
-    <!-- Dashboard -->
-    <a routerLink="/dashboard" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" [routerLinkActiveOptions]="{exact: true}" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-      Dashboard
-    </a>
+    <!-- Dashboard (En Construcción) -->
+    <button type="button" 
+            (click)="abrirConstruccion('Dashboard', $event)" 
+            [title]="'Dashboard'" 
+            [class]="sidebarService.colapsado() ? 'w-full flex items-center justify-center p-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors border-none bg-transparent cursor-pointer' : 'w-full flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium border-none bg-transparent cursor-pointer text-left'">
+      <svg class="w-5 h-5 shrink-0" [class.mr-3]="!sidebarService.colapsado()" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      @if (!sidebarService.colapsado()) {
+        <span>Dashboard</span>
+      }
+    </button>
     
     <!-- POS -->
-    <a routerLink="/pos" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-      POS
+    <a routerLink="/pos" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" [title]="'Terminal Punto de Venta (POS)'" [class]="sidebarService.colapsado() ? 'flex items-center justify-center p-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors' : 'flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium'">
+      <svg class="w-5 h-5 shrink-0" [class.mr-3]="!sidebarService.colapsado()" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      @if (!sidebarService.colapsado()) {
+        <span>POS</span>
+      }
     </a>
 
     <!-- Orders -> Órdenes -->
-    <a routerLink="/ordenes" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-      Órdenes
+    <a routerLink="/ordenes" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" [title]="'Órdenes y Comandas'" [class]="sidebarService.colapsado() ? 'flex items-center justify-center p-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors' : 'flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium'">
+      <svg class="w-5 h-5 shrink-0" [class.mr-3]="!sidebarService.colapsado()" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      @if (!sidebarService.colapsado()) {
+        <span>Órdenes</span>
+      }
     </a>
 
     <!-- Tables -> Mesas -->
-    <a routerLink="/mesas" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-      Mesas
+    <a routerLink="/mesas" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" [title]="'Mesas del Salón'" [class]="sidebarService.colapsado() ? 'flex items-center justify-center p-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors' : 'flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium'">
+      <svg class="w-5 h-5 shrink-0" [class.mr-3]="!sidebarService.colapsado()" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+      @if (!sidebarService.colapsado()) {
+        <span>Mesas</span>
+      }
     </a>
 
-    <!-- Menúu -> Productos -->
-    <a routerLink="/administracion/productos" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-      Productos
+    <!-- Menú -> Productos -->
+    <a routerLink="/administracion/productos" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" [title]="'Gestión de Productos'" [class]="sidebarService.colapsado() ? 'flex items-center justify-center p-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors' : 'flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium'">
+      <svg class="w-5 h-5 shrink-0" [class.mr-3]="!sidebarService.colapsado()" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      @if (!sidebarService.colapsado()) {
+        <span>Productos</span>
+      }
     </a>
 
-    <!-- Inventory -> Inventario -->
-    <a routerLink="/inventario" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-      Inventario
-    </a>
+    <!-- Inventory -> Inventario (En Construcción) -->
+    <button type="button" 
+            (click)="abrirConstruccion('Inventario', $event)" 
+            [title]="'Inventario y Stock'" 
+            [class]="sidebarService.colapsado() ? 'w-full flex items-center justify-center p-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors border-none bg-transparent cursor-pointer' : 'w-full flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium border-none bg-transparent cursor-pointer text-left'">
+      <svg class="w-5 h-5 shrink-0" [class.mr-3]="!sidebarService.colapsado()" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      @if (!sidebarService.colapsado()) {
+        <span>Inventario</span>
+      }
+    </button>
     
-    <!-- Customers -> Clientes -->
-    <a routerLink="/clientes" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-      Clientes
-    </a>
+    <!-- Customers -> Clientes (En Construcción) -->
+    <button type="button" 
+            (click)="abrirConstruccion('Clientes', $event)" 
+            [title]="'Clientes'" 
+            [class]="sidebarService.colapsado() ? 'w-full flex items-center justify-center p-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors border-none bg-transparent cursor-pointer' : 'w-full flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium border-none bg-transparent cursor-pointer text-left'">
+      <svg class="w-5 h-5 shrink-0" [class.mr-3]="!sidebarService.colapsado()" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      @if (!sidebarService.colapsado()) {
+        <span>Clientes</span>
+      }
+    </button>
     
-    <!-- Reports -> Reportes -->
-    <a routerLink="/reportes" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-      Reportes
-    </a>
+    <!-- Reports -> Reportes (En Construcción) -->
+    <button type="button" 
+            (click)="abrirConstruccion('Reportes', $event)" 
+            [title]="'Reportes y Estadísticas'" 
+            [class]="sidebarService.colapsado() ? 'w-full flex items-center justify-center p-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors border-none bg-transparent cursor-pointer' : 'w-full flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium border-none bg-transparent cursor-pointer text-left'">
+      <svg class="w-5 h-5 shrink-0" [class.mr-3]="!sidebarService.colapsado()" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      @if (!sidebarService.colapsado()) {
+        <span>Reportes</span>
+      }
+    </button>
     
     <!-- Staff -> Personal -->
-    <a routerLink="/personal" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
-      Personal
-    </a>
-    
-    <!-- UI Kit (Temporal) -->
-    <a routerLink="/shared" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-brand-orange hover:text-white hover:bg-brand-orange/20 rounded-lg transition-colors text-sm font-bold mt-2">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
-      UI Kit (Temp)
-    </a>
-    
-    <!-- Settings -> Configuración -->
-    <a routerLink="/configuracion" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" class="flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium mt-6">
-      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-      Configuración
+    <a routerLink="/personal" routerLinkActive="bg-brand-primary text-white font-semibold shadow-md shadow-brand-primary/20" [title]="'Gestión de Personal'" [class]="sidebarService.colapsado() ? 'flex items-center justify-center p-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors' : 'flex items-center px-3 py-2.5 text-[#9C938E] hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm font-medium'">
+      <svg class="w-5 h-5 shrink-0" [class.mr-3]="!sidebarService.colapsado()" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+      @if (!sidebarService.colapsado()) {
+        <span>Personal</span>
+      }
     </a>
   </nav>
 
   <!-- Bottom Section: Restaurant & Profile -->
-  <div class="px-3 pb-4 pt-2 mt-auto">
-    <div class="bg-white/3 border border-white/10 rounded-xl p-3">
-      <!-- Sucursal Selector -->
-      <div class="mb-3 rounded-lg hover:bg-white/5 cursor-pointer flex items-center justify-between transition-colors">
-        <div>
-          <p class="text-xs text-[#9C938E]">Sucursal</p>
-          <p class="text-sm font-medium text-white">Centro Histórico</p>
+  <div class="px-3 pb-4 pt-2 mt-auto relative">
+    <!-- Submenú Flotante de Administración (Desplegable sobre el botón Admin) -->
+    @if (adminMenuAbierto()) {
+      <div [class]="sidebarService.colapsado() 
+            ? 'absolute bottom-2 left-full ml-3 w-60 bg-[#231E1B] border border-white/10 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in text-white' 
+            : 'absolute bottom-full mb-3 left-3 right-3 bg-[#231E1B] border border-white/10 rounded-2xl shadow-2xl p-2.5 z-50 animate-fade-in text-white'">
+        
+        <div class="px-2.5 py-1.5 border-b border-white/5 flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span class="text-[11px] font-semibold tracking-wider uppercase text-[#9C938E]">Submenú Admin</span>
+          </div>
+          <button (click)="cerrarMenuAdmin()" class="text-[#9C938E] hover:text-white p-0.5 rounded transition-colors">&times;</button>
         </div>
-        <svg class="w-4 h-4 text-[#9C938E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-      </div>
 
-      <!-- User Profile -->
-      <div class="flex items-center">
-        <div class="w-10 h-10 rounded-xl bg-brand-primary/20 flex items-center justify-center mr-3 shadow-sm text-brand-primary border border-brand-primary/30">
+        <div class="py-1 space-y-1">
+          <!-- Adm. Mesas (En Construcción) -->
+          <button type="button"
+             (click)="abrirConstruccion('Administración de Mesas', $event)" 
+             class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-[#E6E1DC] hover:text-white hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer text-left">
+            <svg class="w-4 h-4 text-brand-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <div class="flex flex-col min-w-0">
+              <span class="font-medium truncate">Adm. Mesas</span>
+              <span class="text-[10px] text-[#9C938E] truncate">Diseño de planos y distribución</span>
+            </div>
+          </button>
+
+          <!-- Configuración (En Construcción) -->
+          <button type="button"
+             (click)="abrirConstruccion('Configuración', $event)" 
+             class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-[#E6E1DC] hover:text-white hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer text-left">
+            <svg class="w-4 h-4 text-brand-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <div class="flex flex-col min-w-0">
+              <span class="font-medium truncate">Configuración</span>
+              <span class="text-[10px] text-[#9C938E] truncate">Ajustes y parámetros del sistema</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    }
+
+    <div class="bg-white/3 border border-white/10 rounded-xl p-2.5">
+      @if (!sidebarService.colapsado()) {
+        <!-- Sucursal Selector (En Construcción) -->
+        <div (click)="abrirConstruccion('Sucursal', $event)" 
+             title="Sucursales"
+             class="mb-3 rounded-lg hover:bg-white/5 cursor-pointer flex items-center justify-between transition-colors px-1">
+          <div>
+            <p class="text-xs text-[#9C938E]">Sucursal</p>
+            <p class="text-sm font-medium text-white truncate">Centro Histórico</p>
+          </div>
+          <svg class="w-4 h-4 text-[#9C938E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+      }
+
+      <!-- User Profile (Botón Admin interactivo con submenú) -->
+      <div (click)="toggleMenuAdmin($event)" 
+           [title]="'Opciones de Administrador'"
+           class="flex items-center cursor-pointer p-1 rounded-lg hover:bg-white/5 transition-colors group" 
+           [class.justify-center]="sidebarService.colapsado()">
+        <div class="w-10 h-10 rounded-xl bg-brand-primary/20 flex items-center justify-center shadow-sm text-brand-primary border border-brand-primary/30 shrink-0 group-hover:scale-105 transition-transform" [class.mr-3]="!sidebarService.colapsado()">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
         </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-white truncate">Admin</p>
-          <p class="text-xs text-[#9C938E] truncate">Administrator</p>
-        </div>
-        <svg class="w-4 h-4 text-[#9C938E] cursor-pointer hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        @if (!sidebarService.colapsado()) {
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-white truncate group-hover:text-brand-primary transition-colors">Admin</p>
+            <p class="text-xs text-[#9C938E] truncate">Administrator</p>
+          </div>
+          <svg class="w-4 h-4 text-[#9C938E] group-hover:text-white transition-transform duration-200" 
+               [class.rotate-180]="adminMenuAbierto()"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        }
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal Minimalista: Ups!, zona en construcción -->
+@if (modalConstruccionAbierto()) {
+  <div class="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 font-sans select-none animate-fadeIn"
+       (click)="cerrarConstruccion()">
+    <div class="bg-white rounded-2xl shadow-xl border border-[#F0ECE9] w-full max-w-sm p-6 text-center relative flex flex-col items-center gap-3 animate-scaleUp"
+         (click)="$event.stopPropagation()">
+      
+      <!-- Botón de Cierre [X] -->
+      <button type="button" 
+              (click)="cerrarConstruccion()" 
+              title="Cerrar ventana"
+              class="absolute top-4 right-4 text-[#9C938E] hover:text-[#231E1B] p-1.5 rounded-lg hover:bg-[#F8F6F4] transition-colors border-none bg-transparent cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Ícono Minimalista de Construcción -->
+      <div class="w-12 h-12 rounded-2xl bg-[#FFF5F0] border border-[#FFBD80]/30 flex items-center justify-center text-[#FF6B00] mt-1 shadow-sm">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+      </div>
+
+      <!-- Textos -->
+      <div class="flex flex-col gap-1 mt-1">
+        <h3 class="text-base font-bold text-[#231E1B] tracking-tight m-0">
+          Ups!, zona en construcción
+        </h3>
+        <p class="text-xs text-[#91857F] leading-relaxed max-w-xs m-0">
+          El módulo de <span class="font-semibold text-[#5C534E]">{{ moduloEnConstruccion() }}</span> está en desarrollo y estará disponible próximamente.
+        </p>
+      </div>
+
+      <!-- Botón Minimalista de Aceptación -->
+      <button type="button" 
+              (click)="cerrarConstruccion()" 
+              class="w-full mt-2 py-2 px-4 bg-[#231E1B] hover:bg-[#38312C] text-white text-xs font-semibold rounded-xl transition-colors shadow-sm border-none cursor-pointer">
+        Entendido
+      </button>
+    </div>
+  </div>
+}

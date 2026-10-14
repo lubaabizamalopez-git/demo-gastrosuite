@@ -1,9 +1,14 @@
-import { Controller, Post, Body, Get, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 
-@Controller('api/pedidos')
+@Controller(['api/pedidos', 'api/v1/pedidos', 'pedidos'])
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
+
+  @Get('estados')
+  async getEstados(@Query('canal') canal?: string) {
+    return this.ordersService.obtenerEstados(canal);
+  }
 
   @Post()
   async createOrder(@Body() data: any) {
@@ -20,3 +25,4 @@ export class OrdersController {
     return this.ordersService.getAllOrders();
   }
 }
+

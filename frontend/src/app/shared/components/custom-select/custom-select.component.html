@@ -27,21 +27,23 @@
         </div>
       }
 
-      <span [ngClass]="{'text-[#91857F]/60': selectedValue() === ''}">{{ selectedLabel() }}</span>
+      <span [ngClass]="{'text-[#91857F]/60': selectedValue() === '' || selectedValue() === null}">{{ selectedLabel() }}</span>
       <i class="fas fa-chevron-down text-xs text-[#91857F] transition-transform duration-200" [class.rotate-180]="isOpen()"></i>
     </button>
 
-    <!-- Menúú Desplegable Flotante Premium con Esquinas Redondeadas Suaves -->
+    <!-- Menú Desplegable Flotante Premium con Esquinas Redondeadas Suaves -->
 
     @if (isOpen() && options().length > 0) {
       <div class="absolute left-0 right-0 mt-1.5 bg-white border border-[#FFBD80]/50 rounded-xl shadow-xl overflow-hidden z-50 max-h-60 overflow-y-auto transition-all animate-fadeIn">
         @for (opt of options(); track opt.value) {
           <div
-            (click)="selectOption(opt)"
+            (click)="!opt.disabled && selectOption(opt)"
             [ngClass]="{
-              'bg-[#FFF5F0] text-[#FF6B00] font-bold': selectedValue() === opt.value
+              'bg-[#FFF5F0] text-[#FF6B00] font-bold': selectedValue() === opt.value && !opt.disabled,
+              'opacity-50 cursor-not-allowed bg-gray-50 text-gray-400': opt.disabled,
+              'text-[#5C534E] hover:bg-[#FF6B00] hover:text-white cursor-pointer': !opt.disabled
             }"
-            class="px-4 py-2.5 text-sm text-[#5C534E] hover:bg-[#FF6B00] hover:text-white cursor-pointer transition-colors duration-150 font-medium"
+            class="px-4 py-2.5 text-sm transition-colors duration-150 font-medium"
           >
             {{ opt.label }}
           </div>

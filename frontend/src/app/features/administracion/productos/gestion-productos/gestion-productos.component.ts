@@ -68,7 +68,7 @@ export class GestionProductosComponent implements OnInit {
   get todosLosProductos(): any[] {
     const flatList: any[] = [];
     this.categorias.forEach(cat => {
-      cat.productos.forEach(prod => {
+      (cat.productos || []).forEach(prod => {
         flatList.push({
           ...prod,
           categoriaId: cat.id,
@@ -85,7 +85,7 @@ export class GestionProductosComponent implements OnInit {
     // Primero filtramos los productos de cada categoría
     let filtradas = this.categorias.map(cat => ({
       ...cat,
-      productos: cat.productos.filter(prod => {
+      productos: (cat.productos || []).filter(prod => {
         const matchBusqueda = prod.nombre.toLowerCase().includes(term) || (prod.sku && prod.sku.toLowerCase().includes(term));
         const matchEstado = this.cumpleFiltro(prod);
         return matchBusqueda && matchEstado;

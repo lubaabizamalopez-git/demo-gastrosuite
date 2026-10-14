@@ -19,6 +19,7 @@ export interface Mesa {
   estado: string;
   posX: number;
   posY: number;
+  shape?: string;
   areaSalon?: AreaSalon;
 }
 
@@ -66,6 +67,10 @@ export class SalonService {
 
   actualizarMesa(ids: number, data: Partial<Mesa>): Observable<Mesa> {
     return this.http.put<Mesa>(`${this.apiUrl}/mesas/${ids}`, data);
+  }
+
+  actualizarEstadoMesa(id: string, estado: string): Observable<Mesa> {
+    return this.http.put<Mesa>(`${this.apiUrl}/mesas/${id}/estado`, { estado });
   }
 
   eliminarMesa(ids: number): Observable<any> {

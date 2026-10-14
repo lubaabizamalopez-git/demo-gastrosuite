@@ -3,14 +3,19 @@
     [ngClass]="{'border-[#10B981]/20': type() === 'success', 'border-red-200': type() === 'error'}"
     class="bg-white border border-solid rounded-2xl p-6 shadow-2xl w-full max-w-xs text-center flex flex-col items-center gap-4 transition-all transform scale-100 animate-fadeIn"
   >
-    <!-- Contenedor con letra integrada para simular el ícono de forma limpia -->
     @if (type() === 'success') {
-      <div class="w-11 h-11 bg-[#E6F4EA] text-[#10B981] rounded-full flex items-center justify-center font-bold text-sm select-none">
-        <span>{{ iconLetter() }}</span>
+      <div class="w-16 h-16 text-[#76a145] flex items-center justify-center">
+        <!-- Ícono exacto: Círculo con Check grueso -->
+        <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-sm">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.88 15.46L5.88 13.2a1.25 1.25 0 011.77-1.77l2.47 2.47 6.22-6.22a1.25 1.25 0 111.77 1.77l-7.11 7.11a1.25 1.25 0 01-1.76 0z"/>
+        </svg>
       </div>
     } @else {
-      <div class="w-11 h-11 bg-red-50 text-red-500 rounded-full flex items-center justify-center font-bold text-sm select-none">
-        <span>{{ iconLetter() }}</span>
+      <div class="w-16 h-16 text-[#c23a30] flex items-center justify-center">
+        <!-- Ícono exacto: Triángulo redondeado con signo de exclamación -->
+        <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-sm">
+          <path d="M11.14 3.72a1 1 0 011.72 0l8.7 15.02c.48.83-.12 1.88-1.08 1.88H3.52c-.96 0-1.56-1.05-1.08-1.88l8.7-15.02zM12 9a.75.75 0 00-.75.75v4.5a.75.75 0 001.5 0v-4.5A.75.75 0 0012 9zm0 8.5a.75.75 0 100-1.5.75.75 0 000 1.5z"/>
+        </svg>
       </div>
     }
 
@@ -28,8 +33,8 @@
     <button
       type="button"
       (click)="onConfirm()"
-      [ngClass]="{'bg-[#10B981] shadow-[#10B981]/15': type() === 'success', 'bg-red-500 shadow-red-500/15': type() === 'error'}"
-      class="w-full text-white font-bold text-sm py-2.5 rounded-xl border-none cursor-pointer transition-all duration-200 shadow-md outline-none"
+      [ngClass]="{'bg-[#76a145] shadow-md': type() === 'success', 'bg-[#c23a30] shadow-md': type() === 'error'}"
+      class="w-full text-white font-bold text-sm py-2.5 rounded-xl border-none cursor-pointer transition-all duration-200 outline-none hover:opacity-90 mt-2"
     >
       {{ buttonLabel() }}
     </button>

@@ -8,13 +8,22 @@ import { ActualizarCategoriaDto } from './dto/actualizar-categoria.dto';
 import { CrearProductoDto } from './dto/crear-producto.dto';
 import { ActualizarProductoDto } from './dto/actualizar-producto.dto';
 
-@Controller('api/v1/catalogos')
+@Controller(['api/v1/catalogos', 'catalogos'])
 export class CatalogoController {
   constructor(private readonly catalogoService: CatalogoService) {}
 
   @Get('obtener-categorias')
-  async obtenerCategorias(@Query('incluirInactivos') incluirInactivos?: string) {
-    return this.catalogoService.obtenerCategoriasConProductos(incluirInactivos === 'true');
+  async obtenerCategorias(
+    @Query('incluirInactivos') incluirInactivos?: string,
+    @Query('incluirInestados') incluirInestados?: string,
+  ) {
+    const incluir = incluirInactivos === 'true' || incluirInestados === 'true';
+    return this.catalogoService.obtenerCategoriasConProductos(incluir);
+  }
+
+  @Get('productos')
+  async obtenerProductos(@Query('incluirInactivos') incluirInactivos?: string) {
+    return this.catalogoService.obtenerTodosLosProductos(incluirInactivos === 'true');
   }
 
   // --- CATEGORÍAS ---

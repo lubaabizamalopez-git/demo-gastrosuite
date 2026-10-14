@@ -14,6 +14,7 @@ import { SalonMaestroComponent } from './features/administracion/salon-maestro/s
 import { authGuard } from './core/guards/auth.guard';
 
 import { IndexSharedComponent } from './shared/index-shared/index-shared.component';
+import { MesasAdminComponent } from './features/administracion/mesas-admin/mesas-admin.component';
 
 export const routes: Routes = [
   { path: 'shared', component: IndexSharedComponent },
@@ -22,7 +23,7 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'pos', component: PosComponent, canActivate: [authGuard] },
   { path: 'ordenes', component: OrdenesComponent, canActivate: [authGuard] },
-  { path: 'mesas', component: SalonMaestroComponent, canActivate: [authGuard] },
+  { path: 'mesas', component: MesasComponent, canActivate: [authGuard] },
 
   { path: 'inventario', component: InventarioComponent, canActivate: [authGuard] },
   { path: 'clientes', component: ClientesComponent, canActivate: [authGuard] },
@@ -30,7 +31,7 @@ export const routes: Routes = [
   { path: 'personal', component: PersonalComponent, canActivate: [authGuard] },
   { path: 'configuracion', component: ConfiguracionComponent, canActivate: [authGuard] },
   { path: 'administracion/productos', component: GestionProductosComponent, canActivate: [authGuard] },
-  { path: 'administracion/salon', component: MesasComponent, canActivate: [authGuard] },
+  { path: 'administracion/mesas', component: MesasAdminComponent, canActivate: [authGuard] },
   
   // Cualquier ruta desconocida también rebota al login
   { path: '**', redirectTo: 'login' }

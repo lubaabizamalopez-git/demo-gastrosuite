@@ -2,7 +2,7 @@ import { Controller, Put, Param, Body, ParseIntPipe } from '@nestjs/common';
 import { KdsService } from './kds.service';
 import { EstadoItemPedido, EstadoPedido } from '@prisma/client';
 
-@Controller('api/kds')
+@Controller(['api/kds', 'api/v1/kds', 'kds'])
 export class KdsController {
   constructor(private readonly kdsService: KdsService) {}
 

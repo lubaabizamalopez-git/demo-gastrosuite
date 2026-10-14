@@ -29,12 +29,12 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Método global para notificar a la cocina de un nuevo pedido
   emitNuevoPedido(pedido: any) {
     this.logger.log(`Emitiendo 'nuevo-pedido' a todos los clientes...`);
-    this.server.emit('nuevo-pedido', pedido);
+    this.server?.emit('nuevo-pedido', pedido);
   }
 
   // Método para actualizar estados de los platos en el KDS
   emitActualizacionKds(data: any) {
     this.logger.log(`Emitiendo 'actualizacion-kds' a todos los clientes...`);
-    this.server.emit('actualizacion-kds', data);
+    this.server?.emit('actualizacion-kds', data);
   }
 }

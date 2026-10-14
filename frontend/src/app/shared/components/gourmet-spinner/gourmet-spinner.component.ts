@@ -8,9 +8,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './gourmet-spinner.component.html'
 })
 export class GourmetSpinnerComponent {
-  // Menúsaje opcional configurable por el POS (Ej: "Cargando comanda...", "Procesando pago...")
   message = input<string>('');
-  
-  // Variante de icono visual central: 'cubiertos' o 'campana'
   variant = input<'cubiertos' | 'campana'>('cubiertos');
+  size = input<number>(64); // Tamaño base en pixeles
 }

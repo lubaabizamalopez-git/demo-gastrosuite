@@ -1,7 +1,7 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { PrinterService } from './printer.service';
 
-@Controller('api/printer')
+@Controller(['api/printer', 'api/v1/printer', 'printer'])
 export class PrinterController {
   constructor(private readonly printerService: PrinterService) {}
 

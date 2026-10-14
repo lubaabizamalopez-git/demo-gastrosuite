@@ -1,35 +1,51 @@
-<div class="h-full flex flex-col gap-6 overflow-hidden pr-2">
-  <!-- Header & Filters -->
-  <div class="flex justify-between items-end">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Órdenes</h1>
-      <p class="text-gray-500 mt-1">Gestiona los pedidos activos y el historial completo.</p>
+<div class="h-full flex flex-col gap-5 overflow-hidden pr-1">
+  
+  <!-- Header & Controles Superiores -->
+  <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 shrink-0">
+    <div class="flex flex-col gap-0.5 antialiased">
+      <div class="flex items-center gap-2.5">
+        <h1 class="text-[#231E1B] font-bold text-2xl tracking-tight m-0 p-0 antialiased">Órdenes del Sistema</h1>
+      </div>
+      <p class="text-[#5C534E] text-sm font-medium m-0 tracking-wide opacity-95">Supervisión y control de comandas en tiempo real.</p>
     </div>
     
-    <!-- Controls -->
-    <div class="flex items-center gap-3">
-      <div class="relative">
-        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input type="text" placeholder="Buscar orden #, mesa..." class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange w-64 bg-white shadow-sm">
+    <!-- Filtros de Grilla y Acciones -->
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Buscador -->
+      <div class="relative w-56">
+        <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input 
+          type="text" 
+          [(ngModel)]="busquedaTexto"
+          placeholder="Buscar orden #, mesa..." 
+          class="pl-9 pr-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary w-full bg-white shadow-sm">
       </div>
-      
-      <div class="flex bg-gray-100 p-1 rounded-lg">
-        <button class="px-4 py-1.5 bg-white text-gray-900 text-sm font-medium rounded-md shadow-sm">Activas</button>
-        <button class="px-4 py-1.5 text-gray-500 hover:text-gray-900 text-sm font-medium rounded-md transition-colors">Historial</button>
+
+      <!-- Filtro 1: Estados del Pedido -->
+      <div class="w-44">
+        <app-custom-select [options]="opcionesEstado" [(ngModel)]="filtroEstado"></app-custom-select>
       </div>
-      
-      <button class="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-gray-800 transition-colors flex items-center">
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-        Filtros
+
+      <!-- Filtro 2: Tipo de Pedido / Canal -->
+      <div class="w-44">
+        <app-custom-select [options]="opcionesCanal" [(ngModel)]="filtroCanal"></app-custom-select>
+      </div>
+
+      <!-- Botón Historial de Pedidos Pasados -->
+      <button 
+        (click)="abrirModalHistorial()"
+        class="bg-gray-900 hover:bg-gray-800 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2 active:scale-95 shrink-0">
+        <i class="fa-solid fa-clock-rotate-left text-brand-soft text-sm"></i>
+        <span>Historial Completo</span>
       </button>
     </div>
   </div>
 
-  <!-- Status Cards -->
-  <div class="grid grid-cols-4 gap-4">
-    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
+  <!-- Status Cards (Fondo con degrade gastronómico oficial sin tocar nada más) -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 shrink-0">
+    <div class="bg-gradient-to-br from-white via-white to-[#FFF5F0]/70 border border-[#91857F]/20 rounded-2xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-primary/40 transition-colors">
       <div>
-        <p class="text-sm font-medium text-gray-500">Nuevas</p>
+        <p class="text-xs font-medium text-gray-500">Nuevas</p>
         <p class="text-2xl font-bold text-gray-900 mt-1">{{ getNuevas() }}</p>
       </div>
       <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
@@ -37,19 +53,19 @@
       </div>
     </div>
     
-    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
+    <div class="bg-gradient-to-br from-white via-white to-[#FFF5F0]/70 border border-[#91857F]/20 rounded-2xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-primary/40 transition-colors">
       <div>
-        <p class="text-sm font-medium text-gray-500">Preparando</p>
+        <p class="text-xs font-medium text-gray-500">Preparando</p>
         <p class="text-2xl font-bold text-gray-900 mt-1">{{ getPreparando() }}</p>
       </div>
-      <div class="w-10 h-10 rounded-full bg-orange-50 text-brand-orange flex items-center justify-center">
+      <div class="w-10 h-10 rounded-full bg-orange-50 text-brand-primary flex items-center justify-center">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/></svg>
       </div>
     </div>
     
-    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
+    <div class="bg-gradient-to-br from-white via-white to-[#FFF5F0]/70 border border-[#91857F]/20 rounded-2xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-primary/40 transition-colors">
       <div>
-        <p class="text-sm font-medium text-gray-500">Listas</p>
+        <p class="text-xs font-medium text-gray-500">Listas</p>
         <p class="text-2xl font-bold text-gray-900 mt-1">{{ getListas() }}</p>
       </div>
       <div class="w-10 h-10 rounded-full bg-green-50 text-green-500 flex items-center justify-center">
@@ -57,9 +73,9 @@
       </div>
     </div>
     
-    <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-orange transition-colors">
+    <div class="bg-gradient-to-br from-white via-white to-[#FFF5F0]/70 border border-[#91857F]/20 rounded-2xl p-4 shadow-sm flex items-center justify-between cursor-pointer hover:border-brand-primary/40 transition-colors">
       <div>
-        <p class="text-sm font-medium text-gray-500">Entregadas Hoy</p>
+        <p class="text-xs font-medium text-gray-500">Entregadas</p>
         <p class="text-2xl font-bold text-gray-900 mt-1">{{ getEntregadas() }}</p>
       </div>
       <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center">
@@ -69,68 +85,94 @@
   </div>
 
   <!-- Orders Table -->
-  <div class="flex-1 bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-    <div class="overflow-x-auto flex-1">
+  <div class="flex-1 bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden flex flex-col min-h-0">
+    <div class="overflow-x-auto overflow-y-auto flex-1 custom-scrollbar">
       <table class="w-full text-left border-collapse">
-        <thead>
-          <tr class="bg-gray-50/50 border-b border-gray-100">
-            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Orden</th>
-            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Mesa/Cliente</th>
-            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Monto</th>
-            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Estado</th>
-            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Tiempo</th>
-            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
+        <thead class="sticky top-0 z-10 bg-[#E6DFD5] border-b border-[#D8CFC4] shadow-sm">
+          <tr>
+            <th class="px-6 py-3.5 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Orden</th>
+            <th class="px-6 py-3.5 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Mesa / Cliente</th>
+            <th class="px-6 py-3.5 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Monto & Pago</th>
+            <th class="px-6 py-3.5 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Estado Comanda</th>
+            <th class="px-6 py-3.5 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Tiempo</th>
+            <th class="px-6 py-3.5 text-xs font-bold text-[#231E1B] uppercase tracking-wider text-right">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
-          @for (pedido of pedidos; track pedido.id) {
+          @for (pedido of pedidosPaginados; track pedido.id) {
           <tr class="hover:bg-gray-50/50 transition-colors cursor-pointer group">
-            <td class="px-6 py-4 whitespace-nowrap">
+            <!-- Orden -->
+            <td class="px-6 py-3.5 whitespace-nowrap">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-orange-50 text-brand-orange flex items-center justify-center font-bold">
-                  #{{ pedido.numeroPedido }}
+                <div class="w-9 h-9 rounded-xl bg-brand-cream text-brand-dark flex items-center justify-center font-extrabold text-xs border border-brand-primary/20">
+                  #{{ pedido.numeroPedido || pedido.ids || pedido.id?.substring(0,4) }}
                 </div>
                 <div>
-                  <p class="text-sm font-bold text-gray-900">{{ pedido.items?.length || 0 }} items</p>
-                  <p class="text-xs text-gray-500">{{ pedido.tipoPedido === 'SALON' ? 'Para servir' : (pedido.tipoPedido === 'PARA_LLEVAR' ? 'Para llevar' : 'Delivery') }}</p>
+                  <p class="text-xs font-bold text-gray-900">{{ pedido.items?.length || 0 }} items</p>
+                  <p class="text-[11px] text-gray-500 font-medium">
+                    {{ pedido.tipoPedido === 'SALON' ? 'Para servir' : (pedido.tipoPedido === 'PARA_LLEVAR' ? 'Para llevar' : 'Delivery') }}
+                  </p>
                 </div>
               </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm font-bold text-gray-900">{{ pedido.mesa ? 'Mesa ' + pedido.mesa.numeroMesa : (pedido.nombreCliente || 'Cliente Genérico') }}</p>
-              <p class="text-xs text-gray-500">{{ pedido.telefonoCliente || 'Sin teléfono' }}</p>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm font-bold text-gray-900">${{ pedido.total }}</p>
-              <p class="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded inline-flex mt-1">
-                {{ pedido.estado === 'PENDIENTE' ? 'Pendiente' : 'Pagado' }}
+
+            <!-- Mesa / Cliente (Item 5: Eliminado el NULL) -->
+            <td class="px-6 py-3.5 whitespace-nowrap">
+              <p class="text-xs font-bold text-gray-900">
+                {{ pedido.mesa ? 'Mesa ' + pedido.mesa.numeroMesa : (pedido.nombreCliente || 'Cliente General') }}
+              </p>
+              <p class="text-[11px] text-gray-400 font-medium">
+                @if (pedido.tipoPedido === 'SALON') {
+                  <span>Salón Principal</span>
+                } @else if (pedido.tipoPedido === 'PARA_LLEVAR') {
+                  <span>Retiro en mostrador</span>
+                } @else {
+                  <span>{{ (pedido.telefonoCliente && pedido.telefonoCliente !== 'NULL') ? pedido.telefonoCliente : 'Reparto domicilio' }}</span>
+                }
               </p>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-3 py-1 text-xs font-bold rounded-full border"
-                    [ngClass]="{
-                      'bg-gray-100 text-gray-700 border-gray-200': pedido.estado === 'PENDIENTE',
-                      'bg-orange-50 text-brand-orange border-orange-100': pedido.estado === 'EN_COCINA',
-                      'bg-blue-50 text-blue-600 border-blue-100': pedido.estado === 'LISTO',
-                      'bg-green-50 text-green-600 border-green-100': pedido.estado === 'ENTREGADO'
-                    }">
-                {{ pedido.estado }}
-              </span>
+
+            <!-- Monto & Pago (Item 10: Colores diferenciados para estados de pago) -->
+            <td class="px-6 py-3.5 whitespace-nowrap">
+              <p class="text-xs font-extrabold text-gray-900">{{ formatearCLP(pedido.total) }}</p>
+              @if (pedido.estado === 'PAGADO' || pedido.estado === 'PAGADO_CERRADO') {
+                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-md inline-flex items-center gap-1 mt-0.5">
+                  <i class="fa-solid fa-circle-check text-[9px]"></i> Pagado
+                </span>
+              } @else {
+                <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md inline-flex items-center gap-1 mt-0.5">
+                  <i class="fa-solid fa-clock text-[9px]"></i> Pendiente
+                </span>
+              }
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <p class="text-sm text-gray-900 font-medium">Hace poco</p>
+
+            <!-- Estado de Comanda (UI Kit app-badge con matriz oficial de colores) -->
+            <td class="px-6 py-3.5 whitespace-nowrap">
+              <app-badge [label]="obtenerEtiquetaEstado(pedido.estado)" [status]="pedido.estado"></app-badge>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right">
-              <button class="text-brand-orange hover:text-orange-600 font-medium text-sm px-3 py-1.5 border border-brand-orange rounded-lg transition-colors group-hover:bg-brand-orange group-hover:text-white">
-                Ver Detalles
+
+            <!-- Tiempo Relativo Dinámico (Item 8) -->
+            <td class="px-6 py-3.5 whitespace-nowrap">
+              <p class="text-xs text-gray-700 font-medium">{{ calcularTiempoRelativo(pedido.creadoEn) }}</p>
+            </td>
+
+            <!-- Acciones: Ver Detalles (Item 7: Con diseño del UI kit, icono y sin bug de hover) -->
+            <td class="px-6 py-3.5 whitespace-nowrap text-right">
+              <button 
+                (click)="verDetalles(pedido)"
+                class="px-3 py-1.5 rounded-xl border border-brand-primary/30 text-brand-primary bg-brand-cream/30 hover:bg-brand-primary hover:text-white font-bold text-xs transition-all shadow-sm inline-flex items-center gap-1.5 active:scale-95">
+                <i class="fa-solid fa-receipt text-[11px]"></i>
+                <span>Ver Detalles</span>
               </button>
             </td>
           </tr>
-          }
-          @empty {
+          } @empty {
             <tr>
-              <td colspan="6" class="px-6 py-8 text-center text-gray-500">
-                No hay órdenes para mostrar.
+              <td colspan="6" class="px-6 py-12 text-center text-gray-400">
+                <i class="fa-solid fa-clipboard-list text-3xl mb-2 text-gray-300 block"></i>
+                <span class="text-xs font-medium block">
+                  No se encontraron órdenes con los filtros seleccionados.
+                </span>
               </td>
             </tr>
           }
@@ -138,13 +180,284 @@
       </table>
     </div>
     
-    <!-- Pagination -->
-    <div class="border-t border-gray-100 px-6 py-4 flex items-center justify-between bg-gray-50/30">
-      <p class="text-sm text-gray-500 font-medium">Mostrando <span class="font-bold text-gray-900">1</span> a <span class="font-bold text-gray-900">3</span> de <span class="font-bold text-gray-900">24</span> activas</p>
-      <div class="flex gap-2">
-        <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-400 bg-white cursor-not-allowed">Anterior</button>
-        <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">Siguiente</button>
+    <!-- Paginación Dinámica -->
+    <div class="border-t border-gray-100 px-6 py-3 flex items-center justify-between bg-gray-50/40 shrink-0">
+      <p class="text-xs text-gray-500 font-medium">
+        Mostrando <span class="font-bold text-gray-900">{{ indiceInicio }}</span> a <span class="font-bold text-gray-900">{{ indiceFin }}</span> de <span class="font-bold text-gray-900">{{ pedidosDelDiaFiltrados.length }}</span> órdenes
+      </p>
+      <div class="flex items-center gap-2">
+        <button 
+          (click)="cambiarPagina(-1)"
+          [disabled]="paginaActual <= 1"
+          class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+          Anterior
+        </button>
+        <span class="text-xs text-gray-500 font-medium px-1">Pág {{ paginaActual }} de {{ totalPaginas }}</span>
+        <button 
+          (click)="cambiarPagina(1)"
+          [disabled]="paginaActual >= totalPaginas"
+          class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+          Siguiente
+        </button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ============================================================== -->
+<!-- MODAL: Historial Completo de Pedidos (Item 3)                  -->
+<!-- ============================================================== -->
+@if (mostrarModalHistorial) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+    <div class="bg-white rounded-3xl w-[95vw] max-w-6xl h-[88vh] shadow-2xl border border-gray-100 flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+      
+      <!-- Header Historial -->
+      <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gray-900 text-white flex items-center justify-center text-base shadow-sm">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-extrabold text-gray-900">Historial General de Pedidos</h2>
+            <p class="text-xs text-gray-500">Consulta y auditoría de todas las órdenes pasadas.</p>
+          </div>
+        </div>
+
+        <button (click)="cerrarModalHistorial()" class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Filtros del Historial -->
+      <div class="p-4 border-b border-gray-100 flex flex-wrap items-center gap-3 bg-white shrink-0">
+        <!-- Buscador -->
+        <div class="relative flex-1 min-w-[200px]">
+          <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input 
+            type="text" 
+            [(ngModel)]="busquedaHistorial"
+            placeholder="Buscar por # comanda, cliente, mesa..." 
+            class="pl-9 pr-3 py-2 border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary w-full bg-gray-50 focus:bg-white">
+        </div>
+
+        <!-- Periodo -->
+        <div class="w-44">
+          <app-custom-select [options]="opcionesPeriodoHistorial" [(ngModel)]="filtroPeriodoHistorial"></app-custom-select>
+        </div>
+
+        <!-- Canal -->
+        <div class="w-44">
+          <app-custom-select [options]="opcionesCanal" [(ngModel)]="filtroCanalHistorial"></app-custom-select>
+        </div>
+
+        <!-- Estado -->
+        <div class="w-44">
+          <app-custom-select [options]="opcionesEstado" [(ngModel)]="filtroEstadoHistorial"></app-custom-select>
+        </div>
+      </div>
+
+      <!-- Tabla Historial -->
+      <div class="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar p-1">
+        <table class="w-full text-left border-collapse">
+          <thead class="sticky top-0 z-10 bg-[#E6DFD5] border-b border-[#D8CFC4] shadow-sm">
+            <tr>
+              <th class="px-5 py-3 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Orden</th>
+              <th class="px-5 py-3 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Fecha / Hora</th>
+              <th class="px-5 py-3 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Canal & Mesa</th>
+              <th class="px-5 py-3 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Total</th>
+              <th class="px-5 py-3 text-xs font-bold text-[#231E1B] uppercase tracking-wider">Estado</th>
+              <th class="px-5 py-3 text-xs font-bold text-[#231E1B] uppercase tracking-wider text-right">Detalles</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            @for (pedido of pedidosHistorialPaginados; track pedido.id) {
+              <tr class="hover:bg-gray-50/50 transition-colors">
+                <td class="px-5 py-3 whitespace-nowrap">
+                  <span class="font-mono font-bold text-xs text-gray-900">#{{ pedido.numeroPedido || pedido.ids }}</span>
+                  <span class="text-[10px] text-gray-400 block">{{ pedido.items?.length || 0 }} productos</span>
+                </td>
+                <td class="px-5 py-3 whitespace-nowrap text-xs text-gray-600">
+                  {{ pedido.creadoEn | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+                <td class="px-5 py-3 whitespace-nowrap">
+                  <span class="text-xs font-bold text-gray-900 block">
+                    {{ pedido.mesa ? 'Mesa ' + pedido.mesa.numeroMesa : (pedido.nombreCliente || 'Para Llevar') }}
+                  </span>
+                  <span class="text-[10px] text-gray-400">
+                    {{ pedido.tipoPedido === 'SALON' ? 'Salón' : (pedido.tipoPedido === 'PARA_LLEVAR' ? 'Para Llevar' : 'Delivery') }}
+                  </span>
+                </td>
+                <td class="px-5 py-3 whitespace-nowrap">
+                  <span class="font-extrabold text-xs text-gray-900">{{ formatearCLP(pedido.total) }}</span>
+                </td>
+                <td class="px-5 py-3 whitespace-nowrap">
+                  <app-badge [label]="obtenerEtiquetaEstado(pedido.estado)" [status]="pedido.estado"></app-badge>
+                </td>
+                <td class="px-5 py-3 whitespace-nowrap text-right">
+                  <button 
+                    (click)="verDetalles(pedido)"
+                    class="px-2.5 py-1 text-xs font-bold text-brand-primary hover:bg-brand-cream/60 rounded-lg transition-colors border border-brand-primary/20">
+                    Ver
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="px-6 py-12 text-center text-gray-400 text-xs">
+                  No se encontraron pedidos en el periodo seleccionado.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer Paginación Historial -->
+      <div class="border-t border-gray-100 p-4 flex justify-between items-center bg-gray-50/50 shrink-0">
+        <p class="text-xs text-gray-500">
+          Mostrando {{ indiceInicioHistorial }} a {{ indiceFinHistorial }} de {{ pedidosHistorialFiltrados.length }} registros
+        </p>
+        <div class="flex items-center gap-2">
+          <button 
+            (click)="cambiarPaginaHistorial(-1)" 
+            [disabled]="paginaHistorial <= 1"
+            class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40">
+            Anterior
+          </button>
+          <span class="text-xs text-gray-500">Pág {{ paginaHistorial }} de {{ totalPaginasHistorial }}</span>
+          <button 
+            (click)="cambiarPaginaHistorial(1)" 
+            [disabled]="paginaHistorial >= totalPaginasHistorial"
+            class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40">
+            Siguiente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ============================================================== -->
+<!-- MODAL: Detalles Completos de la Orden (Item 7)                 -->
+<!-- ============================================================== -->
+@if (mostrarModalDetalle) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-gray-100 flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
+      
+      <!-- Header Modal Detalle -->
+      <div class="flex justify-between items-start pb-4 border-b border-gray-100 shrink-0">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-xl font-extrabold text-gray-900">
+              Comanda #{{ pedidoSeleccionado?.numeroPedido || pedidoSeleccionado?.ids }}
+            </h2>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold"
+                  [ngClass]="{
+                    'bg-emerald-50 text-emerald-700 border border-emerald-200': pedidoSeleccionado?.estado === 'PAGADO',
+                    'bg-amber-50 text-amber-700 border border-amber-200': pedidoSeleccionado?.estado !== 'PAGADO'
+                  }">
+              {{ pedidoSeleccionado?.estado }}
+            </span>
+          </div>
+          <p class="text-xs text-gray-500 mt-0.5">
+            Ingresado: {{ pedidoSeleccionado?.creadoEn | date:'dd/MM/yyyy HH:mm' }} &bull; Modo: {{ pedidoSeleccionado?.tipoPedido }}
+          </p>
+        </div>
+
+        <button (click)="cerrarModalDetalle()" class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Contenido Scrolleable -->
+      <div class="flex-1 overflow-y-auto custom-scrollbar py-4 space-y-4">
+        
+        <!-- Info Bloques (Item 6: Destino/Mesa, Atendido en y Atendido por) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-gray-50 rounded-2xl p-3 border border-gray-100 text-xs">
+          <div>
+            <p class="text-gray-400 font-bold uppercase text-[10px]">Destino / Mesa</p>
+            <p class="font-extrabold text-gray-900 mt-0.5">
+              {{ pedidoSeleccionado?.mesa ? 'Mesa ' + pedidoSeleccionado.mesa.numeroMesa : (pedidoSeleccionado?.nombreCliente || 'Para Llevar') }}
+            </p>
+          </div>
+          <div>
+            <p class="text-gray-400 font-bold uppercase text-[10px]">Atendido en</p>
+            <p class="font-extrabold text-gray-900 mt-0.5">
+              {{ obtenerAtendidoEn(pedidoSeleccionado) }}
+            </p>
+          </div>
+          <div>
+            <p class="text-gray-400 font-bold uppercase text-[10px]">Atendido por</p>
+            <p class="font-extrabold text-gray-900 mt-0.5">
+              {{ obtenerAtendidoPor(pedidoSeleccionado) }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Lista de Productos -->
+        <div>
+          <p class="text-xs font-bold text-gray-700 mb-2">Detalle de Platos y Bebidas</p>
+          <div class="space-y-2">
+            @for (item of pedidoSeleccionado?.items; track item.id) {
+              <div class="flex justify-between items-center p-3 rounded-xl border border-gray-100 bg-white shadow-sm">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-brand-cream text-brand-dark flex items-center justify-center font-bold text-xs shrink-0">
+                    {{ item.cantidad }}x
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-bold text-gray-900">{{ item.producto?.nombre || 'Producto' }}</h4>
+                    <p class="text-[11px] text-gray-400">
+                      {{ formatearCLP(item.precioUnitario) }} c/u &bull; Área: {{ item.areaPreparacion }}
+                    </p>
+                    @if (item.notas) {
+                      <p class="text-[10px] text-amber-600 font-medium italic mt-0.5">Nota: {{ item.notas }}</p>
+                    }
+                  </div>
+                </div>
+                <span class="text-xs font-extrabold text-gray-900">
+                  {{ formatearCLP(item.precioTotal) }}
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Desglose Financiero -->
+        <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 space-y-1.5 text-xs">
+          <div class="flex justify-between text-gray-600">
+            <span>Subtotal</span>
+            <span class="font-bold text-gray-900">{{ formatearCLP(pedidoSeleccionado?.subtotal) }}</span>
+          </div>
+          <div class="flex justify-between text-gray-600">
+            <span>Impuestos (19%)</span>
+            <span class="font-bold text-gray-900">{{ formatearCLP(pedidoSeleccionado?.impuestos) }}</span>
+          </div>
+          @if (pedidoSeleccionado?.propina > 0) {
+            <div class="flex justify-between text-gray-600">
+              <span>Propina</span>
+              <span class="font-bold text-gray-900">{{ formatearCLP(pedidoSeleccionado?.propina) }}</span>
+            </div>
+          }
+          <div class="flex justify-between text-base font-extrabold text-brand-primary pt-2 border-t border-gray-200">
+            <span>Total</span>
+            <span>{{ formatearCLP(pedidoSeleccionado?.total) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Modal Detalle -->
+      <div class="pt-4 border-t border-gray-100 flex justify-end gap-2.5 shrink-0">
+        <button 
+          (click)="cerrarModalDetalle()"
+          class="px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 text-xs font-bold transition-colors">
+          Cerrar
+        </button>
+        <button 
+          class="px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold transition-colors flex items-center gap-2 shadow-sm">
+          <i class="fa-solid fa-print"></i>
+          <span>Reimprimir Comanda</span>
+        </button>
+      </div>
+    </div>
+  </div>
+}

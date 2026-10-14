@@ -36,16 +36,41 @@ export class UsuariosService {
       throw new BadRequestException('El correo ya está registrado');
     }
 
-    // Regla de negocio: la contraseña por defecto son los primeros 4 dígitos del documento + ****
-    let passwordPlain = '1234****'; // Fallback
+    if (data.rut && data.rut.trim() !== '') {
+      const existeRut = await this.prisma.usuario.findFirst({
+        where: { rut: data.rut }
+      });
+      if (existeRut) {
+        throw new BadRequestException('El RUT / Documento ya está registrado');
+      }
+    }
+
+    let passwordPlain = '1234'; // Fallback
+    let defaultPin = '1234';
     if (data.rut && data.rut.length >= 4) {
-      passwordPlain = data.rut.substring(0, 4) + '****';
+      passwordPlain = data.rut;
+      defaultPin = data.rut.substring(0, 4);
+    }
+    
+    if (!data.codigoPin || data.codigoPin.trim() === '') {
+      data.codigoPin = defaultPin;
+    }
+
+    const existePin = await this.prisma.usuario.findFirst({
+      where: { codigoPin: data.codigoPin }
+    });
+    if (existePin) {
+      throw new BadRequestException('El PIN de acceso ya está registrado por otro usuario');
+    }
+
+    if ((data as any).clave && (data as any).clave.trim() !== '') {
+      passwordPlain = (data as any).clave;
     }
 
     const salt = await bcrypt.genSalt(10);
     const claveHash = await bcrypt.hash(passwordPlain, salt);
 
-    const { roles, ...userData } = data;
+    const { roles, clave, ...userData } = data as any;
     
     let rolIds: string[] = [];
     if (roles && roles.length > 0) {
@@ -58,6 +83,7 @@ export class UsuariosService {
     return this.prisma.usuario.create({
       data: {
         ...userData,
+        creadoEn: new Date(),
         claveHash,
         rolesUsuario: rolIds.length > 0 ? {
           create: rolIds.map(rolId => ({ rolId }))
@@ -70,7 +96,7 @@ export class UsuariosService {
   }
 
   async update(id: string, data: UpdateUsuarioDto) {
-    const { roles, clave, ...userData } = data;
+    const { roles, clave, ...userData } = data as any;
     
     if (data.correo && data.correo.trim() !== '') {
       const existeCorreo = await this.prisma.usuario.findFirst({
@@ -78,6 +104,24 @@ export class UsuariosService {
       });
       if (existeCorreo) {
         throw new BadRequestException('El correo ya está registrado por otro usuario');
+      }
+    }
+
+    if (data.rut && data.rut.trim() !== '') {
+      const existeRut = await this.prisma.usuario.findFirst({
+        where: { rut: data.rut, id: { not: id } }
+      });
+      if (existeRut) {
+        throw new BadRequestException('El RUT / Documento ya está registrado por otro usuario');
+      }
+    }
+
+    if (data.codigoPin && data.codigoPin.trim() !== '') {
+      const existePin = await this.prisma.usuario.findFirst({
+        where: { codigoPin: data.codigoPin, id: { not: id } }
+      });
+      if (existePin) {
+        throw new BadRequestException('El PIN de acceso ya está registrado por otro usuario');
       }
     }
     

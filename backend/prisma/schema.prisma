@@ -11,21 +11,21 @@ model Usuario {
   /// Identificador único del usuario (UUID)
   id                         String       @id @default(uuid())
   /// Número de documento (RUT sin dígito verificador, o número de pasaporte)
-  rut                        String?      @unique @default("NULL")
+  rut                        String?      @unique
   /// Dígito verificador del RUT
-  dv                         String?      @default("NULL")
+  dv                         String?
   /// Correo electrónico (usado para iniciar sesión)
-  correo                     String?      @unique @default("NULL")
+  correo                     String?      @unique
   /// Contraseña encriptada
-  claveHash                  String?      @default("NULL")
+  claveHash                  String?
   /// Primer y/o segundo nombre
-  nombre                     String?      @default("NULL")
+  nombre                     String?
   /// Apellido Paterno
-  apellidoPaterno            String?      @default("NULL")
+  apellidoPaterno            String?
   /// Apellido Materno
-  apellidoMaterno            String?      @default("NULL")
+  apellidoMaterno            String?
   /// PIN de 4 dígitos para acceso rápido en la caja (POS)
-  codigoPin                  String?      @default("NULL")
+  codigoPin                  String?      @unique
   /// Fecha de creación del registro
   creadoEn                   DateTime?
   /// Fecha de última modificación
@@ -36,18 +36,18 @@ model Usuario {
   tipoDocumento              String       @default("RUT")
   /// Indica si el usuario puede acceder al sistema
   estado                     String?      @default("A") @db.Char(1)
-  imagenUrl                  String?      @default("NULL") @db.VarChar(255)
-  direccion                  String?      @default("NULL")
-  telefono                   String?      @default("NULL")
-  ciudadId                   Int?
+  imagenUrl                  String?      @db.LongText
+  direccion                  String?
+  telefono                   String?
   comunaId                   Int?
-  contactoEmergenciaNombre   String?      @default("NULL")
-  contactoEmergenciaTelefono String?      @default("NULL")
+  contactoEmergenciaNombre   String?
+  contactoEmergenciaTelefono String?
   regionId                   Int?
+  ciudadId                   Int?
   pedidos                    Pedido[]     @relation("PedidosMesero")
+  ciudad                     Ciudad?      @relation(fields: [ciudadId], references: [id_ciudad])
   comuna                     Comuna?      @relation(fields: [comunaId], references: [id_comuna])
   region                     Region?      @relation(fields: [regionId], references: [id_region])
-  ciudad                     Ciudad?      @relation(fields: [ciudadId], references: [id_ciudad])
   rolesUsuario               UsuarioRol[]
 
   @@index([comunaId], map: "usuarios_comunaId_fkey")
@@ -96,9 +96,9 @@ model Rol {
   /// Identificador único del rol
   id           String       @id @default(uuid())
   /// Nombre del rol (ej. ADMINISTRADOR)
-  nombre       String?      @unique @default("NULL")
+  nombre       String?      @unique
   /// Breve descripción de los permisos del rol
-  descripcion  String?      @default("NULL")
+  descripcion  String?
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids          Int          @unique(map: "ids") @default(autoincrement())
   rolesUsuario UsuarioRol[]
@@ -127,7 +127,7 @@ model Categoria {
   /// Nombre visible de la categoría
   nombre String
   /// Nombre del ícono para mostrar en el frontend
-  icono  String? @default("NULL")
+  icono  String?
   /// Número para ordenar la categoría en el menú
   orden  Int     @default(0)
   /// Identificador secundario legible para humanos y uso en frontend/caja
@@ -147,13 +147,13 @@ model Producto {
   /// Nombre del producto
   nombre          String
   /// Descripción o ingredientes visibles para el cliente
-  descripcion     String?         @default("NULL") @db.Text
+  descripcion     String?         @db.Text
   /// Precio base de venta
   precio          Decimal         @db.Decimal(10, 2)
   /// Código de barra o identificador único de inventario
-  sku             String?         @unique @default("NULL")
+  sku             String?         @unique
   /// URL de la foto del producto
-  imagen          String?         @default("NULL")
+  imagen          String?
   /// Área donde se prepara este producto (ej. COCINA, BAR)
   areaPreparacion AreaPreparacion @default(COCINA)
   /// Identificador secundario legible para humanos y uso en frontend/caja
@@ -171,13 +171,13 @@ model VarianteProducto {
   /// Identificador único de la variante
   id          String       @id @default(uuid())
   /// Producto padre
-  productoId  String?      @default("NULL")
+  productoId  String?
   /// Nombre de la variante (ej. "Familiar")
-  nombre      String?      @default("NULL")
+  nombre      String?
   /// Precio de esta variante específica
   precio      Decimal?     @db.Decimal(10, 2)
   /// Código SKU específico
-  sku         String?      @default("NULL")
+  sku         String?
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids         Int          @unique(map: "ids") @default(autoincrement())
   itemsPedido ItemPedido[]
@@ -273,7 +273,7 @@ model MovimientoInventario {
   /// Costo total de este movimiento (si aplica)
   costo     Decimal?       @db.Decimal(10, 2)
   /// Motivo o razón (ej. "Tomates en mal estado")
-  notas     String?        @default("NULL")
+  notas     String?
   /// Fecha y hora exacta
   creadoEn  DateTime       @default(now())
   /// Identificador secundario legible para humanos y uso en frontend/caja
@@ -312,6 +312,8 @@ model Mesa {
   posX        Int         @default(0)
   /// Eje Y en el mapa visual
   posY        Int         @default(0)
+  /// Forma visual de la mesa (redonda, cuadrada, rectangular, barra)
+  shape       String?     @default("redonda")
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids         Int         @unique(map: "ids") @default(autoincrement())
   pedidos     Pedido[]
@@ -322,39 +324,96 @@ model Mesa {
 /// Cabecera de la cuenta o comanda
 model Pedido {
   /// ID único del pedido (UUID)
-  id              String       @id @default(uuid())
+  id               String                  @id @default(uuid())
   /// Número autoincremental fácil de leer para el cliente
-  numeroPedido    Int          @unique @default(autoincrement())
+  numeroPedido     Int                     @unique @default(autoincrement())
   /// Modalidad de venta
-  tipoPedido      TipoPedido   @default(SALON)
+  tipoPedido       TipoPedido              @default(SALON)
   /// Estado general del ticket
-  estado          EstadoPedido @default(PENDIENTE)
+  estado           EstadoPedido            @default(INGRESADO)
   /// Si es SALON, qué mesa es
-  mesaId          String?      @default("NULL")
+  mesaId           String?
   /// Quién atendió la mesa
-  meseroId        String?      @default("NULL")
+  meseroId         String?
   /// Para delivery o para llevar
-  nombreCliente   String?      @default("NULL")
-  telefonoCliente String?      @default("NULL")
-  notas           String?      @default("NULL")
+  nombreCliente    String?
+  telefonoCliente  String?
+  notas            String?
   /// Suma de precios sin impuesto
-  subtotal        Decimal      @db.Decimal(10, 2)
+  subtotal         Decimal                 @db.Decimal(10, 2)
   /// Monto de impuestos calculados
-  impuestos       Decimal      @db.Decimal(10, 2)
+  impuestos        Decimal                 @db.Decimal(10, 2)
   /// Descuentos aplicados
-  descuento       Decimal      @default(0.00) @db.Decimal(10, 2)
+  descuento        Decimal                 @default(0.00) @db.Decimal(10, 2)
   /// Propina voluntaria dejada
-  propina         Decimal      @default(0.00) @db.Decimal(10, 2)
+  propina          Decimal                 @default(0.00) @db.Decimal(10, 2)
   /// Gran total a pagar
-  total           Decimal      @db.Decimal(10, 2)
-  creadoEn        DateTime     @default(now())
-  actualizadoEn   DateTime     @updatedAt
-  mesa            Mesa?        @relation(fields: [mesaId], references: [id])
-  mesero          Usuario?     @relation("PedidosMesero", fields: [meseroId], references: [id])
+  total            Decimal                 @db.Decimal(10, 2)
+  creadoEn         DateTime                @default(now())
+  actualizadoEn    DateTime                @updatedAt
+  historialEstados HistorialEstadoPedido[]
+  mesa             Mesa?                   @relation(fields: [mesaId], references: [id])
+  mesero           Usuario?                @relation("PedidosMesero", fields: [meseroId], references: [id])
 
   @@index([mesaId], map: "pedidos_mesaId_fkey")
   @@index([meseroId], map: "pedidos_meseroId_fkey")
   @@map("pedidos")
+}
+
+/// Catálogo y parametrización de estados de pedido por canal (Salón, Llevar, Delivery)
+model EstadoPedidoConfig {
+  /// Identificador único UUID
+  id                  String                  @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids                 Int                     @unique(map: "ids") @default(autoincrement())
+  /// Código técnico identificador (ej: INGRESADO, EN_COCINA, LISTO, SERVIDO, EN_CAMINO, ENTREGADO, CANCELADO)
+  codigo              String
+  /// Canal aplicable: SALON, PARA_LLEVAR, DELIVERY o TODOS
+  canal               String                  @default("SALON")
+  /// Orden secuencial en el flujo del canal (ej: 1, 2, 3...)
+  paso                Int                     @default(1)
+  /// Nombre amigable según el canal (ej: "Listo para Mesa", "Listo para Retiro", "Listo para Envío")
+  nombre              String
+  /// Explicación operativa del estado
+  descripcion         String?                 @db.Text
+  /// Color hexadecimal para badges e indicadores visuales en UI
+  colorHex            String                  @default("#D96B27")
+  /// Bandera para estados de alerta/anulación (ej: Cancelado)
+  esAlerta            Boolean                 @default(false)
+  /// Umbral máximo en minutos antes de activar alerta visual de Retrasado (ej: 20 min en cocina)
+  tiempoMaximoMinutos Int?
+  /// Estado del registro (A = Activo, I = Inactivo)
+  estado              String                  @default("A") @db.Char(1)
+  historial           HistorialEstadoPedido[]
+
+  @@unique([codigo, canal])
+  @@map("estados_pedido")
+}
+
+/// Registro histórico y auditoría del paso de pedidos por cada estado
+model HistorialEstadoPedido {
+  /// Identificador único UUID
+  id              String             @id @default(uuid())
+  /// Identificador secundario legible para humanos y uso en frontend/caja
+  ids             Int                @unique(map: "ids") @default(autoincrement())
+  /// Pedido al que pertenece el cambio de estado
+  pedidoId        String
+  /// Estado aplicado
+  estadoId        String
+  /// Usuario / empleado que realizó el cambio de estado
+  usuarioId       String?
+  /// Momento exacto de la transición
+  cambiadoEn      DateTime           @default(now())
+  /// Minutos transcurridos en el estado anterior
+  minutosEnEstado Int?
+  /// Notas o motivos (ej: justificación de anulación)
+  notas           String?            @db.Text
+  estadoConfig    EstadoPedidoConfig @relation(fields: [estadoId], references: [id])
+  pedido          Pedido             @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+
+  @@index([pedidoId], map: "historial_estados_pedido_pedidoId_fkey")
+  @@index([estadoId], map: "historial_estados_pedido_estadoId_fkey")
+  @@map("historial_estados_pedido")
 }
 
 /// Plato o bebida específica dentro de un Pedido
@@ -366,7 +425,7 @@ model ItemPedido {
   /// Qué producto es
   productoId       String
   /// Si eligió tamaño familiar, etc.
-  varianteId       String?                 @default("NULL")
+  varianteId       String?
   /// Cantidad pedida
   cantidad         Int                     @default(1)
   /// Precio de 1 unidad
@@ -376,7 +435,7 @@ model ItemPedido {
   /// Estado en la estación de preparación
   estado           EstadoItemPedido        @default(PENDIENTE)
   /// Indicaciones (ej. "Poco ají")
-  notas            String?                 @default("NULL")
+  notas            String?
   /// A qué impresora/pantalla KDS se envió
   areaPreparacion  AreaPreparacion         @default(COCINA)
   /// Hora exacta en la que se comandó
@@ -436,7 +495,7 @@ model Pago {
   /// ID del Método de pago usado
   metodoPagoId     String
   /// Nro de voucher o transferencia
-  numeroReferencia String?  @default("NULL")
+  numeroReferencia String?
   /// Hora del pago
   creadoEn         DateTime @default(now())
   /// Identificador secundario legible para humanos y uso en frontend/caja
@@ -450,7 +509,7 @@ model TurnoCaja {
   /// ID del turno
   id               String    @id @default(uuid())
   /// Cajero responsable
-  usuarioId        String?   @default("NULL")
+  usuarioId        String?
   /// Hora en que abrió
   abiertoEn        DateTime?
   /// Hora del cierre
@@ -464,9 +523,9 @@ model TurnoCaja {
   /// Sobrante o Faltante
   diferencia       Decimal?  @db.Decimal(10, 2)
   /// Estado actual de este turno
-  estado           String?   @default("NULL")
+  estado           String?
   /// Justificaciones de descuadres
-  notas            String?   @default("NULL")
+  notas            String?
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids              Int       @unique(map: "ids") @default(autoincrement())
 
@@ -484,7 +543,7 @@ model ConfiguracionImpresora {
   /// RED_IP o USB
   tipoConexion   TipoConexion     @default(RED_IP)
   /// IP (si es de red)
-  direccionIp    String?          @default("NULL")
+  direccionIp    String?
   /// Puerto
   puerto         Int              @default(9100)
   /// 80mm o 58mm
@@ -515,9 +574,9 @@ model ConfiguracionEmpresa {
   /// IVA / IGV
   porcentajeImpuesto Decimal @default(18.00) @db.Decimal(5, 2)
   /// Mensaje superior del ticket
-  cabeceraImpresion  String? @default("NULL") @db.Text
+  cabeceraImpresion  String? @db.Text
   /// Mensaje de agradecimiento
-  pieImpresion       String? @default("NULL") @db.Text
+  pieImpresion       String? @db.Text
   /// Identificador secundario legible para humanos y uso en frontend/caja
   ids                Int     @unique(map: "ids") @default(autoincrement())
 
@@ -572,16 +631,6 @@ enum TipoPedido {
   DELIVERY
 }
 
-/// Flujo de estados generales de un pedido
-enum EstadoPedido {
-  PENDIENTE
-  EN_COCINA
-  LISTO
-  ENTREGADO
-  PAGADO
-  CANCELADO
-}
-
 /// Estado individual de cada plato en la cocina
 enum EstadoItemPedido {
   PENDIENTE
@@ -595,4 +644,21 @@ enum EstadoItemPedido {
 enum TipoConexion {
   RED_IP
   USB_AGENTE_LOCAL
+}
+
+enum EstadoPedido {
+  INGRESADO
+  EN_COCINA
+  LISTO_MESA
+  LISTO_RETIRO
+  LISTO_ENVIO
+  SERVIDO
+  EN_CAMINO
+  ENTREGADO
+  PAGADO_CERRADO
+  CANCELADO
+  RETRASADO
+  PENDIENTE
+  LISTO
+  PAGADO
 }

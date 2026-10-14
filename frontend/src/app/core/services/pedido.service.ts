@@ -31,4 +31,10 @@ export class PedidoService {
   crearPedido(pedido: PedidoDTO): Observable<any> {
     return this.http.post(this.apiUrl, pedido);
   }
+
+  obtenerEstados(canal?: string): Observable<any[]> {
+    const url = canal ? `${this.apiUrl}/estados?canal=${canal}` : `${this.apiUrl}/estados`;
+    return this.http.get<any[]>(url);
+  }
 }
+

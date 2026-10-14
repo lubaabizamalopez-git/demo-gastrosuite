@@ -30,8 +30,8 @@ export class MenúuService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/api/v1/catalogos';
 
-  obtenerCategorias(incluirInestados = false): Observable<Categoria[]> {
-    return this.http.get<Categoria[]>(`${this.apiUrl}/obtener-categorias?incluirInestados=${incluirInestados}`);
+  obtenerCategorias(incluirInactivos = false): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${this.apiUrl}/obtener-categorias?incluirInactivos=${incluirInactivos}`);
   }
 
   // --- CATEGORÍAS ---

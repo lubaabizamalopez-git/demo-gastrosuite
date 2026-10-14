@@ -9,17 +9,28 @@ import { ActualizarProductoDto } from './dto/actualizar-producto.dto';
 export class CatalogoService {
   constructor(private prisma: PrismaService) {}
 
-  async obtenerCategoriasConProductos(incluirInestados = false) {
-    return this.prisma.categoria.findMany({
-      where: incluirInestados ? {} : { estado: 'A' },
+  async obtenerCategoriasConProductos(incluirInactivos = false) {
+    const categorias = await this.prisma.categoria.findMany({
+      where: incluirInactivos ? {} : { estado: 'A' },
       orderBy: { orden: 'asc' },
-      include: {
-        productos: {
-          where: incluirInestados ? undefined : { estado: 'A' },
-          orderBy: { orden: 'asc' }
-        },
-      }
-    } as any);
+    });
+
+    const productos = await this.prisma.producto.findMany({
+      where: incluirInactivos ? {} : { estado: 'A' },
+      orderBy: { orden: 'asc' },
+    });
+
+    return categorias.map(cat => ({
+      ...cat,
+      productos: productos.filter(p => p.categoriaId === cat.id)
+    }));
+  }
+
+  async obtenerTodosLosProductos(incluirInactivos = false) {
+    return this.prisma.producto.findMany({
+      where: incluirInactivos ? {} : { estado: 'A' },
+      orderBy: { orden: 'asc' },
+    });
   }
 
   // --- CATEGORÍAS ---

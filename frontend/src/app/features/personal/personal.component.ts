@@ -18,6 +18,7 @@ export interface EmpleadoVista {
   apellidoPaterno: string;
   apellidoMaterno: string;
   rol: string;
+  tipoDocumento?: string;
   rut: string;
   correo: string;
   telefono: string;
@@ -28,7 +29,11 @@ export interface EmpleadoVista {
   contactoEmergenciaNombre: string;
   contactoEmergenciaTelefono: string;
   activo: boolean;
+  habilitado?: boolean;
+  enTurno: boolean;
+  inShift?: boolean;
   foto: string | null;
+  avatarUrl?: string | null;
   fotoError?: boolean;
   codigoPin: string;
 }
@@ -75,6 +80,29 @@ export class PersonalComponent implements OnInit {
     return [{ value: null, label: 'Seleccionar...', disabled: true }, ...this.regiones().map(r => ({ value: r.id, label: r.nombre }))];
   });
 
+  public searchTerm = signal<string>('');
+  public filterStatus = signal<'todos' | 'activos' | 'inactivos' | 'turno' | 'descanso'>('todos');
+
+  public empleadosFiltrados = computed(() => {
+    let list = this.empleados();
+    const term = this.searchTerm().toLowerCase();
+    if (term) {
+      list = list.filter(e => 
+        e.nombre.toLowerCase().includes(term) || 
+        (e.apellidoPaterno && e.apellidoPaterno.toLowerCase().includes(term)) ||
+        (e.rut && e.rut.includes(term)) ||
+        (e.correo && e.correo.toLowerCase().includes(term))
+      );
+    }
+    const status = this.filterStatus();
+    if (status === 'activos') list = list.filter(e => e.activo);
+    if (status === 'inactivos') list = list.filter(e => !e.activo);
+    if (status === 'turno') list = list.filter(e => e.enTurno);
+    if (status === 'descanso') list = list.filter(e => !e.enTurno && e.activo);
+    
+    return list;
+  });
+
   public modalConfirmacionAbierto = signal<boolean>(false);
   public empleadoAConfirmar = signal<EmpleadoVista | null>(null);
 
@@ -96,6 +124,14 @@ export class PersonalComponent implements OnInit {
   public regionesOptions: SelectOption[] = [
     { value: 1, label: 'Región Metropolitana' },
     { value: 2, label: 'Región de Valparaíso' }
+  ];
+
+  public filtroOptions: SelectOption[] = [
+    { value: 'todos', label: 'Todos' },
+    { value: 'activos', label: 'Activos' },
+    { value: 'turno', label: 'En Turno' },
+    { value: 'descanso', label: 'En Descanso' },
+    { value: 'inactivos', label: 'Inactivos' }
   ];
 
   
@@ -122,6 +158,7 @@ export class PersonalComponent implements OnInit {
           apellidoPaterno: u.apellidoPaterno || '',
           apellidoMaterno: u.apellidoMaterno || '',
           rol: u.rolesUsuario.length > 0 ? u.rolesUsuario[0].rol.nombre : 'Sin Rol',
+          tipoDocumento: u.tipoDocumento || 'RUT',
           rut: u.rut || '',
           correo: u.correo,
           telefono: u.telefono !== 'NULL' ? u.telefono || '' : '',
@@ -133,7 +170,11 @@ export class PersonalComponent implements OnInit {
           contactoEmergenciaNombre: u.contactoEmergenciaNombre !== 'NULL' ? u.contactoEmergenciaNombre || '' : '',
           contactoEmergenciaTelefono: u.contactoEmergenciaTelefono !== 'NULL' ? u.contactoEmergenciaTelefono || '' : '',
           activo: u.estado === 'A',
+          habilitado: u.estado === 'A',
+          enTurno: u.estado === 'A' && Math.random() > 0.5,
+          inShift: u.estado === 'A' && Math.random() > 0.5,
           foto: (u.imagenUrl && u.imagenUrl !== 'NULL') ? u.imagenUrl : null,
+          avatarUrl: (u.imagenUrl && u.imagenUrl !== 'NULL') ? u.imagenUrl : null,
           fotoError: false,
           codigoPin: u.codigoPin || ''
         }));
@@ -182,13 +223,18 @@ export class PersonalComponent implements OnInit {
     const empleadoActual = this.empleados().find(e => e.id === id);
     if (!empleadoActual) return;
     const nuevoEstadoBool = !empleadoActual.activo;
-    this.empleados.update(lista => lista.map(emp => emp.id === id ? { ...emp, activo: nuevoEstadoBool } : emp));
+    this.empleados.update(lista => lista.map(emp => emp.id === id ? { ...emp, activo: nuevoEstadoBool, habilitado: nuevoEstadoBool } : emp));
     this.personalService.toggleEstado(id).subscribe({
       error: (err) => {
         console.error('Error cambiando estado', err);
-        this.empleados.update(lista => lista.map(emp => emp.id === id ? { ...emp, activo: !nuevoEstadoBool } : emp));
+        this.empleados.update(lista => lista.map(emp => emp.id === id ? { ...emp, activo: !nuevoEstadoBool, habilitado: !nuevoEstadoBool } : emp));
       }
     });
+  }
+
+  public toggleHabilitado(empleadoOId: EmpleadoVista | string): void {
+    const id = typeof empleadoOId === 'string' ? empleadoOId : empleadoOId.id;
+    this.toggleEstado(id);
   }
 
   public abrirEdicion(empleado: EmpleadoVista): void {
@@ -357,7 +403,15 @@ export class PersonalComponent implements OnInit {
     const form = this.formEmpleado();
     if (!form) return;
 
-    if (!this.validarFormulario()) return;
+    if (!this.validarFormulario()) {
+      this.alertaModal.set({
+        abierto: true,
+        titulo: 'Revisa los campos',
+        mensaje: 'No se pudo procesar tu solicitud porque existen errores en el formulario.',
+        tipo: 'error'
+      });
+      return;
+    }
 
     this.guardando.set(true);
 
@@ -395,7 +449,15 @@ export class PersonalComponent implements OnInit {
       payload.imagenUrl = 'NULL';
     }
 
-    if (form.clave) {
+    if (!form.codigoPin || form.codigoPin.trim() === '') {
+      payload.codigoPin = payload.rut.substring(0, 4);
+    } else {
+      payload.codigoPin = form.codigoPin;
+    }
+
+    if (!form.clave || form.clave.trim() === '') {
+      payload.clave = payload.rut + (payload.dv !== 'NULL' ? '-' + payload.dv : '');
+    } else {
       payload.clave = form.clave;
     }
 
@@ -403,26 +465,26 @@ export class PersonalComponent implements OnInit {
       this.personalService.createUsuario(payload).subscribe({
         next: () => {
           this.guardando.set(false);
-          this.alertaModal.set({ abierto: true, titulo: 'Éxito', mensaje: 'Funcionario creado con éxito', tipo: 'success' });
+          this.alertaModal.set({ abierto: true, titulo: 'Yeeeiiii!', mensaje: 'Funcionario creado con éxito', tipo: 'success' });
           this.cargarEmpleados();
           this.cerrarModal();
         },
         error: (err: any) => {
           this.guardando.set(false);
-          this.alertaModal.set({ abierto: true, titulo: 'Error', mensaje: err?.error?.message || 'No se pudo crear. Verifica el correo o número de documento / RUT.', tipo: 'error' });
+          this.alertaModal.set({ abierto: true, titulo: 'Ups!', mensaje: err?.error?.message || 'No se pudo crear. Verifica el correo o número de documento / RUT.', tipo: 'error' });
         }
       });
     } else {
       this.personalService.updateUsuario(form.id, payload).subscribe({
         next: () => {
           this.guardando.set(false);
-          this.alertaModal.set({ abierto: true, titulo: 'Éxito', mensaje: 'Funcionario actualizado con éxito', tipo: 'success' });
+          this.alertaModal.set({ abierto: true, titulo: 'Yeeeiiii!', mensaje: 'Funcionario actualizado con éxito', tipo: 'success' });
           this.cargarEmpleados();
           this.cerrarModal();
         },
         error: (err: any) => {
           this.guardando.set(false);
-          this.alertaModal.set({ abierto: true, titulo: 'Error', mensaje: err?.error?.message || 'No se pudo actualizar la ficha.', tipo: 'error' });
+          this.alertaModal.set({ abierto: true, titulo: 'Ups!', mensaje: err?.error?.message || 'No se pudo actualizar la ficha.', tipo: 'error' });
         }
       });
     }

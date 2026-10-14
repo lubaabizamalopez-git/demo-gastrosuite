@@ -1,161 +1,312 @@
-<div class="h-full flex flex-col gap-6 overflow-hidden pr-2">
-  <!-- Header Híbrido Optimizado -->
-  <div class="w-full flex flex-col md:flex-row md:items-center md:justify-between border-b border-neutral-border pb-4 font-sans">
-    
-    <!-- Título y Subtítulo de la Vista (Previene colisiones) -->
-    <div class="mb-4 md:mb-0">
-      <h1 class="text-xl md:text-2xl font-bold text-text-title tracking-tight">Salón y Mesas</h1>
-      <p class="text-xs md:text-sm text-text-muted mt-0.5">Supervise la distribución y estado de las mesas en tiempo real.</p>
-    </div>
-
-    <!-- ==========================================
-         SELECTOR CONTENEDOR DE PESTAÑAS (TABS)
-         ========================================== -->
-    <div class="relative max-w-full md:max-w-xl lg:max-w-2xl">
-      
-      <!-- VISTA MÓVIL: Dropdown elegante (Se muestra solo en pantallas < md) -->
-      <div class="block md:hidden w-full">
-        <select 
-          [value]="zonaActivaId()" 
-          (change)="cambiarZona(+$any($event.target).value)"
-          class="w-full bg-neutral-surface border border-neutral-border text-text-title px-4 py-3 text-sm rounded-xl focus:outline-none font-medium shadow-sm transition-all focus:border-brand-primary">
-          <option *ngFor="let zona of zonas()" [value]="zona.ids">{{ zona.nombre }}</option>
-        </select>
+<div class="w-full h-full min-h-screen bg-neutral-bg font-sans antialiased p-6 flex relative overflow-hidden select-none" (click)="showCapa2 = false; showCapa3 = false">
+  <!-- 🎛️ LIENZO PRINCIPAL DE MESAS -->
+  <div class="flex-1 flex flex-col gap-6" (click)="$event.stopPropagation()">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-dashed border-text-muted/20 pb-4 gap-4">
+      <div class="flex flex-col gap-0.5 antialiased">
+        <span class="text-xs font-semibold text-brand-primary tracking-wider uppercase">Gastrosuite POS</span>
+        <h1 class="text-[#231E1B] font-bold text-2xl tracking-tight m-0 p-0 antialiased">Lienzo Maestro de Mesas</h1>
       </div>
+      
+      <!-- Leyenda de colores implementados y Filtro de zonas -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Barra de colores de estados -->
+        <div class="flex items-center gap-2 bg-neutral-surface border border-neutral-border px-3 py-1.5 rounded-xl shadow-xs">
+          <span class="text-[11px] font-semibold text-text-muted mr-1">Estados:</span>
+          @for (est of estadosLeyenda; track est.codigo) {
+            <div class="flex items-center gap-1.5 text-[11px] font-medium text-text-body" [title]="est.nombre">
+              <span class="w-2.5 h-2.5 rounded-full inline-block shadow-xs shrink-0" [style.backgroundColor]="est.color"></span>
+              <span class="hidden lg:inline text-[10px] text-text-muted">{{ est.nombre }}</span>
+            </div>
+          }
+        </div>
 
-      <!-- VISTA ESCRITORIO: Scroll Horizontal Suave con Desvanecimiento (Se muestra de md en adelante) -->
-      <div class="hidden md:flex items-center bg-neutral-surface border border-neutral-border p-1.5 rounded-full shadow-sm overflow-x-auto no-scrollbar scroll-smooth whitespace-nowrap max-w-full">
-        <div class="flex space-x-1">
-          
-          <!-- Iteración de Botones con Contraste Mejorado -->
+        <!-- Filtro de zonas simple -->
+        <div class="flex gap-1.5 overflow-x-auto">
           <button 
             *ngFor="let zona of zonas()" 
             (click)="cambiarZona(zona.ids)"
-            [ngClass]="{
-              'bg-brand-soft/60 text-brand-dark border-brand-soft shadow-xs font-semibold': zonaActivaId() === zona.ids,
-              'bg-transparent text-text-muted hover:text-text-title border-transparent hover:bg-neutral-bg': zonaActivaId() !== zona.ids
-            }"
-            class="flex items-center space-x-2 px-5 py-2 text-xs lg:text-sm font-medium rounded-full border transition-all duration-200 ease-in-out focus:outline-none cursor-pointer">
-            
-            <!-- Icono Dinámico FontAwesome -->
-            <i class="fas text-xs" [ngClass]="getIcono(zona.nombre)"></i>
-            
-            <span>{{ zona.nombre }}</span>
+            [ngClass]="zonaActivaId() === zona.ids ? 'bg-brand-primary text-white shadow-sm' : 'bg-neutral-surface border border-neutral-border text-text-muted hover:text-text-title'"
+            class="px-4 py-1.5 font-bold text-xs rounded-xl whitespace-nowrap transition-colors">
+            {{ zona.nombre }}
           </button>
         </div>
       </div>
-      
+    </div>
+ 
+    <!-- Contenedor del Salón con Ejemplo de Variantes de Formas e Interacción Inversa de Sillas -->
+    <div class="flex flex-wrap gap-12 justify-start items-center mt-6 p-4">
+      @for (mesa of mesasArea(); track mesa.id) {
+        @switch (mesa.shape || 'redonda') {
+          @case ('redonda') {
+            <div class="relative w-[156px] h-[156px] flex items-center justify-center">
+              <!-- Sillas Redonda (Cojines ergonómicos redondeados) -->
+              <div class="absolute -top-3 left-[calc(50%-18px)] w-9 h-3 rounded-full z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -right-3 top-[calc(50%-18px)] w-3 h-9 rounded-full z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -bottom-3 left-[calc(50%-18px)] w-9 h-3 rounded-full z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -left-3 top-[calc(50%-18px)] w-3 h-9 rounded-full z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              
+              <!-- Mesa Redonda: Contenido adaptado a la curvatura circular sin desbordes -->
+              <div (click)="toggleCapa2($event, mesa)" 
+                   class="absolute inset-0 rounded-full flex flex-col items-center justify-between py-3 px-3 box-border text-center shadow-md hover:scale-[1.03] transition-all duration-200 z-20 cursor-pointer border-2"
+                   [style.backgroundColor]="mesa.config.bg" 
+                   [style.borderColor]="mesa.config.bg">
+                
+                <!-- Fila superior: Inset concentrado (w-[88px]) para que no roce la curvatura exterior -->
+                <div class="flex justify-between items-center w-[88px] pt-0.5">
+                  <button (click)="openCapa3($event, mesa)" 
+                          class="rounded-full w-5 h-5 flex items-center justify-center bg-white/25 hover:bg-white/40 text-white cursor-pointer transition-colors shadow-xs"
+                          title="Gestionar comanda">
+                    <i class="fas fa-expand-arrows-alt text-[9px]"></i>
+                  </button>
+
+                  <span class="text-[9px] px-1.5 py-0.5 rounded-full font-semibold bg-white/25 text-white shadow-xs flex items-center gap-1">
+                    @if (mesa.estado === 'O' || mesa.estado === 'CS') {
+                      <i class="fas fa-clock text-[8px]"></i> 45m
+                    } @else if (mesa.estado === 'L') {
+                      <i class="fas fa-broom text-[8px] animate-pulse"></i>
+                    } @else if (mesa.estado === 'R') {
+                      <i class="fas fa-bookmark text-[8px]"></i>
+                    } @else if (mesa.estado === 'EM') {
+                      <i class="fas fa-tools text-[8px]"></i>
+                    } @else {
+                      <i class="fas fa-check text-[8px]"></i>
+                    }
+                  </span>
+                </div>
+
+                <!-- Centro: Nombre de mesa y comensales -->
+                <div class="flex flex-col items-center justify-center my-auto">
+                  <div class="text-lg font-bold tracking-tight text-white drop-shadow-xs leading-none">Mesa {{ mesa.numeroMesa }}</div>
+                  <div class="text-[10px] font-medium text-white/90 mt-1 flex items-center gap-1">
+                    <i class="fas fa-users text-[9px]"></i> {{ mesa.capacidad }}p
+                  </div>
+                </div>
+
+                <!-- Fila inferior: Pastilla ovalada redondeada que calza perfectamente con el fondo curvo -->
+                <div class="w-full flex justify-center pb-0.5">
+                  <span class="max-w-[102px] w-auto px-2.5 py-0.5 rounded-full text-[11px] font-bold truncate text-center shadow-xs bg-black/30 text-white tracking-tight border border-white/15">
+                    {{ mesa.tieneCuentaActiva ? formatearCLP(mesa.monto) : mesa.config.label }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+          @case ('cuadrada') {
+            <div class="relative w-[150px] h-[150px] flex items-center justify-center">
+              <!-- Sillas Cuadrada -->
+              <div class="absolute -top-3 left-[calc(50%-18px)] w-9 h-3 rounded-t-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -right-3 top-[calc(50%-18px)] w-3 h-9 rounded-r-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -bottom-3 left-[calc(50%-18px)] w-9 h-3 rounded-b-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -left-3 top-[calc(50%-18px)] w-3 h-9 rounded-l-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              
+              <!-- Mesa Cuadrada -->
+              <div (click)="toggleCapa2($event, mesa)" 
+                   class="absolute inset-0 rounded-2xl flex flex-col justify-between p-3.5 box-border text-center shadow-md hover:scale-[1.03] transition-all duration-200 z-20 cursor-pointer border-2"
+                   [style.backgroundColor]="mesa.config.bg" 
+                   [style.borderColor]="mesa.config.bg">
+                
+                <div class="flex justify-between items-center w-full">
+                  <button (click)="openCapa3($event, mesa)" 
+                          class="rounded-lg w-5 h-5 flex items-center justify-center bg-white/25 hover:bg-white/40 text-white cursor-pointer transition-colors shadow-xs"
+                          title="Gestionar comanda">
+                    <i class="fas fa-expand-arrows-alt text-[9px]"></i>
+                  </button>
+
+                  <span class="text-[9px] px-1.5 py-0.5 rounded-full font-semibold bg-white/25 text-white shadow-xs flex items-center gap-1">
+                    @if (mesa.estado === 'O' || mesa.estado === 'CS') {
+                      <i class="fas fa-clock text-[8px]"></i> 45m
+                    } @else if (mesa.estado === 'L') {
+                      <i class="fas fa-broom text-[8px] animate-pulse"></i>
+                    } @else if (mesa.estado === 'R') {
+                      <i class="fas fa-bookmark text-[8px]"></i>
+                    } @else if (mesa.estado === 'EM') {
+                      <i class="fas fa-tools text-[8px]"></i>
+                    } @else {
+                      <i class="fas fa-check text-[8px]"></i>
+                    }
+                  </span>
+                </div>
+
+                <div class="flex flex-col items-center justify-center my-auto">
+                  <div class="text-lg font-bold tracking-tight text-white drop-shadow-xs leading-none">Mesa {{ mesa.numeroMesa }}</div>
+                  <div class="text-[10px] font-medium text-white/90 mt-1 flex items-center gap-1">
+                    <i class="fas fa-users text-[9px]"></i> {{ mesa.capacidad }}p
+                  </div>
+                </div>
+
+                <div class="flex justify-center w-full">
+                  <span class="w-[90%] px-2.5 py-0.5 rounded-lg text-[11px] font-bold truncate text-center shadow-xs bg-black/30 text-white tracking-tight border border-white/15">
+                    {{ mesa.tieneCuentaActiva ? formatearCLP(mesa.monto) : mesa.config.label }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+          @case ('rectangular') {
+            <div class="relative w-[190px] h-[130px] flex items-center justify-center">
+              <!-- Sillas Rectangular (6 pax) -->
+              <div class="absolute -top-3 left-[40px] w-9 h-3 rounded-t-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -top-3 right-[40px] w-9 h-3 rounded-t-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -bottom-3 left-[40px] w-9 h-3 rounded-b-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -bottom-3 right-[40px] w-9 h-3 rounded-b-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -left-3 top-[calc(50%-14px)] w-3 h-7 rounded-l-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              <div class="absolute -right-3 top-[calc(50%-14px)] w-3 h-7 rounded-r-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              
+              <!-- Mesa Rectangular -->
+              <div (click)="toggleCapa2($event, mesa)" 
+                   class="absolute inset-0 rounded-2xl flex flex-col justify-between p-3 box-border text-center shadow-md hover:scale-[1.03] transition-all duration-200 z-20 cursor-pointer border-2"
+                   [style.backgroundColor]="mesa.config.bg" 
+                   [style.borderColor]="mesa.config.bg">
+                
+                <div class="flex justify-between items-center w-full px-1">
+                  <button (click)="openCapa3($event, mesa)" 
+                          class="rounded-lg w-5 h-5 flex items-center justify-center bg-white/25 hover:bg-white/40 text-white cursor-pointer transition-colors shadow-xs"
+                          title="Gestionar comanda">
+                    <i class="fas fa-expand-arrows-alt text-[9px]"></i>
+                  </button>
+
+                  <span class="text-[9px] px-2 py-0.5 rounded-full font-semibold bg-white/25 text-white shadow-xs flex items-center gap-1">
+                    @if (mesa.estado === 'O' || mesa.estado === 'CS') {
+                      <i class="fas fa-clock text-[8px]"></i> 45m
+                    } @else if (mesa.estado === 'L') {
+                      <i class="fas fa-broom text-[8px] animate-pulse"></i> Limpieza
+                    } @else if (mesa.estado === 'R') {
+                      <i class="fas fa-bookmark text-[8px]"></i> Res.
+                    } @else if (mesa.estado === 'EM') {
+                      <i class="fas fa-tools text-[8px]"></i> Mant.
+                    } @else {
+                      <i class="fas fa-check text-[8px]"></i>
+                    }
+                  </span>
+                </div>
+
+                <div class="flex flex-col items-center justify-center my-auto">
+                  <div class="text-lg font-bold tracking-tight text-white drop-shadow-xs leading-none">Mesa {{ mesa.numeroMesa }}</div>
+                  <div class="text-[10px] font-medium text-white/90 mt-1 flex items-center gap-1">
+                    <i class="fas fa-users text-[9px]"></i> {{ mesa.capacidad }}p
+                  </div>
+                </div>
+
+                <div class="flex justify-center w-full">
+                  <span class="w-[82%] px-2.5 py-0.5 rounded-lg text-[11px] font-bold truncate text-center shadow-xs bg-black/30 text-white tracking-tight border border-white/15">
+                    {{ mesa.tieneCuentaActiva ? formatearCLP(mesa.monto) : mesa.config.label }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+          @case ('barra') {
+            <div class="relative w-[110px] h-[150px] flex items-center justify-center">
+              <!-- Silla de Barra (Taburete lateral izquierdo) -->
+              <div class="absolute -left-3.5 top-[calc(50%-16px)] w-3.5 h-8 rounded-l-md z-10 shadow-xs" 
+                   [style.backgroundColor]="mesa.config.bg + '66'" [style.borderColor]="mesa.config.bg" class="border"></div>
+              
+              <!-- Módulo de Barra -->
+              <div (click)="toggleCapa2($event, mesa)" 
+                   class="absolute inset-0 rounded-xl flex flex-col justify-between p-2.5 box-border text-center shadow-md hover:scale-[1.03] transition-all duration-200 z-20 cursor-pointer border-2"
+                   [style.backgroundColor]="mesa.config.bg" 
+                   [style.borderColor]="mesa.config.bg">
+                
+                <div class="flex justify-between items-center w-full">
+                  <button (click)="openCapa3($event, mesa)" 
+                          class="rounded-lg w-5 h-5 flex items-center justify-center bg-white/25 hover:bg-white/40 text-white cursor-pointer transition-colors shadow-xs"
+                          title="Gestionar comanda">
+                    <i class="fas fa-expand-arrows-alt text-[9px]"></i>
+                  </button>
+
+                  <span class="text-[9px] px-1 py-0.2 rounded-full font-semibold bg-white/25 text-white shadow-xs">
+                    @if (mesa.estado === 'EM') {
+                      <i class="fas fa-tools text-[8px]"></i>
+                    } @else {
+                      <i class="fas fa-glass-martini-alt text-[8px]"></i>
+                    }
+                  </span>
+                </div>
+
+                <div class="flex flex-col items-center justify-center my-auto">
+                  <div class="text-sm font-bold tracking-tight text-white drop-shadow-xs leading-none">Barra {{ mesa.numeroMesa }}</div>
+                  <div class="text-[9px] font-medium text-white/90 mt-1 flex items-center gap-1">
+                    <i class="fas fa-user text-[8px]"></i> 1p
+                  </div>
+                </div>
+
+                <div class="flex justify-center w-full">
+                  <span class="w-full px-1 py-0.5 rounded-md text-[10px] font-bold truncate text-center shadow-xs bg-black/30 text-white tracking-tight border border-white/15">
+                    {{ mesa.tieneCuentaActiva ? formatearCLP(mesa.monto) : mesa.config.label }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      }
     </div>
   </div>
-
-  <!-- CONTENEDOR FLOTANTE PERSISTENTE (Nomenclatura de Estados v2)
-       Mantiene fijación 'sticky' en la parte superior y es 100% responsivo. -->
-  <div class="sticky top-4 z-50 flex justify-center w-full pointer-events-none mb-6">
-    <div class="inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-3 bg-brand-cream border border-brand-soft/60 px-6 py-3 rounded-full shadow-md pointer-events-auto backdrop-blur-sm max-w-[95vw]">
-      <!-- Estado: Disponible -->
-      <div class="flex items-center gap-2">
-        <i class="fas fa-circle text-[#10B981] text-xs"></i>
-        <span class="text-xs md:text-sm font-semibold text-text-title">Disponible</span>
+ 
+  <!-- 🏷️ POPOVER DE INSPECCIÓN RÁPIDA (NIVEL 2) -->
+  @if (showCapa2 && mesaActiva) {
+    <div (click)="$event.stopPropagation()" class="absolute top-[240px] left-[180px] w-[260px] bg-neutral-surface border border-text-muted/15 rounded-2xl p-4 shadow-xl z-50 flex flex-col gap-3 transition-opacity duration-300">
+      <div class="border-b border-neutral-bg pb-2 flex justify-between items-center">
+        <div class="flex flex-col">
+          <span class="text-xs font-semibold text-text-title">Inspección Rápida</span>
+          <span class="text-[10px] text-text-muted font-normal">Mesa {{ mesaActiva.numeroMesa }}</span>
+        </div>
+        <button (click)="closeCapa2($event)" class="bg-neutral-bg hover:bg-text-muted/10 text-text-muted w-6 h-6 rounded-md flex items-center justify-center text-sm font-bold transition-colors">&times;</button>
       </div>
-
-      <!-- Separador -->
-      <div class="hidden md:block h-3 w-px bg-brand-soft/40"></div>
-
-      <!-- Estado: Limpiando (NUEVO - Asociado visualmente a disponible) -->
-      <div class="flex items-center gap-2">
-        <!-- Verde menta/esmeralda suave que pulsa sutilmente indicando transición rápida -->
-        <i class="fas fa-circle text-[#34D399] text-xs animate-pulse"></i>
-        <span class="text-xs md:text-sm font-semibold text-text-title">Limpiando</span>
+      <div class="flex flex-col gap-1.5 text-xs text-text-body max-h-[90px] overflow-y-auto pr-1 no-scrollbar">
+        <!-- Ejemplo estático de inspección rápida -->
+        <div class="flex justify-between items-center bg-status-success-bg/40 p-1.5 rounded-md border border-status-success-bg">
+          <span>1x Entrecot Premium</span>
+          <span class="text-status-success-text font-medium text-[10px] flex items-center gap-1"><i class="fas fa-check"></i> Servido</span>
+        </div>
       </div>
-
-      <!-- Separador -->
-      <div class="hidden sm:block h-3 w-px bg-brand-soft/40"></div>
-
-      <!-- Estado: Cuenta Solicitada -->
-      <div class="flex items-center gap-2">
-        <i class="fas fa-circle text-[#F43F5E] text-xs animate-bounce"></i>
-        <span class="text-xs md:text-sm font-semibold text-text-title">Cuenta Solicitada</span>
-      </div>
-
-      <!-- Separador -->
-      <div class="hidden md:block h-3 w-px bg-brand-soft/40"></div>
-
-      <!-- Estado: Ocupada -->
-      <div class="flex items-center gap-2">
-        <i class="fas fa-circle text-[#FF6B00] text-xs"></i>
-        <span class="text-xs md:text-sm font-semibold text-text-title">Ocupada</span>
-      </div>
-
-      <!-- Separador -->
-      <div class="hidden sm:block h-3 w-px bg-brand-soft/40"></div>
-
-      <!-- Estado: Reservada -->
-      <div class="flex items-center gap-2">
-        <i class="fas fa-circle text-[#4A7C9D] text-xs"></i>
-        <span class="text-xs md:text-sm font-semibold text-text-title">Reservada</span>
-      </div>
-
-      <!-- Separador -->
-      <div class="hidden md:block h-3 w-px bg-brand-soft/40"></div>
-
-      <!-- Estado: En Mantención -->
-      <div class="flex items-center gap-2">
-        <i class="fas fa-circle text-[#91857F] text-xs"></i>
-        <span class="text-xs md:text-sm font-semibold text-text-body">En Mantención</span>
+      <div class="border-t border-dashed border-text-muted/15 pt-2 flex justify-between items-center text-xs text-text-title font-medium">
+        <span>Total Cuenta:</span>
+        <span class="text-sm font-bold text-brand-primary">{{ formatearCLP($any(mesaActiva).monto) }}</span>
       </div>
     </div>
-  </div>
-
-  <!-- Tables Grid -->
-  <div class="flex-1 bg-white border border-gray-100 rounded-2xl shadow-sm p-8 overflow-y-auto relative bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0wIDB2NDBMMTAgMzBsMTAgMTBMMzAgMzBsMTAgMTBWMHoiIGZpbGw9InJnYmEoMCwwLDAsMC4wMikiLz48L3N2Zz4=')]">
-    
-    <!-- Mesas Posicionadas por Coordenadas (Igual al Diseñador) -->
-    <div class="relative w-full h-full min-h-[600px]">
-      <div *ngFor="let mesa of mesasArea()" 
-           class="absolute bg-neutral-bg border border-neutral-border rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-brand-primary transition-all flex flex-col items-center justify-between min-w-[140px] cursor-pointer"
-           [style.left.px]="mesa.posX"
-           [style.top.px]="mesa.posY"
-           [style.transform]="'translate(-50%, -50%)'">
-        
-        <!-- Ícono Dinámico Superior -->
-        <div class="mt-1 w-10 h-10 rounded-full flex items-center justify-center">
-          <i class="fas text-xl" [ngClass]="{
-            'fa-money-bill-wave text-[#F43F5E] animate-bounce': mesa.estado === 'CS',
-            'fa-user-friends text-[#FF6B00]': mesa.estado === 'O',
-            'fa-chair text-[#10B981]': mesa.estado === 'D',
-            'fa-clock text-[#4A7C9D]': mesa.estado === 'R',
-            'fa-broom text-[#34D399] animate-pulse': mesa.estado === 'L',
-            'fa-wrench text-[#91857F]': mesa.estado === 'EM'
-          }"></i>
+  }
+ 
+  <!-- 📑 SIDEBAR LATERAL DE ACCIÓN AVANZADA (NIVEL 3) -->
+  @if (showCapa3 && mesaActiva) {
+    <div (click)="$event.stopPropagation()" class="w-[380px] h-full bg-neutral-surface border-l border-text-muted/15 shadow-2xl flex flex-col justify-between absolute right-0 top-0 z-50 transform transition-transform duration-300">
+      <div class="p-6 flex flex-col gap-5">
+        <div class="border-b border-neutral-bg pb-4 flex justify-between items-center">
+          <div class="flex flex-col">
+            <span class="text-[10px] font-semibold text-text-muted tracking-wide uppercase">Gestión Avanzada de Comanda</span>
+            <h3 class="text-lg font-bold text-text-title tracking-tight mt-0.5">Mesa {{ mesaActiva.numeroMesa }}</h3>
+          </div>
+          <button (click)="closeCapa3()" class="bg-neutral-bg hover:bg-text-muted/10 transition-colors text-text-muted w-7 h-7 rounded-lg text-lg flex items-center justify-center">&times;</button>
         </div>
-
-        <!-- Información Central -->
-        <div class="text-center my-2 select-none">
-          <h4 class="text-base font-bold text-text-title">Mesa {{ mesa.numeroMesa }}</h4>
-          <p class="text-xs text-text-muted">{{ mesa.capacidad }} Pax</p>
-          <p *ngIf="$any(mesa).monto" class="text-sm font-bold text-brand-primary mt-1">${{ $any(mesa).monto | number:'1.2-2' }}</p>
-        </div>
-
-        <!-- Píldora de Estado -->
-        <div class="px-3 py-1 text-2xs font-bold uppercase rounded-full tracking-wider select-none"
-             [ngClass]="{
-               'bg-[#10B981] text-white': mesa.estado === 'D',
-               'bg-[#FF6B00] text-white': mesa.estado === 'O',
-               'bg-[#F43F5E] text-white': mesa.estado === 'CS',
-               'bg-[#4A7C9D] text-white': mesa.estado === 'R',
-               'bg-[#34D399] text-white': mesa.estado === 'L',
-               'bg-[#91857F] text-white': mesa.estado === 'EM'
-             }">
-          {{
-            mesa.estado === 'D' ? 'Disponible' :
-            mesa.estado === 'O' ? 'Ocupada' :
-            mesa.estado === 'CS' ? 'Cuenta Solicitada' :
-            mesa.estado === 'R' ? 'Reservada' :
-            mesa.estado === 'L' ? 'Limpiando' :
-            'En Mantención'
-          }}
+        <div class="flex items-center gap-2.5 bg-neutral-bg p-3 rounded-xl text-xs text-text-body border border-text-muted/5">
+          <i class="fas fa-user-tag text-brand-primary text-sm"></i>
+          <div>Atendido por: <strong class="text-text-title font-semibold">Carlos K.</strong></div>
         </div>
       </div>
+      <div class="p-6 bg-neutral-surface border-t border-text-muted/12 flex flex-col gap-3.5">
+        <div class="flex justify-between items-center bg-neutral-bg p-3 rounded-xl border border-text-muted/5">
+          <span class="text-xs text-text-body font-normal">Total Neto:</span>
+          <strong class="text-xl text-brand-primary font-bold tracking-tight">{{ formatearCLP($any(mesaActiva).monto) }}</strong>
+        </div>
+        <!-- Integración Botón Cobrar -->
+        <button class="bg-brand-primary hover:bg-brand-dark text-white py-3.5 rounded-2xl font-semibold w-full text-xs shadow-lg shadow-brand-primary/20 flex items-center justify-center gap-2 transition-colors duration-150">
+          <i class="fas fa-money-bill-wave text-[11px]"></i> Cobrar / Imprimir Cuenta
+        </button>
+      </div>
     </div>
-  </div>
+  }
 </div>
