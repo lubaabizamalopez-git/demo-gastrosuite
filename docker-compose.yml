@@ -13,10 +13,10 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: ${DATABASE_URL:-mysql://gastro_admin:lucas06122012@129.121.36.186:3306/gastrosuite_db}
-      JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_gastrosuite_2026}
+      DATABASE_URL: mysql://gastro_admin:lucas06122012@129.121.36.186:3306/gastrosuite_db
+      JWT_SECRET: super_secret_jwt_key_gastrosuite_2026
     ports:
-      - "${PORT_BACKEND:-3890}:3000"
+      - "3890:3000"
     networks:
       - gastrosuite_net
 
@@ -30,7 +30,7 @@ services:
     container_name: gastrosuite_frontend
     restart: always
     ports:
-      - "${PORT_FRONTEND:-8890}:80"
+      - "8890:80"
     depends_on:
       - backend
     networks:
