@@ -2,31 +2,7 @@ version: '3.8'
 
 services:
   # ----------------------------------------------------
-  # 1. BASE DE DATOS MARIADB PERSISTENTE
-  # ----------------------------------------------------
-  mariadb:
-    image: mariadb:10.11
-    container_name: gastrosuite_mariadb
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_password_gastro}
-      MYSQL_DATABASE: ${DB_NAME:-gastrosuite_db}
-      MYSQL_USER: ${DB_USER:-gastro_user}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-gastro_pass_123}
-    ports:
-      - "3306:3306"
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    networks:
-      - gastrosuite_net
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # ----------------------------------------------------
-  # 2. BACKEND NESTJS API & WEBSOCKETS
+  # 1. BACKEND NESTJS
   # ----------------------------------------------------
   backend:
     build:
@@ -37,51 +13,28 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: "mysql://${DB_USER:-gastro_user}:${DB_PASSWORD:-gastro_pass_123}@mariadb:3306/${DB_NAME:-gastrosuite_db}"
+      DATABASE_URL: ${DATABASE_URL:-mysql://gastro_admin:lucas06122012@129.121.36.186:3306/gastrosuite_db}
       JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_gastrosuite_2026}
     ports:
       - "3000:3000"
-    depends_on:
-      mariadb:
-        condition: service_healthy
     networks:
       - gastrosuite_net
 
   # ----------------------------------------------------
-  # 3. FRONTEND ANGULAR / REACT BUILD
+  # 2. FRONTEND ANGULAR + NGINX
   # ----------------------------------------------------
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: gastrosuite_frontend
-    restart: always
-    networks:
-      - gastrosuite_net
-
-  # ----------------------------------------------------
-  # 4. NGINX REVERSE PROXY & SSL CERTBOT
-  # ----------------------------------------------------
-  nginx-proxy:
-    image: nginx:alpine
-    container_name: gastrosuite_nginx
     restart: always
     ports:
       - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
     depends_on:
       - backend
-      - frontend
     networks:
       - gastrosuite_net
-
-volumes:
-  mariadb_data:
-    driver: local
 
 networks:
   gastrosuite_net:
