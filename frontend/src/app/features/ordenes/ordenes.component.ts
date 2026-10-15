@@ -4,6 +4,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CustomSelectComponent, SelectOption } from '../../shared/components/custom-select/custom-select.component';
 import { BadgeComponent } from '../../shared/components/badge/badge.component';
+import { apiUrl } from '../../core/constants/api.constants';
 
 @Component({
   selector: 'app-ordenes',
@@ -76,7 +77,7 @@ export class OrdenesComponent implements OnInit {
 
   cargarPedidos() {
     this.cargando = true;
-    this.http.get<any[]>('http://localhost:3000/api/pedidos').subscribe({
+    this.http.get<any[]>(apiUrl('/api/pedidos')).subscribe({
       next: (data) => {
         this.pedidos = data;
         this.cargando = false;

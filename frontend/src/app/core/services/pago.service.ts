@@ -18,12 +18,14 @@ export interface RegistrarPagoDTO {
   numeroReferencia?: string;
 }
 
+import { apiUrl } from '../constants/api.constants';
+
 @Injectable({
   providedIn: 'root'
 })
 export class PagoService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api/pagos';
+  private apiUrl = apiUrl('/api/pagos');
 
   obtenerMetodosPago(): Observable<MetodoPago[]> {
     return this.http.get<MetodoPago[]>(`${this.apiUrl}/metodos`);

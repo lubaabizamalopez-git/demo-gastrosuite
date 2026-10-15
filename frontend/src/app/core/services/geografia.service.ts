@@ -18,11 +18,13 @@ export interface Comuna {
   nombre: string;
 }
 
+import { apiUrl } from '../constants/api.constants';
+
 @Injectable({
   providedIn: 'root'
 })
 export class GeografiaService {
-  private apiUrl = 'http://localhost:3000/geografia';
+  private apiUrl = apiUrl('/api/geografia');
 
   constructor(private http: HttpClient) {}
 

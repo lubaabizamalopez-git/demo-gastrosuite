@@ -21,12 +21,14 @@ export interface PedidoDTO {
   items: ItemPedidoDTO[];
 }
 
+import { apiUrl } from '../constants/api.constants';
+
 @Injectable({
   providedIn: 'root'
 })
 export class PedidoService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api/pedidos';
+  private apiUrl = apiUrl('/api/pedidos');
 
   crearPedido(pedido: PedidoDTO): Observable<any> {
     return this.http.post(this.apiUrl, pedido);

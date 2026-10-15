@@ -23,12 +23,14 @@ export interface Categoria {
   productos: Producto[];
 }
 
+import { apiUrl } from '../constants/api.constants';
+
 @Injectable({
   providedIn: 'root'
 })
 export class MenúuService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/api/v1/catalogos';
+  private apiUrl = apiUrl('/api/v1/catalogos');
 
   obtenerCategorias(incluirInactivos = false): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(`${this.apiUrl}/obtener-categorias?incluirInactivos=${incluirInactivos}`);

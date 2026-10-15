@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CustomSelectComponent, SelectOption } from '../../shared/components/custom-select/custom-select.component';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
+import { apiUrl } from '../../core/constants/api.constants';
 
 interface CartItem {
   producto: Producto;
@@ -215,7 +216,7 @@ export class PosComponent implements OnInit, OnDestroy {
   }
 
   cargarAreasYMesas() {
-    this.http.get<any[]>('http://localhost:3000/api/salon/areas').subscribe(res => {
+    this.http.get<any[]>(apiUrl('/api/salon/areas')).subscribe(res => {
       this.areas = res;
       this.opcionesSalones = [
         { value: 'TODOS', label: 'Ver todos' },
@@ -223,7 +224,7 @@ export class PosComponent implements OnInit, OnDestroy {
       ];
     });
 
-    this.http.get<any[]>('http://localhost:3000/api/salon/mesas').subscribe(res => {
+    this.http.get<any[]>(apiUrl('/api/salon/mesas')).subscribe(res => {
       this.todasLasMesas = res;
       this.filtrarMesas();
     });

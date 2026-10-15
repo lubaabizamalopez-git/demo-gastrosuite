@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
+import { apiUrl } from '../../../core/constants/api.constants';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -45,11 +47,11 @@ export class LoginComponent {
   
   loginAdmin() {
     const payload = { correo: this.email(), clave: this.password() };
-    this.http.post('http://localhost:3000/api/auth/login', payload).subscribe({
+    this.http.post(apiUrl('/api/auth/login'), payload).subscribe({
       next: (res: any) => {
         localStorage.setItem('token', res.access_token);
         localStorage.setItem('usuario', JSON.stringify(res.usuario));
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/pos']);
       },
       error: (err) => alert('Error: Credenciales inválidas')
     });
@@ -57,7 +59,7 @@ export class LoginComponent {
   
   loginPos() {
     const payload = { pin: this.pin() };
-    this.http.post('http://localhost:3000/api/auth/login-pin', payload).subscribe({
+    this.http.post(apiUrl('/api/auth/login-pin'), payload).subscribe({
       next: (res: any) => {
         localStorage.setItem('token', res.access_token);
         localStorage.setItem('usuario', JSON.stringify(res.usuario));

@@ -23,11 +23,13 @@ export interface Mesa {
   areaSalon?: AreaSalon;
 }
 
+import { apiUrl } from '../constants/api.constants';
+
 @Injectable({
   providedIn: 'root'
 })
 export class SalonService {
-  private apiUrl = 'http://localhost:3000/salon';
+  private apiUrl = apiUrl('/api/salon');
 
   constructor(private http: HttpClient) {}
 

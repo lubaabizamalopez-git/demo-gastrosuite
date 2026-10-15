@@ -31,11 +31,13 @@ export interface Usuario {
   rolesUsuario: { rol: Rol }[];
 }
 
+import { apiUrl } from '../../core/constants/api.constants';
+
 @Injectable({
   providedIn: 'root'
 })
 export class PersonalService {
-  private apiUrl = 'http://localhost:3000/usuarios';
+  private apiUrl = apiUrl('/api/usuarios');
 
   constructor(private http: HttpClient) {}
 
