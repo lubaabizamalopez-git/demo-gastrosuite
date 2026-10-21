@@ -86,7 +86,7 @@ async function main() {
       nombre: 'Spicy BBQ Bacon',
       descripcion: 'Carne premium, tocino crujiente, aros de cebolla, jalapeños y salsa BBQ secreta.',
       precio: 13.50,
-      imagen: 'https://images.unsplash.com/photo-1594212202875-86ac519fe725?q=80&w=600&auto=format&fit=crop',
+      imagen: 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=600&auto=format&fit=crop',
       areaPreparacion: AreaPreparacion.COCINA
     }
   });
@@ -145,7 +145,7 @@ async function main() {
       nombre: 'Veggie Burger',
       descripcion: 'Hamburguesa de lentejas, lechuga, tomate y mayonesa vegana.',
       precio: 12.00,
-      imagen: 'https://images.unsplash.com/photo-1525059696034-4967a8e1dcae?q=80&w=600&auto=format&fit=crop',
+      imagen: 'https://images.unsplash.com/photo-1520072959219-c595dc870360?q=80&w=600&auto=format&fit=crop',
       areaPreparacion: AreaPreparacion.COCINA
     }
   });
@@ -186,13 +186,32 @@ async function main() {
     }
   });
 
-  // 7. Área Salón y Mesas (Distribución Realista)
+  // 7. Área Salón y Mesas (Distribución Realista Salón Principal)
   const salon = await prisma.areaSalon.create({ data: { nombre: 'Salón Principal', orden: 1 } });
   const terraza = await prisma.areaSalon.create({ data: { nombre: 'Terraza VIP', orden: 2 } });
 
-  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: 'M1', capacidad: 2, estado: EstadoMesa.D, posX: 100, posY: 100 } });
-  const mesa2 = await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: 'M2', capacidad: 4, estado: EstadoMesa.O, posX: 300, posY: 100 } });
-  const mesa3 = await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: 'M3', capacidad: 6, estado: EstadoMesa.O, posX: 500, posY: 100 } });
+  // Barra Superior Centro
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: 'Barra Principal', capacidad: 6, estado: EstadoMesa.O, shape: 'barra', posX: 50, posY: 10 } });
+
+  // Fila 1
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '01', capacidad: 4, estado: EstadoMesa.D, shape: 'cuadrada', posX: 20, posY: 30 } });
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '09', capacidad: 4, estado: EstadoMesa.O, shape: 'redonda', posX: 50, posY: 30 } });
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '05', capacidad: 6, estado: EstadoMesa.D, shape: 'rectangular', posX: 80, posY: 30 } });
+
+  // Fila 2
+  const mesa2 = await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '02', capacidad: 6, estado: EstadoMesa.O, shape: 'rectangular', posX: 20, posY: 50 } });
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '10', capacidad: 4, estado: EstadoMesa.D, shape: 'redonda', posX: 50, posY: 50 } });
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '06', capacidad: 4, estado: EstadoMesa.O, shape: 'cuadrada', posX: 80, posY: 50 } });
+
+  // Fila 3
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '03', capacidad: 4, estado: EstadoMesa.CS, shape: 'cuadrada', posX: 20, posY: 70 } });
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '11', capacidad: 4, estado: EstadoMesa.R, shape: 'redonda', posX: 50, posY: 70 } });
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '07', capacidad: 6, estado: EstadoMesa.EM, shape: 'rectangular', posX: 80, posY: 70 } });
+
+  // Fila 4
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '04', capacidad: 6, estado: EstadoMesa.D, shape: 'rectangular', posX: 20, posY: 90 } });
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '12', capacidad: 4, estado: EstadoMesa.L, shape: 'redonda', posX: 50, posY: 90 } });
+  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '08', capacidad: 4, estado: EstadoMesa.D, shape: 'cuadrada', posX: 80, posY: 90 } });
   
   await prisma.mesa.create({ data: { areaSalonId: terraza.id, numeroMesa: 'T1', capacidad: 4, estado: EstadoMesa.D, posX: 100, posY: 300 } });
   const mesaT2 = await prisma.mesa.create({ data: { areaSalonId: terraza.id, numeroMesa: 'T2', capacidad: 4, estado: EstadoMesa.O, posX: 300, posY: 300 } });

@@ -70,7 +70,7 @@
       
       <div class="productos-grid">
         <div *ngFor="let prod of cat.productos" class="producto-item clickable" (click)="abrirDetalle(prod, $event)">
-          <div *ngIf="prod.imagen" class="prod-img" [style.background-image]="'url(http://localhost:3000' + prod.imagen + ')'"></div>
+          <div *ngIf="prod.imagen" class="prod-img" [style.background-image]="'url(' + obtenerUrlImagen(prod.imagen) + ')'"></div>
           <div *ngIf="!prod.imagen" class="prod-img fallback">{{ prod.nombre.charAt(0) }}</div>
           <div class="prod-details">
             <h3>{{ prod.nombre }}</h3>
@@ -113,7 +113,7 @@
         <tr *ngFor="let prod of productosPaginadosLista; trackBy: trackByProducto" class="table-row clickable" (click)="abrirDetalle(prod, $event)">
           <td>
             <div class="flex items-center gap-4">
-              <img *ngIf="prod.imagen" [src]="'http://localhost:3000' + prod.imagen" [alt]="prod.nombre" class="table-img">
+              <img *ngIf="prod.imagen" [src]="obtenerUrlImagen(prod.imagen)" (error)="prod.imagen = null" [alt]="prod.nombre" class="table-img">
               <div *ngIf="!prod.imagen" class="table-img-placeholder">
                 {{ prod.nombre.charAt(0) }}
               </div>

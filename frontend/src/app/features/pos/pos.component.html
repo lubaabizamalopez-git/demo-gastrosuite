@@ -124,7 +124,7 @@
                 
                 <div class="w-20 h-20 rounded-full mb-2.5 overflow-hidden bg-brand-cream border border-gray-100 group-hover:border-brand-primary/30 transition-colors flex items-center justify-center shrink-0">
                   @if (prod.imagen) {
-                    <img [src]="prod.imagen.startsWith('http') ? prod.imagen : 'http://localhost:3000' + prod.imagen" [alt]="prod.nombre" class="w-full h-full object-cover">
+                    <img [src]="resolverUrl(prod.imagen)" (error)="manejarErrorImagen($event)" [alt]="prod.nombre" class="w-full h-full object-cover">
                   } @else {
                     <span class="text-xl font-bold text-brand-primary">{{ prod.nombre.charAt(0) }}</span>
                   }
@@ -162,7 +162,7 @@
                 
                 <div class="w-12 h-12 rounded-lg overflow-hidden bg-brand-cream border border-gray-100 group-hover:border-brand-primary/30 flex shrink-0 items-center justify-center">
                   @if (prod.imagen) {
-                    <img [src]="prod.imagen.startsWith('http') ? prod.imagen : 'http://localhost:3000' + prod.imagen" [alt]="prod.nombre" class="w-full h-full object-cover">
+                    <img [src]="resolverUrl(prod.imagen)" (error)="manejarErrorImagen($event)" [alt]="prod.nombre" class="w-full h-full object-cover">
                   } @else {
                     <span class="text-base font-bold text-brand-primary">{{ prod.nombre.charAt(0) }}</span>
                   }

@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CustomSelectComponent, SelectOption } from '../../shared/components/custom-select/custom-select.component';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
-import { apiUrl } from '../../core/constants/api.constants';
+import { apiUrl, resolverUrlImagen } from '../../core/constants/api.constants';
 
 interface CartItem {
   producto: Producto;
@@ -31,6 +31,17 @@ export class PosComponent implements OnInit, OnDestroy {
   private pedidoService = inject(PedidoService);
   private pagoService = inject(PagoService);
   private http = inject(HttpClient);
+
+  resolverUrl(url?: string | null): string {
+    return resolverUrlImagen(url);
+  }
+
+  manejarErrorImagen(event: Event) {
+    const target = event.target as HTMLImageElement;
+    if (target) {
+      target.src = 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=600&auto=format&fit=crop';
+    }
+  }
 
   categorias: Categoria[] = [];
   productosMostrados: Producto[] = [];

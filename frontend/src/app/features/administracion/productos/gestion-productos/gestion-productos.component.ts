@@ -7,6 +7,7 @@ import { ModalProductoComponent } from '../modal-producto/modal-producto.compone
 import { ModalConfirmacionComponent } from '../../../../shared/components/modal-confirmacion/modal-confirmacion.component';
 import { ModalDetalleProductoComponent } from '../modal-detalle-producto/modal-detalle-producto.component';
 import { GourmetSpinnerComponent } from '../../../../shared/components/gourmet-spinner/gourmet-spinner.component';
+import { resolverUrlImagen } from '../../../../core/constants/api.constants';
 
 @Component({
   selector: 'app-gestion-productos',
@@ -17,6 +18,10 @@ import { GourmetSpinnerComponent } from '../../../../shared/components/gourmet-s
 })
 export class GestionProductosComponent implements OnInit {
   private menuService = inject(MenúuService);
+
+  obtenerUrlImagen(url?: string | null): string {
+    return resolverUrlImagen(url);
+  }
   
   categorias: Categoria[] = [];
   cargando = true;

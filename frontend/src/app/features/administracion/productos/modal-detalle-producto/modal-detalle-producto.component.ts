@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Producto } from '../../../../core/services/menu.service';
 
+import { resolverUrlImagen } from '../../../../core/constants/api.constants';
+
 @Component({
   selector: 'app-modal-detalle-producto',
   standalone: true,
@@ -18,8 +20,6 @@ export class ModalDetalleProductoComponent {
   }
 
   getImageUrl(url: string | undefined): string {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    return `http://localhost:3000${url.startsWith('/') ? '' : '/'}${url}`;
+    return resolverUrlImagen(url);
   }
 }

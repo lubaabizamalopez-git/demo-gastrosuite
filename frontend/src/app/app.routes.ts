@@ -18,7 +18,7 @@ import { MesasAdminComponent } from './features/administracion/mesas-admin/mesas
 
 export const routes: Routes = [
   { path: 'shared', component: IndexSharedComponent },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'pos', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'pos', component: PosComponent, canActivate: [authGuard] },

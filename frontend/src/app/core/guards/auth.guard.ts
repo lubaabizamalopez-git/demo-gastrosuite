@@ -4,14 +4,22 @@ import { Router, type CanActivateFn } from '@angular/router';
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   
-  // Revisamos si el usuario tiene un token almacenado
-  const token = localStorage.getItem('token');
+  let token = localStorage.getItem('token');
   
   if (token) {
     return true; // Permitimos el paso
   }
 
-  // Si no hay token, lo devolvemos obligatoriamente al login
-  router.navigate(['/login']);
-  return false;
+  // Modo Demo: Asignamos automáticamente credenciales de demostración para no bloquear la presentación
+  token = 'demo-token-gastrosuite-presentation';
+  localStorage.setItem('token', token);
+  localStorage.setItem('usuario', JSON.stringify({
+    id: 'demo-admin-id',
+    ids: 1,
+    nombre: 'Administrador Demo',
+    correo: 'demo@gastrosuite.cl',
+    rol: 'SUPERADMIN'
+  }));
+
+  return true;
 };

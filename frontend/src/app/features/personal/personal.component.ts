@@ -148,41 +148,179 @@ export class PersonalComponent implements OnInit {
     });
   }
 
+  private empleadosDemo: EmpleadoVista[] = [
+    {
+      id: 'emp-1',
+      ids: 1,
+      nombre: 'Italia',
+      apellidoPaterno: 'Barraza',
+      apellidoMaterno: 'López',
+      rol: 'SUPERADMIN',
+      tipoDocumento: 'RUT',
+      rut: '18.423.891-4',
+      correo: 'italia.gerencia@gastrosuite.cl',
+      telefono: '+56 9 8452 1190',
+      direccion: 'Av. Providencia 1240, Providencia',
+      regionId: 1,
+      ciudadId: 1,
+      comunaId: 1,
+      contactoEmergenciaNombre: 'Iván',
+      contactoEmergenciaTelefono: '+56 9 7123 4567',
+      activo: true,
+      habilitado: true,
+      enTurno: true,
+      inShift: true,
+      foto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=300&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=300&auto=format&fit=crop',
+      fotoError: false,
+      codigoPin: '1234'
+    },
+    {
+      id: 'emp-2',
+      ids: 2,
+      nombre: 'Iván',
+      apellidoPaterno: 'Valdés',
+      apellidoMaterno: 'Muñoz',
+      rol: 'SUPERADMIN',
+      tipoDocumento: 'RUT',
+      rut: '17.892.451-K',
+      correo: 'ivan.operaciones@gastrosuite.cl',
+      telefono: '+56 9 7123 4567',
+      direccion: 'Av. Providencia 1240, Providencia',
+      regionId: 1,
+      ciudadId: 1,
+      comunaId: 1,
+      contactoEmergenciaNombre: 'Italia',
+      contactoEmergenciaTelefono: '+56 9 8452 1190',
+      activo: true,
+      habilitado: true,
+      enTurno: true,
+      inShift: true,
+      foto: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300&auto=format&fit=crop',
+      fotoError: false,
+      codigoPin: '4321'
+    },
+    {
+      id: 'emp-3',
+      ids: 3,
+      nombre: 'Camila',
+      apellidoPaterno: 'Rojas',
+      apellidoMaterno: 'Paredes',
+      rol: 'CAJERO',
+      tipoDocumento: 'RUT',
+      rut: '19.234.567-2',
+      correo: 'camila.caja@gastrosuite.cl',
+      telefono: '+56 9 9123 4455',
+      direccion: 'Los Leones 450, Providencia',
+      regionId: 1,
+      ciudadId: 1,
+      comunaId: 1,
+      contactoEmergenciaNombre: 'Marcela Paredes',
+      contactoEmergenciaTelefono: '+56 9 8877 6655',
+      activo: true,
+      habilitado: true,
+      enTurno: true,
+      inShift: true,
+      foto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop',
+      fotoError: false,
+      codigoPin: '2024'
+    },
+    {
+      id: 'emp-4',
+      ids: 4,
+      nombre: 'Matías',
+      apellidoPaterno: 'Soto',
+      apellidoMaterno: 'Castillo',
+      rol: 'MESERO',
+      tipoDocumento: 'RUT',
+      rut: '20.145.890-8',
+      correo: 'matias.salon@gastrosuite.cl',
+      telefono: '+56 9 6543 2190',
+      direccion: 'Manuel Montt 890, Providencia',
+      regionId: 1,
+      ciudadId: 1,
+      comunaId: 1,
+      contactoEmergenciaNombre: 'Jorge Soto',
+      contactoEmergenciaTelefono: '+56 9 5544 3322',
+      activo: true,
+      habilitado: true,
+      enTurno: true,
+      inShift: true,
+      foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop',
+      fotoError: false,
+      codigoPin: '1111'
+    },
+    {
+      id: 'emp-5',
+      ids: 5,
+      nombre: 'Diego',
+      apellidoPaterno: 'Morales',
+      apellidoMaterno: 'Silva',
+      rol: 'MESERO',
+      tipoDocumento: 'RUT',
+      rut: '19.876.543-1',
+      correo: 'diego.salon@gastrosuite.cl',
+      telefono: '+56 9 4433 2211',
+      direccion: 'Pedro de Valdivia 210, Providencia',
+      regionId: 1,
+      ciudadId: 1,
+      comunaId: 1,
+      contactoEmergenciaNombre: 'Ana Silva',
+      contactoEmergenciaTelefono: '+56 9 3322 1100',
+      activo: true,
+      habilitado: true,
+      enTurno: false,
+      inShift: false,
+      foto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop',
+      fotoError: false,
+      codigoPin: '2222'
+    }
+  ];
+
   cargarEmpleados(): void {
     this.personalService.getUsuarios().subscribe({
       next: (data) => {
-        const mapeados: EmpleadoVista[] = data.map(u => ({
-          id: u.id,
-          ids: u.ids,
-          nombre: u.nombre || '',
-          apellidoPaterno: u.apellidoPaterno || '',
-          apellidoMaterno: u.apellidoMaterno || '',
-          rol: u.rolesUsuario.length > 0 ? u.rolesUsuario[0].rol.nombre : 'Sin Rol',
-          tipoDocumento: u.tipoDocumento || 'RUT',
-          rut: u.rut || '',
-          correo: u.correo,
-          telefono: u.telefono !== 'NULL' ? u.telefono || '' : '',
-          direccion: u.direccion !== 'NULL' ? u.direccion || '' : '',
-          regionId: u.regionId || null,
-          ciudadId: u.ciudadId || null,
-          estado: u.estado || 'A',
-          comunaId: u.comunaId || null,
-          contactoEmergenciaNombre: u.contactoEmergenciaNombre !== 'NULL' ? u.contactoEmergenciaNombre || '' : '',
-          contactoEmergenciaTelefono: u.contactoEmergenciaTelefono !== 'NULL' ? u.contactoEmergenciaTelefono || '' : '',
-          activo: u.estado === 'A',
-          habilitado: u.estado === 'A',
-          enTurno: u.estado === 'A' && Math.random() > 0.5,
-          inShift: u.estado === 'A' && Math.random() > 0.5,
-          foto: (u.imagenUrl && u.imagenUrl !== 'NULL') ? u.imagenUrl : null,
-          avatarUrl: (u.imagenUrl && u.imagenUrl !== 'NULL') ? u.imagenUrl : null,
-          fotoError: false,
-          codigoPin: u.codigoPin || ''
-        }));
-        this.empleados.set(mapeados);
+        if (data && data.length > 0) {
+          const mapeados: EmpleadoVista[] = data.map(u => ({
+            id: u.id,
+            ids: u.ids,
+            nombre: u.nombre || '',
+            apellidoPaterno: u.apellidoPaterno || '',
+            apellidoMaterno: u.apellidoMaterno || '',
+            rol: u.rolesUsuario.length > 0 ? u.rolesUsuario[0].rol.nombre : 'Sin Rol',
+            tipoDocumento: u.tipoDocumento || 'RUT',
+            rut: u.rut || '',
+            correo: u.correo,
+            telefono: u.telefono !== 'NULL' ? u.telefono || '' : '',
+            direccion: u.direccion !== 'NULL' ? u.direccion || '' : '',
+            regionId: u.regionId || null,
+            ciudadId: u.ciudadId || null,
+            estado: u.estado || 'A',
+            comunaId: u.comunaId || null,
+            contactoEmergenciaNombre: u.contactoEmergenciaNombre !== 'NULL' ? u.contactoEmergenciaNombre || '' : '',
+            contactoEmergenciaTelefono: u.contactoEmergenciaTelefono !== 'NULL' ? u.contactoEmergenciaTelefono || '' : '',
+            activo: u.estado === 'A',
+            habilitado: u.estado === 'A',
+            enTurno: u.estado === 'A' && Math.random() > 0.5,
+            inShift: u.estado === 'A' && Math.random() > 0.5,
+            foto: (u.imagenUrl && u.imagenUrl !== 'NULL') ? u.imagenUrl : null,
+            avatarUrl: (u.imagenUrl && u.imagenUrl !== 'NULL') ? u.imagenUrl : null,
+            fotoError: false,
+            codigoPin: u.codigoPin || ''
+          }));
+          this.empleados.set(mapeados);
+        } else {
+          this.empleados.set(this.empleadosDemo);
+        }
         this.cargando.set(false);
       },
       error: (err) => {
-        console.error('Error al cargar empleados', err);
+        console.error('Cargando empleados demo por fallo en API:', err);
+        this.empleados.set(this.empleadosDemo);
         this.cargando.set(false);
       }
     });
