@@ -16,6 +16,7 @@ import { SalonModule } from './modules/salon/salon.module';
 import { EventsModule } from './modules/events/events.module';
 import { GeografiaModule } from './modules/geografia/geografia.module';
 import { PagosModule } from './modules/pagos/pagos.module';
+import { TiendaModule } from './modules/tienda/tienda.module';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { PagosModule } from './modules/pagos/pagos.module';
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
     }),
-    AuthModule, CatalogoModule, OrdersModule, PosModule, TablesModule, KdsModule, PrinterModule, PrismaModule, UsuariosModule, SalonModule, EventsModule, GeografiaModule, PagosModule
+    AuthModule, CatalogoModule, OrdersModule, PosModule, TablesModule, KdsModule, PrinterModule, PrismaModule, UsuariosModule, SalonModule, EventsModule, GeografiaModule, PagosModule, TiendaModule
   ],
   controllers: [AppController],
   providers: [AppService],

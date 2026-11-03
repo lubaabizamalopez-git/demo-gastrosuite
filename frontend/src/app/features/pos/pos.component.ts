@@ -341,9 +341,10 @@ export class PosComponent implements OnInit, OnDestroy {
   }
 
   calcularTotales() {
-    this.subtotal = Math.round(this.carrito.reduce((acc, item) => acc + (Number(item.producto.precio) * item.cantidad), 0));
-    this.impuestos = Math.round(this.subtotal * this.porcentajeImpuesto);
-    this.total = this.subtotal + this.impuestos;
+    // Ley chilena: el precio publicado ya incluye IVA, por lo que se desglosa (neto + IVA) en vez de sumarse
+    this.total = Math.round(this.carrito.reduce((acc, item) => acc + (Number(item.producto.precio) * item.cantidad), 0));
+    this.subtotal = Math.round(this.total / (1 + this.porcentajeImpuesto));
+    this.impuestos = this.total - this.subtotal;
   }
 
   enviarPedido() {

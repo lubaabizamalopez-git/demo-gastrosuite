@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- PALETA DE COLORES GASTROSUITE (misma que gestión) --- */
+:root {
+  /* Marca (Naranjas Orgánicos) */
+  --brand-primary: #FF6B00;
+  --brand-dark: #CC5500;
+  --brand-soft: #FFBD80;
+  --brand-cream: #FFF5F0;
+
+  /* Estructura (Modo Híbrido Anti-Brillo) */
+  --neutral-bg: #FAF7F2;
+  --neutral-surface: #FFFFFF;
+  --neutral-border: #E6DFD5;
+
+  /* Tipografía */
+  --text-title: #231E1B;
+  --text-body: #5C534E;
+  --text-muted: #91857F;
+
+  /* Estados Semánticos */
+  --success-bg: #E6F4EA;
+  --success-text: #137333;
+  --error-bg: #FCE8E6;
+  --error-text: #C5221F;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    background-color: var(--neutral-bg);
+    color: var(--text-body);
+  }
+}
+
+@layer components {
+  /* Campos de formulario de la tienda */
+  .campo-etiqueta {
+    @apply block text-xs font-semibold text-text-body mb-1.5;
+  }
+
+  .campo-input {
+    @apply w-full rounded-xl border border-neutral-border bg-neutral-surface px-4 py-2.5 text-sm text-text-title
+      placeholder:text-text-muted/70 transition-colors
+      focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10;
+  }
+
+  .campo-error {
+    @apply mt-1 text-xs text-status-error-text;
+  }
+
+  .tarjeta {
+    @apply bg-neutral-surface border border-neutral-border rounded-2xl;
+  }
+}
+
+/* Oculta la barra de scroll horizontal de las pestañas de categorías */
+.sin-scrollbar {
+  scrollbar-width: none;
+}
+.sin-scrollbar::-webkit-scrollbar {
+  display: none;
+}

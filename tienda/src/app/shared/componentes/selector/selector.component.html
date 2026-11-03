@@ -1,0 +1,77 @@
+<div class="flex flex-col w-full gap-1.5 font-sans relative" (click)="$event.stopPropagation()">
+
+  @if (label()) {
+    <label [class]="error() ? 'text-red-500 font-bold' : 'text-[#5C534E] font-semibold'" class="text-xs select-none">
+      {{ label() }}
+    </label>
+  }
+
+  <div class="relative w-full">
+    <button
+      type="button"
+      (click)="toggleDropdown()"
+      [disabled]="disabled()"
+      [ngClass]="{
+        'border-red-400 bg-red-50': error(),
+        'border-[#E6DFD5] bg-white': !error()
+      }"
+      [class]="icon() ? 'pl-10' : 'pl-4'"
+      class="w-full pr-4 py-2.5 text-sm rounded-xl border border-solid text-left font-medium text-[#231E1B] outline-none transition-all duration-200 cursor-pointer flex items-center justify-between focus:ring-2 focus:ring-[#FF6B00]/15"
+    >
+      @if (icon()) {
+        <div [class]="error() ? 'text-red-400' : 'text-[#91857F]'" class="absolute left-3.5 flex items-center justify-center pointer-events-none">
+          <i [class]="'fas ' + icon() + ' text-sm'"></i>
+        </div>
+      }
+
+      <span [ngClass]="{'text-[#91857F]/70': selectedValue() === '' || selectedValue() === null}">{{ selectedLabel() }}</span>
+      <i class="fas fa-chevron-down text-xs text-[#91857F] transition-transform duration-200" [class.rotate-180]="isOpen()"></i>
+    </button>
+
+    @if (isOpen()) {
+      <div class="absolute left-0 right-0 mt-1.5 bg-white border border-[#FFBD80]/50 rounded-xl shadow-xl overflow-hidden z-40">
+        @if (buscable()) {
+          <div class="p-2 border-b border-[#E6DFD5]">
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#91857F]"></i>
+              <input
+                type="text"
+                [value]="busqueda()"
+                (input)="busqueda.set($any($event.target).value)"
+                placeholder="Buscar..."
+                autocomplete="off"
+                class="w-full pl-8 pr-3 py-2 text-sm rounded-lg bg-[#FAF7F2] text-[#231E1B] outline-none focus:ring-2 focus:ring-[#FF6B00]/15"
+              />
+            </div>
+          </div>
+        }
+        <div class="max-h-60 overflow-y-auto">
+          <!-- Primera opción deshabilitada, según el UI Kit -->
+          <div class="px-4 py-2.5 text-sm text-gray-400 bg-gray-50 cursor-not-allowed">{{ placeholder() }}</div>
+          @for (opt of opcionesFiltradas(); track opt.value) {
+            <div
+              (click)="selectOption(opt)"
+              [ngClass]="{
+                'bg-[#FFF5F0] text-[#FF6B00] font-bold': selectedValue() === opt.value && !opt.disabled,
+                'opacity-50 cursor-not-allowed bg-gray-50 text-gray-400': opt.disabled,
+                'text-[#5C534E] hover:bg-[#FF6B00] hover:text-white cursor-pointer': !opt.disabled
+              }"
+              class="px-4 py-2.5 text-sm transition-colors duration-150 font-medium"
+            >
+              {{ opt.label }}
+            </div>
+          } @empty {
+            <div class="px-4 py-3 text-sm text-[#91857F]">Sin resultados</div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (error()) {
+    <span class="text-[11px] text-red-500 font-semibold flex items-center gap-1 mt-0.5">
+      <i class="fas fa-exclamation-circle text-xs"></i>
+      {{ error() }}
+    </span>
+  }
+</div>

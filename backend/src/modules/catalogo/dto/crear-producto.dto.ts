@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsNumber, IsUUID, IsBoolean } from 'class-validator';
 
 export class CrearProductoDto {
   @IsUUID()
@@ -36,4 +36,9 @@ export class CrearProductoDto {
   @IsNumber()
   @IsOptional()
   orden?: number;
+
+  // Publicado en la tienda online
+  @IsBoolean()
+  @IsOptional()
+  visibleOnline?: boolean;
 }

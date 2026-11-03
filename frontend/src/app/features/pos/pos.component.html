@@ -258,11 +258,11 @@
         <!-- Totales -->
         <div class="border-t border-gray-100 pt-3 space-y-1.5 mb-4 shrink-0">
           <div class="flex justify-between text-xs text-gray-600">
-            <span>Subtotal</span>
+            <span>Neto</span>
             <span class="font-semibold text-gray-900">{{ formatearCLP(subtotal) }}</span>
           </div>
           <div class="flex justify-between text-xs text-gray-600">
-            <span>Impuestos (19%)</span>
+            <span>IVA incluido (19%)</span>
             <span class="font-semibold text-gray-900">{{ formatearCLP(impuestos) }}</span>
           </div>
           <div class="flex justify-between text-base pt-2 border-t border-gray-100">
@@ -540,7 +540,7 @@
             <span class="font-semibold text-gray-900">{{ formatearCLP(pedidoACobrar?.subtotal) }}</span>
           </div>
           <div class="flex justify-between text-gray-600">
-            <span>IVA (19%):</span>
+            <span>IVA incluido (19%):</span>
             <span class="font-semibold text-gray-900">{{ formatearCLP(pedidoACobrar?.impuestos) }}</span>
           </div>
           <div class="flex justify-between text-gray-600 pb-1 border-b border-brand-primary/10">

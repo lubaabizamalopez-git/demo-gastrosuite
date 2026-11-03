@@ -31,6 +31,11 @@
         <app-custom-select [options]="opcionesCanal" [(ngModel)]="filtroCanal"></app-custom-select>
       </div>
 
+      <!-- Filtro 3: Estado de Pago -->
+      <div class="w-40">
+        <app-custom-select [options]="opcionesPago" [(ngModel)]="filtroPago"></app-custom-select>
+      </div>
+
       <!-- Botón Historial de Pedidos Pasados -->
       <button 
         (click)="abrirModalHistorial()"
@@ -111,6 +116,11 @@
                   <p class="text-xs font-bold text-gray-900">{{ pedido.items?.length || 0 }} items</p>
                   <p class="text-[11px] text-gray-500 font-medium">
                     {{ pedido.tipoPedido === 'SALON' ? 'Para servir' : (pedido.tipoPedido === 'PARA_LLEVAR' ? 'Para llevar' : 'Delivery') }}
+                    @if (pedido.canal === 'ONLINE') {
+                      <span class="ml-1 text-[10px] font-bold text-sky-700 bg-sky-50 border border-sky-200/80 px-1.5 py-px rounded-md inline-flex items-center gap-1">
+                        <i class="fa-solid fa-globe text-[9px]"></i> Online
+                      </span>
+                    }
                   </p>
                 </div>
               </div>
@@ -135,7 +145,7 @@
             <!-- Monto & Pago (Item 10: Colores diferenciados para estados de pago) -->
             <td class="px-6 py-3.5 whitespace-nowrap">
               <p class="text-xs font-extrabold text-gray-900">{{ formatearCLP(pedido.total) }}</p>
-              @if (pedido.estado === 'PAGADO' || pedido.estado === 'PAGADO_CERRADO') {
+              @if (estaPagado(pedido)) {
                 <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-md inline-flex items-center gap-1 mt-0.5">
                   <i class="fa-solid fa-circle-check text-[9px]"></i> Pagado
                 </span>

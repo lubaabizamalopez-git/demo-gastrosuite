@@ -126,7 +126,27 @@
             </div>
           </div>
         </div>
-        
+
+        <!-- Visible en Tienda Online (Switch Kit: Acción Principal Gris-Naranjo) -->
+        <div (click)="alternarVisibleOnline()"
+             class="bg-[#FFF5F0] border border-[#FFBD80]/30 p-3 rounded-2xl flex justify-between items-center cursor-pointer select-none transition-colors duration-200 hover:bg-[#FFF5F0]/60 mt-1">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-white border border-[#FFBD80]/40 text-[#FF6B00] flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-store text-xs"></i>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-sm font-bold text-[#231E1B]">Visible en Tienda Online</span>
+              <span class="text-xs text-[#5C534E]">{{ form.get('visibleOnline')?.value ? 'Los clientes pueden verlo y pedirlo en la web.' : 'Solo disponible en el local (POS).' }}</span>
+            </div>
+          </div>
+          <div [style.background]="form.get('visibleOnline')?.value ? '#FF6B00' : '#CEBFB5'"
+               class="w-10 h-6 rounded-full p-0.5 flex items-center box-border transition-colors duration-300 shrink-0">
+            <div [class.translate-x-4]="form.get('visibleOnline')?.value" [class.translate-x-0]="!form.get('visibleOnline')?.value"
+                 class="w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]">
+            </div>
+          </div>
+        </div>
+
         </div> <!-- Fin del wrapper centrado -->
       </div>
 

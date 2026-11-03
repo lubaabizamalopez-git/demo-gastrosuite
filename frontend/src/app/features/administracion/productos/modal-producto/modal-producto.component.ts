@@ -44,6 +44,7 @@ export class ModalProductoComponent implements OnInit {
       sku: [''],
       imagen: [''],
       estado: [true],
+      visibleOnline: [true],
       areaPreparacion: ['COCINA'],
       orden: [0, Validators.required]
     });
@@ -73,6 +74,7 @@ export class ModalProductoComponent implements OnInit {
         sku: this.producto.sku,
         imagen: this.producto.imagen,
         estado: this.producto.estado === 'A' ? true : (this.producto.estado === 'I' ? false : true),
+        visibleOnline: this.producto.visibleOnline ?? true,
         areaPreparacion: (this.producto as any).areaPreparacion || 'COCINA',
         orden: this.producto.orden || 0
       });
@@ -80,6 +82,12 @@ export class ModalProductoComponent implements OnInit {
       this.form.patchValue({ categoriaSeleccionada: this.categoriaId || (this.categorias[0]?.id || 'OTRA') });
     }
     this.actualizarOpcionesOrden();
+  }
+
+  alternarVisibleOnline(): void {
+    const control = this.form.get('visibleOnline');
+    control?.setValue(!control.value);
+    control?.markAsDirty();
   }
 
   actualizarOpcionesOrden(): void {
@@ -213,6 +221,7 @@ export class ModalProductoComponent implements OnInit {
       sku: formVal.sku,
       imagen: formVal.imagen,
       estado: formVal.estado ? 'A' : 'I',
+      visibleOnline: !!formVal.visibleOnline,
       areaPreparacion: formVal.areaPreparacion,
       orden: formVal.orden,
       categoriaId: catId

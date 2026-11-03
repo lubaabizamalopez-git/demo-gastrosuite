@@ -36,6 +36,24 @@ services:
     networks:
       - gastrosuite_net
 
+  # ----------------------------------------------------
+  # 3. TIENDA ONLINE (ANGULAR SSR) - cliente final
+  # ----------------------------------------------------
+  tienda:
+    build:
+      context: ./tienda
+      dockerfile: Dockerfile
+    container_name: gastrosuite_tienda
+    restart: always
+    environment:
+      API_URL: http://backend:3000
+    ports:
+      - "8891:4000"
+    depends_on:
+      - backend
+    networks:
+      - gastrosuite_net
+
 networks:
   gastrosuite_net:
     driver: bridge

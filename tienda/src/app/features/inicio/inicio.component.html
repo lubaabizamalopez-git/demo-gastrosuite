@@ -1,0 +1,166 @@
+@if (empresa(); as empresa) {
+  <!-- PORTADA -->
+  <section class="relative overflow-hidden bg-[#231E1B]">
+    @if (empresa.portadaUrl) {
+      <img [src]="resolverUrlImagen(empresa.portadaUrl)" alt="" class="absolute inset-0 h-full w-full object-cover opacity-50" />
+    }
+    <div class="absolute inset-0 bg-gradient-to-t from-[#231E1B]/80 via-[#231E1B]/30 to-transparent"></div>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+      <h1 class="text-3xl sm:text-5xl font-bold text-white tracking-tight max-w-2xl">{{ empresa.nombre }}</h1>
+      @if (empresa.descripcion) {
+        <p class="mt-4 text-base sm:text-lg text-white/85 max-w-xl leading-relaxed">{{ empresa.descripcion }}</p>
+      }
+      <div class="mt-6 flex flex-wrap gap-2 text-xs font-semibold">
+        @if (empresa.horarioAtencion) {
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur px-3 py-1.5 text-white">
+            <i class="far fa-clock"></i>{{ empresa.horarioAtencion }}
+          </span>
+        }
+        @if (empresa.aceptaRetiro) {
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur px-3 py-1.5 text-white">
+            <i class="fas fa-store"></i>Retiro en local
+          </span>
+        }
+        @if (empresa.aceptaDelivery) {
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur px-3 py-1.5 text-white">
+            <i class="fas fa-motorcycle"></i>Delivery {{ empresa.costoDelivery > 0 ? (empresa.costoDelivery | precio) : 'gratis' }}
+          </span>
+        }
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur px-3 py-1.5 text-white">
+          <i class="fas fa-hourglass-half"></i>~{{ empresa.tiempoPreparacionMin }} min
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTRO (PRÓXIMAMENTE) -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 -mt-6 relative">
+    <div class="tarjeta px-5 py-4 sm:px-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between shadow-sm">
+      <div class="flex items-center gap-4">
+        <span class="h-11 w-11 shrink-0 rounded-full bg-brand-cream flex items-center justify-center">
+          <i class="fas fa-gift text-brand-primary"></i>
+        </span>
+        <div>
+          <p class="font-bold text-text-title">Regístrate con nosotros</p>
+          <p class="text-sm text-text-muted">Guarda tus direcciones, repite tus pedidos y accede a beneficios.</p>
+        </div>
+      </div>
+      <app-boton label="Crear mi cuenta" color="outline" (btnClick)="estado.mostrarProximamente.set(true)"></app-boton>
+    </div>
+  </section>
+
+  <!-- MENÚ -->
+  <section id="menu" class="max-w-6xl mx-auto px-4 sm:px-6 mt-10">
+    @if (cargandoMenu()) {
+      <div class="py-16"><app-spinner message="Cargando el menú"></app-spinner></div>
+    } @else if (errorMenu()) {
+      <div class="py-16 text-center text-sm text-text-muted">No pudimos cargar el menú. Intenta nuevamente en unos minutos.</div>
+    } @else if (categorias().length === 0) {
+      <div class="py-16 text-center text-sm text-text-muted">Aún no hay productos disponibles para pedir online.</div>
+    } @else {
+      <!-- Pestañas de categorías -->
+      <div class="sticky top-16 z-20 -mx-4 sm:mx-0 px-4 sm:px-0 py-3 bg-neutral-bg/95 backdrop-blur">
+        <div class="flex gap-2 overflow-x-auto sin-scrollbar">
+          @for (categoria of categorias(); track categoria.id) {
+            <button type="button" (click)="irACategoria(categoria)"
+                    class="shrink-0 inline-flex items-center gap-2 rounded-full border border-neutral-border bg-white px-4 py-2 text-sm font-semibold text-text-body hover:border-brand-primary hover:text-brand-primary transition-colors">
+              @if (categoria.icono) {
+                <i [class]="'fas ' + categoria.icono + ' text-xs text-brand-primary'"></i>
+              }
+              {{ categoria.nombre }}
+            </button>
+          }
+        </div>
+      </div>
+
+      @for (categoria of categorias(); track categoria.id) {
+        <div [id]="'categoria-' + categoria.ids" class="scroll-mt-32 pt-6">
+          <h2 class="text-xl font-bold text-text-title mb-4">{{ categoria.nombre }}</h2>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            @for (producto of categoria.productos; track producto.id) {
+              <article (click)="abrirProducto(producto)"
+                       class="tarjeta group flex sm:flex-col overflow-hidden cursor-pointer hover:border-brand-soft hover:shadow-sm transition-all">
+                @if (producto.imagen) {
+                  <div class="w-28 sm:w-full shrink-0 sm:aspect-[4/3] overflow-hidden bg-brand-cream order-last sm:order-first">
+                    <img [src]="resolverUrlImagen(producto.imagen)" [alt]="producto.nombre" loading="lazy"
+                         class="h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+                  </div>
+                }
+                <div class="flex-1 p-4 flex flex-col">
+                  <h3 class="font-semibold text-text-title leading-snug">{{ producto.nombre }}</h3>
+                  @if (producto.descripcion) {
+                    <p class="mt-1 text-sm text-text-muted line-clamp-2">{{ producto.descripcion }}</p>
+                  }
+                  <div class="mt-auto pt-3 flex items-center justify-between">
+                    <span class="font-bold text-text-title">{{ producto.precio | precio }}</span>
+                    <button type="button" (click)="agregarRapido(producto, $event)" [attr.aria-label]="'Agregar ' + producto.nombre"
+                            class="h-9 w-9 rounded-full flex items-center justify-center transition-colors"
+                            [class]="agregadoReciente() === producto.id ? 'bg-status-success-bg text-status-success-text' : 'bg-brand-cream text-brand-primary hover:bg-brand-primary hover:text-white'">
+                      <i [class]="agregadoReciente() === producto.id ? 'fas fa-check text-sm' : 'fas fa-plus text-sm'"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
+        </div>
+      }
+    }
+  </section>
+
+  <!-- BARRA FLOTANTE DEL CARRITO (móvil) -->
+  @if (carrito.cantidadTotal() > 0) {
+    <div class="sm:hidden fixed bottom-0 inset-x-0 z-20 p-4 bg-gradient-to-t from-neutral-bg via-neutral-bg/90 to-transparent">
+      <button type="button" (click)="carrito.abierto.set(true)"
+              class="w-full flex items-center justify-between rounded-xl bg-brand-primary text-white px-5 py-3.5 font-bold shadow-lg shadow-brand-primary/30">
+        <span class="inline-flex items-center gap-2">
+          <span class="h-6 min-w-[24px] px-1.5 rounded-full bg-white/25 text-xs flex items-center justify-center">{{ carrito.cantidadTotal() }}</span>
+          Ver pedido
+        </span>
+        <span>{{ carrito.totalProductos() | precio }}</span>
+      </button>
+    </div>
+  }
+
+  <!-- DETALLE DE PRODUCTO -->
+  @if (productoSeleccionado(); as producto) {
+    <app-modal (cerrar)="cerrarProducto()" anchoClase="sm:max-w-lg">
+      <div>
+        @if (producto.imagen) {
+          <img [src]="resolverUrlImagen(producto.imagen)" [alt]="producto.nombre" class="w-full aspect-[16/10] object-cover" />
+        }
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-4">
+            <h3 class="text-xl font-bold text-text-title">{{ producto.nombre }}</h3>
+            <button type="button" (click)="cerrarProducto()" aria-label="Cerrar"
+                    class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-text-muted hover:text-brand-primary hover:bg-brand-cream">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          @if (producto.descripcion) {
+            <p class="mt-2 text-sm text-text-body leading-relaxed">{{ producto.descripcion }}</p>
+          }
+          <p class="mt-3 text-lg font-bold text-text-title">{{ producto.precio | precio }}</p>
+
+          <label class="campo-etiqueta mt-5" for="notas-producto">Instrucciones especiales (opcional)</label>
+          <textarea id="notas-producto" rows="2" maxlength="150" class="campo-input resize-none"
+                    placeholder="Ej: sin cebolla, salsa aparte"
+                    [value]="notas()" (input)="notas.set($any($event.target).value)"></textarea>
+
+          <div class="mt-6 flex items-center gap-3">
+            <div class="inline-flex items-center rounded-xl border border-neutral-border">
+              <button type="button" (click)="cambiarCantidad(-1)" aria-label="Quitar uno"
+                      class="h-12 w-11 text-text-body hover:text-brand-primary"><i class="fas fa-minus text-xs"></i></button>
+              <span class="w-8 text-center font-bold text-text-title">{{ cantidad() }}</span>
+              <button type="button" (click)="cambiarCantidad(1)" aria-label="Agregar uno"
+                      class="h-12 w-11 text-text-body hover:text-brand-primary"><i class="fas fa-plus text-xs"></i></button>
+            </div>
+            <div class="flex-1">
+              <app-boton [label]="'Agregar · ' + (producto.precio * cantidad() | precio)" size="lg" (btnClick)="agregarSeleccionado()"></app-boton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-modal>
+  }
+}

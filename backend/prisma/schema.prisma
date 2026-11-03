@@ -86,6 +86,7 @@ model Comuna {
   id_ciudad     Int?
   ciudad        Ciudad?   @relation(fields: [id_ciudad], references: [id_ciudad])
   usuarios      Usuario[]
+  direcciones   DireccionCliente[]
 
   @@index([id_ciudad], map: "comuna_id_ciudad_fkey")
   @@map("comuna")
@@ -162,6 +163,8 @@ model Producto {
   orden           Int             @default(0)
   /// Estado (A = Activo, I = Inactivo)
   estado          String          @default("A") @db.Char(1)
+  /// Se muestra en la tienda online
+  visibleOnline   Boolean         @default(true)
 
   @@map("productos")
 }
@@ -351,12 +354,31 @@ model Pedido {
   total            Decimal                 @db.Decimal(10, 2)
   creadoEn         DateTime                @default(now())
   actualizadoEn    DateTime                @updatedAt
+  /// Restaurante dueño del pedido
+  empresaId         String?
+  /// Cliente de la tienda online
+  clienteId         String?
+  /// Origen del pedido: POS u ONLINE
+  canal             String                  @default("POS") @db.VarChar(20)
+  /// PENDIENTE, PAGADO o RECHAZADO (pedidos online)
+  estadoPago        String?                 @db.VarChar(20)
+  correoCliente     String?
+  /// Dirección de despacho (copia al momento del pedido)
+  direccionEntrega  String?                 @db.VarChar(500)
+  costoDelivery     Decimal                 @default(0.00) @db.Decimal(10, 2)
+  /// Código público para seguir el pedido desde la tienda
+  codigoSeguimiento String?                 @unique @db.VarChar(64)
   historialEstados HistorialEstadoPedido[]
   mesa             Mesa?                   @relation(fields: [mesaId], references: [id])
   mesero           Usuario?                @relation("PedidosMesero", fields: [meseroId], references: [id])
+  empresa          Empresa?                @relation(fields: [empresaId], references: [id])
+  cliente          Cliente?                @relation(fields: [clienteId], references: [id])
+  transacciones    TransaccionPago[]
 
   @@index([mesaId], map: "pedidos_mesaId_fkey")
   @@index([meseroId], map: "pedidos_meseroId_fkey")
+  @@index([empresaId], map: "pedidos_empresaId_fkey")
+  @@index([clienteId], map: "pedidos_clienteId_fkey")
   @@map("pedidos")
 }
 
@@ -488,8 +510,8 @@ model Pago {
   id               String   @id @default(uuid())
   /// A qué pedido pertenece
   pedidoId         String
-  /// En qué turno de caja se recibió
-  turnoId          String
+  /// En qué turno de caja se recibió (NULL en pagos online)
+  turnoId          String?
   /// Cuánto se pagó
   monto            Decimal  @db.Decimal(10, 2)
   /// ID del Método de pago usado
@@ -581,6 +603,107 @@ model ConfiguracionEmpresa {
   ids                Int     @unique(map: "ids") @default(autoincrement())
 
   @@map("configuracion_empresa")
+}
+
+/// Restaurante que usa GastroSuite (tenant del SaaS)
+model Empresa {
+  id                   String    @id @default(uuid())
+  ids                  Int       @unique(map: "ids") @default(autoincrement())
+  /// Nombre comercial visible en la tienda
+  nombre               String
+  /// Identificador en la URL de la tienda (ej. mi-restaurant)
+  slug                 String    @unique
+  descripcion          String?   @db.Text
+  logoUrl              String?   @db.VarChar(500)
+  /// Imagen principal del home de la tienda
+  portadaUrl           String?   @db.VarChar(500)
+  telefono             String?
+  correo               String?
+  direccion            String?
+  /// Texto libre de horario (ej. Lun a Dom 12:00 - 23:00)
+  horarioAtencion      String?   @db.VarChar(500)
+  aceptaRetiro         Boolean   @default(true)
+  aceptaDelivery       Boolean   @default(true)
+  costoDelivery        Decimal   @default(0.00) @db.Decimal(10, 2)
+  montoMinimoDelivery  Decimal   @default(0.00) @db.Decimal(10, 2)
+  /// Minutos estimados de preparación
+  tiempoPreparacionMin Int       @default(30)
+  /// IVA incluido en los precios publicados
+  porcentajeImpuesto   Decimal   @default(19.00) @db.Decimal(5, 2)
+  estado               String    @default("A") @db.Char(1)
+  creadoEn             DateTime  @default(now())
+  clientes             Cliente[]
+  pedidos              Pedido[]
+
+  @@map("empresas")
+}
+
+/// Cliente final de la tienda online (claveHash NULL = compra como invitado)
+model Cliente {
+  id          String             @id @default(uuid())
+  ids         Int                @unique(map: "ids") @default(autoincrement())
+  empresaId   String
+  nombre      String
+  apellido    String?
+  correo      String
+  telefono    String
+  /// NULL mientras el cliente compre como invitado
+  claveHash   String?
+  estado      String             @default("A") @db.Char(1)
+  creadoEn    DateTime           @default(now())
+  empresa     Empresa            @relation(fields: [empresaId], references: [id])
+  direcciones DireccionCliente[]
+  pedidos     Pedido[]
+
+  @@unique([empresaId, correo])
+  @@map("clientes")
+}
+
+/// Dirección de despacho de un cliente
+model DireccionCliente {
+  id         String   @id @default(uuid())
+  ids        Int      @unique(map: "ids") @default(autoincrement())
+  clienteId  String
+  comunaId   Int?
+  calle      String
+  numero     String   @db.VarChar(50)
+  depto      String?  @db.VarChar(50)
+  referencia String?
+  creadoEn   DateTime @default(now())
+  cliente    Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  comuna     Comuna?  @relation(fields: [comunaId], references: [id_comuna])
+
+  @@index([clienteId], map: "direcciones_cliente_clienteId_fkey")
+  @@index([comunaId], map: "direcciones_cliente_comunaId_fkey")
+  @@map("direcciones_cliente")
+}
+
+/// Transacción con una pasarela de pago online (Webpay y futuras)
+model TransaccionPago {
+  id                 String   @id @default(uuid())
+  ids                Int      @unique(map: "ids") @default(autoincrement())
+  empresaId          String
+  pedidoId           String
+  pasarela           String   @default("WEBPAY") @db.VarChar(30)
+  /// buy_order enviado a la pasarela
+  ordenCompra        String   @unique @db.VarChar(26)
+  token              String?  @unique
+  monto              Decimal  @db.Decimal(10, 2)
+  /// INICIADA, AUTORIZADA, RECHAZADA o ANULADA
+  estado             String   @default("INICIADA") @db.VarChar(20)
+  codigoAutorizacion String?  @db.VarChar(50)
+  /// VD débito, VN crédito, VP prepago, etc.
+  tipoPago           String?  @db.VarChar(10)
+  cuotas             Int?
+  ultimosDigitos     String?  @db.VarChar(4)
+  /// Respuesta completa de la pasarela
+  respuesta          String?  @db.LongText
+  creadoEn           DateTime @default(now())
+  actualizadoEn      DateTime @default(now()) @updatedAt
+  pedido             Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+
+  @@index([pedidoId], map: "transacciones_pago_pedidoId_fkey")
+  @@map("transacciones_pago")
 }
 
 /// Zonas de impresión y preparación del restaurante

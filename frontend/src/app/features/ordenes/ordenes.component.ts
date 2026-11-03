@@ -23,6 +23,7 @@ export class OrdenesComponent implements OnInit {
   busquedaTexto: string = '';
   filtroEstado: string = 'TODOS';
   filtroCanal: string = 'TODOS';
+  filtroPago: string = 'TODOS';
   soloHoy: boolean = false; // Permite ver las órdenes creadas previas y de hoy
 
   opcionesEstado: SelectOption[] = [
@@ -44,7 +45,14 @@ export class OrdenesComponent implements OnInit {
     { value: 'TODOS', label: 'Todos los Canales' },
     { value: 'SALON', label: 'Para Servir (Salón)' },
     { value: 'PARA_LLEVAR', label: 'Para Llevar' },
-    { value: 'DELIVERY', label: 'Delivery' }
+    { value: 'DELIVERY', label: 'Delivery' },
+    { value: 'ONLINE', label: 'Online (Tienda)' }
+  ];
+
+  opcionesPago: SelectOption[] = [
+    { value: 'TODOS', label: 'Todos los Pagos' },
+    { value: 'PAGADO', label: 'Pagados' },
+    { value: 'IMPAGO', label: 'Impagos' }
   ];
 
   // Paginación de la grilla principal
@@ -117,10 +125,24 @@ export class OrdenesComponent implements OnInit {
       // 2. Filtro de estado (AND)
       const cumpleEstado = this.filtroEstado === 'TODOS' || p.estado === this.filtroEstado;
       // 3. Filtro de canal (AND)
-      const cumpleCanal = this.filtroCanal === 'TODOS' || p.tipoPedido === this.filtroCanal;
+      const cumpleCanal = this.cumpleFiltroCanal(p, this.filtroCanal);
+      // 4. Filtro de pago (AND)
+      const cumplePago = this.filtroPago === 'TODOS' ||
+        (this.filtroPago === 'PAGADO' ? this.estaPagado(p) : !this.estaPagado(p));
 
-      return cumpleBusqueda && cumpleEstado && cumpleCanal;
+      return cumpleBusqueda && cumpleEstado && cumpleCanal && cumplePago;
     });
+  }
+
+  // 'ONLINE' filtra por el canal de origen (tienda); el resto por tipo de pedido
+  cumpleFiltroCanal(pedido: any, filtro: string): boolean {
+    if (filtro === 'TODOS') return true;
+    if (filtro === 'ONLINE') return pedido.canal === 'ONLINE';
+    return pedido.tipoPedido === filtro;
+  }
+
+  estaPagado(pedido: any): boolean {
+    return pedido.estadoPago === 'PAGADO' || pedido.estado === 'PAGADO' || pedido.estado === 'PAGADO_CERRADO';
   }
 
   // Paginación para grilla principal
@@ -222,6 +244,7 @@ export class OrdenesComponent implements OnInit {
 
   obtenerAtendidoEn(pedido: any): string {
     if (!pedido) return 'Caja Principal';
+    if (pedido.canal === 'ONLINE') return 'Tienda Online';
     if (pedido.tipoPedido === 'DELIVERY') return 'Canal Online / Web';
     if (pedido.origen === 'WEB' || pedido.esOnline) return 'Venta Online / Web';
     if (pedido.caja) return pedido.caja;
@@ -289,7 +312,7 @@ export class OrdenesComponent implements OnInit {
         p.nombreCliente?.toLowerCase().includes(this.busquedaHistorial.toLowerCase());
 
       // Filtro de canal (AND)
-      const cumpleCanal = this.filtroCanalHistorial === 'TODOS' || p.tipoPedido === this.filtroCanalHistorial;
+      const cumpleCanal = this.cumpleFiltroCanal(p, this.filtroCanalHistorial);
 
       // Filtro de estado (AND)
       const cumpleEstado = this.filtroEstadoHistorial === 'TODOS' || p.estado === this.filtroEstadoHistorial;

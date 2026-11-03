@@ -1,0 +1,151 @@
+@if (cargando() && !empresa()) {
+  <div class="min-h-screen flex items-center justify-center">
+    <app-spinner variant="campana"></app-spinner>
+  </div>
+} @else if (noEncontrado()) {
+  <div class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+    <i class="fas fa-store-slash text-4xl text-[#FFBD80] mb-4"></i>
+    <h1 class="text-xl font-bold text-text-title mb-2">No encontramos este restaurante</h1>
+    <p class="text-sm text-text-muted">Revisa que la dirección esté bien escrita.</p>
+  </div>
+} @else if (empresa()) {
+@if (empresa(); as empresa) {
+  <div class="min-h-screen flex flex-col">
+
+    <!-- ENCABEZADO -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-neutral-border">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <a [routerLink]="['/', empresa.slug]" class="flex items-center gap-3 min-w-0">
+          @if (empresa.logoUrl) {
+            <img [src]="resolverUrlImagen(empresa.logoUrl)" [alt]="empresa.nombre" class="h-9 w-9 rounded-full object-cover" />
+          } @else {
+            <span class="h-9 w-9 shrink-0 rounded-full bg-brand-primary text-white font-bold flex items-center justify-center">{{ inicial() }}</span>
+          }
+          <span class="font-bold text-text-title truncate">{{ empresa.nombre }}</span>
+        </a>
+
+        <nav class="flex items-center gap-2 sm:gap-3">
+          <button type="button" (click)="abrirProximamente()"
+                  class="hidden sm:inline-flex text-sm font-semibold text-text-body hover:text-brand-primary transition-colors px-2">
+            Ingresar
+          </button>
+          <div class="hidden sm:block">
+            <app-boton label="Regístrate" color="outline" size="sm" (btnClick)="abrirProximamente()"></app-boton>
+          </div>
+          <button type="button" (click)="abrirProximamente()" aria-label="Mi cuenta"
+                  class="sm:hidden h-10 w-10 rounded-full flex items-center justify-center text-text-body hover:bg-brand-cream">
+            <i class="far fa-user"></i>
+          </button>
+          <button type="button" (click)="carrito.abierto.set(true)" aria-label="Ver carrito"
+                  class="relative h-10 w-10 rounded-full flex items-center justify-center bg-brand-cream text-brand-primary hover:bg-[#FFBD80]/30 transition-colors">
+            <i class="fas fa-shopping-bag"></i>
+            @if (carrito.cantidadTotal() > 0) {
+              <span class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-brand-primary text-white text-[11px] font-bold flex items-center justify-center">
+                {{ carrito.cantidadTotal() }}
+              </span>
+            }
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="border-t border-neutral-border bg-white mt-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid gap-8 sm:grid-cols-3 text-sm">
+        <div>
+          <p class="font-bold text-text-title mb-2">{{ empresa.nombre }}</p>
+          @if (empresa.descripcion) {
+            <p class="text-text-muted leading-relaxed">{{ empresa.descripcion }}</p>
+          }
+        </div>
+        <div class="space-y-2 text-text-body">
+          @if (empresa.direccion) {
+            <p><i class="fas fa-map-marker-alt w-5 text-brand-primary"></i>{{ empresa.direccion }}</p>
+          }
+          @if (empresa.telefono) {
+            <p><i class="fas fa-phone w-5 text-brand-primary"></i>{{ empresa.telefono }}</p>
+          }
+          @if (empresa.horarioAtencion) {
+            <p><i class="far fa-clock w-5 text-brand-primary"></i>{{ empresa.horarioAtencion }}</p>
+          }
+        </div>
+        <div class="sm:text-right">
+          <button type="button" (click)="abrirProximamente()" class="font-semibold text-brand-primary hover:text-brand-dark">
+            Regístrate con nosotros
+          </button>
+          <p class="text-xs text-text-muted mt-6">Pedidos online con <span class="font-semibold">GastroSuite</span></p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- CARRITO LATERAL -->
+    @if (carrito.abierto()) {
+      <div class="fixed inset-0 z-40 bg-[#231E1B]/40 backdrop-blur-[2px]" (click)="carrito.abierto.set(false)"></div>
+      <aside class="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md bg-white shadow-2xl flex flex-col" aria-label="Carrito">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-[#FFBD80]/30">
+          <h2 class="text-lg font-bold text-[#c45302]">Tu pedido</h2>
+          <button type="button" (click)="carrito.abierto.set(false)" aria-label="Cerrar carrito"
+                  class="w-8 h-8 rounded-full flex items-center justify-center text-text-muted hover:text-brand-primary hover:bg-brand-cream">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        @if (carrito.items().length === 0) {
+          <div class="flex-1 flex flex-col items-center justify-center px-8 text-center">
+            <i class="fas fa-shopping-bag text-4xl text-[#FFBD80] mb-4"></i>
+            <p class="font-semibold text-text-title mb-1">Tu carrito está vacío</p>
+            <p class="text-sm text-text-muted">Agrega productos del menú para comenzar.</p>
+          </div>
+        } @else {
+          <ul class="flex-1 overflow-y-auto divide-y divide-neutral-border px-6">
+            @for (item of carrito.items(); track $index) {
+              <li class="py-4 flex gap-3">
+                @if (item.producto.imagen) {
+                  <img [src]="resolverUrlImagen(item.producto.imagen)" [alt]="item.producto.nombre" class="h-16 w-16 rounded-xl object-cover shrink-0" />
+                }
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between gap-2">
+                    <p class="font-semibold text-text-title text-sm leading-snug">{{ item.producto.nombre }}</p>
+                    <p class="font-semibold text-text-title text-sm whitespace-nowrap">{{ item.producto.precio * item.cantidad | precio }}</p>
+                  </div>
+                  @if (item.notas) {
+                    <p class="text-xs text-text-muted mt-0.5 truncate">"{{ item.notas }}"</p>
+                  }
+                  <div class="mt-2 flex items-center justify-between">
+                    <div class="inline-flex items-center rounded-lg border border-neutral-border">
+                      <button type="button" (click)="cambiarCantidad(item, -1)" aria-label="Quitar uno"
+                              class="h-8 w-8 text-text-body hover:text-brand-primary"><i class="fas fa-minus text-[10px]"></i></button>
+                      <span class="w-7 text-center text-sm font-semibold text-text-title">{{ item.cantidad }}</span>
+                      <button type="button" (click)="cambiarCantidad(item, 1)" aria-label="Agregar uno"
+                              class="h-8 w-8 text-text-body hover:text-brand-primary"><i class="fas fa-plus text-[10px]"></i></button>
+                    </div>
+                    <button type="button" (click)="carrito.quitar(item)" class="text-xs text-text-muted hover:text-status-error-text">
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+
+          <div class="border-t border-neutral-border px-6 py-5 space-y-4">
+            <div class="flex justify-between items-baseline">
+              <span class="text-sm text-text-body">Subtotal</span>
+              <span class="text-lg font-bold text-text-title">{{ carrito.totalProductos() | precio }}</span>
+            </div>
+            <app-boton label="Continuar" icon="fa-arrow-right" size="lg" (btnClick)="irAlCheckout()"></app-boton>
+          </div>
+        }
+      </aside>
+    }
+
+    @if (estado.mostrarProximamente()) {
+      <app-modal-proximamente (cerrar)="estado.mostrarProximamente.set(false)"></app-modal-proximamente>
+    }
+  </div>
+}
+}

@@ -12,6 +12,7 @@ export interface Producto {
   orden?: number;
   descripcion?: string;
   areaPreparacion?: string;
+  visibleOnline?: boolean;
 }
 
 export interface Categoria {

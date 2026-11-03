@@ -7,6 +7,9 @@ export class PrinterService {
   async imprimirTicket(pedidoId: string, total: number, items: any[] = []) {
     // Aquí a futuro se integra una librería real como 'escpos' o 'node-thermal-printer'
     // Por ahora simulamos la impresión directamente en la consola para la Demo
+    // Ley chilena: la boleta debe informar el IVA incluido en el total
+    const neto = Math.round(Number(total) / 1.19);
+    const iva = Number(total) - neto;
     this.logger.log(`\n
     =================================
              GASTRO SUITE            
@@ -16,6 +19,8 @@ export class PrinterService {
     ---------------------------------
     ${items.map(i => `${i.cantidad || 1}x ${String(i.nombre).padEnd(20)} $${i.precio || 0}`).join('\n    ')}
     ---------------------------------
+    Neto:                    $${neto}
+    IVA (19%):               $${iva}
     TOTAL:                   $${total}
     =================================
     ¡Gracias por su preferencia!     
