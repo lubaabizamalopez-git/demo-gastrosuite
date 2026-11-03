@@ -8,7 +8,7 @@ import { ActualizarCategoriaDto } from './dto/actualizar-categoria.dto';
 import { CrearProductoDto } from './dto/crear-producto.dto';
 import { ActualizarProductoDto } from './dto/actualizar-producto.dto';
 
-@Controller(['api/v1/catalogos', 'catalogos'])
+@Controller(['api/v1/catalogos', 'api/catalogos', 'catalogos'])
 export class CatalogoController {
   constructor(private readonly catalogoService: CatalogoService) {}
 

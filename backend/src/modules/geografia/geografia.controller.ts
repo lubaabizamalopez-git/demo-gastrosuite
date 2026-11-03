@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { GeografiaService } from './geografia.service';
 
-@Controller(['geografia', 'api/v1/geografia'])
+@Controller(['geografia', 'api/geografia', 'api/v1/geografia'])
 export class GeografiaController {
   constructor(private readonly geografiaService: GeografiaService) {}
 

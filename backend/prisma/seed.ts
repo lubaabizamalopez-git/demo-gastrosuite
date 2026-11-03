@@ -204,7 +204,7 @@ async function main() {
   await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '06', capacidad: 4, estado: EstadoMesa.O, shape: 'cuadrada', posX: 80, posY: 50 } });
 
   // Fila 3
-  await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '03', capacidad: 4, estado: EstadoMesa.CS, shape: 'cuadrada', posX: 20, posY: 70 } });
+  const mesa3 = await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '03', capacidad: 4, estado: EstadoMesa.CS, shape: 'cuadrada', posX: 20, posY: 70 } });
   await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '11', capacidad: 4, estado: EstadoMesa.R, shape: 'redonda', posX: 50, posY: 70 } });
   await prisma.mesa.create({ data: { areaSalonId: salon.id, numeroMesa: '07', capacidad: 6, estado: EstadoMesa.EM, shape: 'rectangular', posX: 80, posY: 70 } });
 
