@@ -17,9 +17,10 @@ services:
       DATABASE_URL: mysql://gastro_admin:lucas06122012@129.121.36.186:3306/gastrosuite_demo
       JWT_SECRET: super_secret_jwt_key_gastrosuite_2026
       # URL pública de la Vitrina (retorno de Webpay)
-      VITRINA_URL: http://129.121.36.186:8891
-    ports:
-      - "3890:3000"
+      VITRINA_URL: http://129.121.36.186:3890
+    # Sin puerto público: gestión (nginx) y Vitrina (SSR) llegan al backend por la red interna
+    expose:
+      - "3000"
     networks:
       - gastrosuite_net
 
@@ -50,8 +51,9 @@ services:
     restart: always
     environment:
       API_URL: http://backend:3000
+    # Usa el 3890 (ya abierto en el firewall del servidor) en vez de abrir un puerto nuevo
     ports:
-      - "8891:4000"
+      - "3890:4000"
     depends_on:
       - backend
     networks:
