@@ -37,7 +37,7 @@ export class CrearProductoDto {
   @IsOptional()
   orden?: number;
 
-  // Publicado en la tienda online
+  // Publicado en la vitrina online
   @IsBoolean()
   @IsOptional()
   visibleOnline?: boolean;

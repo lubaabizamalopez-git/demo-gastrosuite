@@ -478,12 +478,33 @@ export class PersonalComponent implements OnInit {
     return dv === dvCalculado;
   }
 
+  // La foto se guarda en la BD como base64: se reduce a 400px JPEG para no cargar MBs en cada listado
+  private reducirImagen(dataUrl: string, ladoMaximo = 400): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const escala = Math.min(1, ladoMaximo / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * escala);
+        canvas.height = Math.round(img.height * escala);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject();
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = reject;
+      img.src = dataUrl;
+    });
+  }
+
   public procesarArchivoImagen(event: any): void {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.actualizarCampo('imagenUrl', e.target?.result);
+        this.reducirImagen(e.target?.result as string)
+          .then(reducida => this.actualizarCampo('imagenUrl', reducida))
+          .catch(() => this.actualizarCampo('imagenUrl', e.target?.result));
       };
       reader.readAsDataURL(file);
     } else {

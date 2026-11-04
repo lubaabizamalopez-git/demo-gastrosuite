@@ -163,7 +163,7 @@ model Producto {
   orden           Int             @default(0)
   /// Estado (A = Activo, I = Inactivo)
   estado          String          @default("A") @db.Char(1)
-  /// Se muestra en la tienda online
+  /// Se muestra en la vitrina online
   visibleOnline   Boolean         @default(true)
 
   @@map("productos")
@@ -356,7 +356,7 @@ model Pedido {
   actualizadoEn    DateTime                @updatedAt
   /// Restaurante dueño del pedido
   empresaId         String?
-  /// Cliente de la tienda online
+  /// Cliente de la vitrina online
   clienteId         String?
   /// Origen del pedido: POS u ONLINE
   canal             String                  @default("POS") @db.VarChar(20)
@@ -366,7 +366,7 @@ model Pedido {
   /// Dirección de despacho (copia al momento del pedido)
   direccionEntrega  String?                 @db.VarChar(500)
   costoDelivery     Decimal                 @default(0.00) @db.Decimal(10, 2)
-  /// Código público para seguir el pedido desde la tienda
+  /// Código público para seguir el pedido desde la vitrina
   codigoSeguimiento String?                 @unique @db.VarChar(64)
   historialEstados HistorialEstadoPedido[]
   mesa             Mesa?                   @relation(fields: [mesaId], references: [id])
@@ -609,13 +609,13 @@ model ConfiguracionEmpresa {
 model Empresa {
   id                   String    @id @default(uuid())
   ids                  Int       @unique(map: "ids") @default(autoincrement())
-  /// Nombre comercial visible en la tienda
+  /// Nombre comercial visible en la vitrina
   nombre               String
-  /// Identificador en la URL de la tienda (ej. mi-restaurant)
+  /// Identificador en la URL de la vitrina (ej. mi-restaurant)
   slug                 String    @unique
   descripcion          String?   @db.Text
   logoUrl              String?   @db.VarChar(500)
-  /// Imagen principal del home de la tienda
+  /// Imagen principal del home de la vitrina
   portadaUrl           String?   @db.VarChar(500)
   telefono             String?
   correo               String?
@@ -638,7 +638,7 @@ model Empresa {
   @@map("empresas")
 }
 
-/// Cliente final de la tienda online (claveHash NULL = compra como invitado)
+/// Cliente final de la vitrina online (claveHash NULL = compra como invitado)
 model Cliente {
   id          String             @id @default(uuid())
   ids         Int                @unique(map: "ids") @default(autoincrement())

@@ -13,8 +13,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: mysql://gastro_admin:lucas06122012@129.121.36.186:3306/gastrosuite_db
+      # La demo publicada usa su propia BD (gastrosuite_demo); desarrollo usa gastrosuite_db desde backend/.env
+      DATABASE_URL: mysql://gastro_admin:lucas06122012@129.121.36.186:3306/gastrosuite_demo
       JWT_SECRET: super_secret_jwt_key_gastrosuite_2026
+      # URL pública de la Vitrina (retorno de Webpay)
+      VITRINA_URL: http://129.121.36.186:8891
     ports:
       - "3890:3000"
     networks:
@@ -37,13 +40,13 @@ services:
       - gastrosuite_net
 
   # ----------------------------------------------------
-  # 3. TIENDA ONLINE (ANGULAR SSR) - cliente final
+  # 3. VITRINA ONLINE (ANGULAR SSR) - cliente final
   # ----------------------------------------------------
-  tienda:
+  vitrina:
     build:
-      context: ./tienda
+      context: ./vitrina
       dockerfile: Dockerfile
-    container_name: gastrosuite_tienda
+    container_name: gastrosuite_vitrina
     restart: always
     environment:
       API_URL: http://backend:3000

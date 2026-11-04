@@ -46,7 +46,7 @@ export class OrdenesComponent implements OnInit {
     { value: 'SALON', label: 'Para Servir (Salón)' },
     { value: 'PARA_LLEVAR', label: 'Para Llevar' },
     { value: 'DELIVERY', label: 'Delivery' },
-    { value: 'ONLINE', label: 'Online (Tienda)' }
+    { value: 'ONLINE', label: 'Online (Vitrina)' }
   ];
 
   opcionesPago: SelectOption[] = [
@@ -134,7 +134,7 @@ export class OrdenesComponent implements OnInit {
     });
   }
 
-  // 'ONLINE' filtra por el canal de origen (tienda); el resto por tipo de pedido
+  // 'ONLINE' filtra por el canal de origen (vitrina); el resto por tipo de pedido
   cumpleFiltroCanal(pedido: any, filtro: string): boolean {
     if (filtro === 'TODOS') return true;
     if (filtro === 'ONLINE') return pedido.canal === 'ONLINE';
@@ -244,7 +244,7 @@ export class OrdenesComponent implements OnInit {
 
   obtenerAtendidoEn(pedido: any): string {
     if (!pedido) return 'Caja Principal';
-    if (pedido.canal === 'ONLINE') return 'Tienda Online';
+    if (pedido.canal === 'ONLINE') return 'Vitrina';
     if (pedido.tipoPedido === 'DELIVERY') return 'Canal Online / Web';
     if (pedido.origen === 'WEB' || pedido.esOnline) return 'Venta Online / Web';
     if (pedido.caja) return pedido.caja;

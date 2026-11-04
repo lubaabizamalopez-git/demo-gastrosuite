@@ -84,7 +84,7 @@ export class OrdersService {
       where: { 
         estado: { in: [EstadoPedido.PENDIENTE, EstadoPedido.EN_COCINA] } 
       },
-      include: { mesa: true, mesero: true },
+      include: { mesa: true, mesero: { select: { id: true, nombre: true, apellidoPaterno: true } } },
       orderBy: { creadoEn: 'asc' }
     });
 
@@ -93,7 +93,7 @@ export class OrdersService {
 
   async getAllOrders() {
     const pedidos = await this.prisma.pedido.findMany({
-      include: { mesa: true, mesero: true },
+      include: { mesa: true, mesero: { select: { id: true, nombre: true, apellidoPaterno: true } } },
       orderBy: { creadoEn: 'desc' }
     });
 
