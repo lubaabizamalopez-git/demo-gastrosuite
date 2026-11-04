@@ -4,13 +4,13 @@
   <div class="relative flex items-center justify-center" [style.width.px]="size()" [style.height.px]="size()">
     
     <!-- Anillo Orbital Externo Primario (Naranja) -->
-    <div class="absolute inset-0 border-4 border-solid border-transparent border-t-[#FF6B00] rounded-full animate-spin"></div>
+    <div class="absolute inset-0 border-4 border-solid border-transparent border-t-brand-primary rounded-full animate-spin"></div>
     
     <!-- Anillo Orbital Interno Secundario (Acento Suave - Sentido Inverso) -->
-    <div class="absolute w-[76%] h-[76%] border-[3px] border-solid border-transparent border-b-[#FFBD80] rounded-full animate-[spin_1.2s_linear_infinite_reverse]"></div>
+    <div class="absolute w-[76%] h-[76%] border-[3px] border-solid border-transparent border-b-brand-soft rounded-full animate-[spin_1.2s_linear_infinite_reverse]"></div>
     
     <!-- Iconografía Central Estática Corregida -->
-    <div class="absolute flex items-center justify-center text-[#5C534E]">
+    <div class="absolute flex items-center justify-center text-text-body">
       @switch (variant()) {
         @case ('cubiertos') {
           <!-- OPCON A: CUBIERTOS PREMIUM (Geometría Lineal Pura) -->
@@ -30,7 +30,7 @@
 
   <!-- Texto de Estado Opcional -->
   @if (message()) {
-    <span class="text-[#5C534E] text-sm font-semibold tracking-wide mt-1 animate-pulse">
+    <span class="text-text-body text-sm font-semibold tracking-wide mt-1 animate-pulse">
       {{ message() }}
     </span>
   }

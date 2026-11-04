@@ -43,13 +43,13 @@ export class BotonComponent {
     clases += tamanos[this.size()];
 
     if (this.disabled()) {
-      return clases + ' bg-[#FAF7F2] text-[#91857F]/50 border border-[#91857F]/10 cursor-not-allowed';
+      return clases + ' bg-neutral-bg text-text-muted/50 border border-text-muted/10 cursor-not-allowed';
     }
 
     const colores = {
-      primary: ' bg-[#FF6B00] hover:bg-[#CC5500] text-white shadow-sm shadow-[#FF6B00]/20 cursor-pointer',
-      muted: ' bg-[#FFF5F0] hover:bg-[#FFBD80]/20 text-[#91857F] border border-[#91857F]/25 cursor-pointer',
-      outline: ' bg-transparent hover:bg-[#FFF5F0] text-[#FF6B00] border border-[#FF6B00]/40 cursor-pointer',
+      primary: ' bg-brand-primary hover:bg-brand-dark text-brand-contraste shadow-sm shadow-brand-primary/20 cursor-pointer',
+      muted: ' bg-brand-cream hover:bg-brand-soft/20 text-text-muted border border-text-muted/25 cursor-pointer',
+      outline: ' bg-transparent hover:bg-brand-cream text-brand-primary border border-brand-primary/40 cursor-pointer',
     };
     return clases + colores[this.color()];
   }

@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Resúmenes de avance para revisar y comentar en el IDE (notas locales)
+revisiones/

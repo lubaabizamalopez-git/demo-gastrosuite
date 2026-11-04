@@ -63,7 +63,7 @@
         <div class="flex gap-2 overflow-x-auto sin-scrollbar">
           @for (categoria of categorias(); track categoria.id) {
             <button type="button" (click)="irACategoria(categoria)"
-                    class="shrink-0 inline-flex items-center gap-2 rounded-full border border-neutral-border bg-white px-4 py-2 text-sm font-semibold text-text-body hover:border-brand-primary hover:text-brand-primary transition-colors">
+                    class="shrink-0 inline-flex items-center gap-2 rounded-full border border-neutral-border bg-neutral-surface px-4 py-2 text-sm font-semibold text-text-body hover:border-brand-primary hover:text-brand-primary transition-colors">
               @if (categoria.icono) {
                 <i [class]="'fas ' + categoria.icono + ' text-xs text-brand-primary'"></i>
               }
@@ -95,7 +95,7 @@
                     <span class="font-bold text-text-title">{{ producto.precio | precio }}</span>
                     <button type="button" (click)="agregarRapido(producto, $event)" [attr.aria-label]="'Agregar ' + producto.nombre"
                             class="h-9 w-9 rounded-full flex items-center justify-center transition-colors"
-                            [class]="agregadoReciente() === producto.id ? 'bg-status-success-bg text-status-success-text' : 'bg-brand-cream text-brand-primary hover:bg-brand-primary hover:text-white'">
+                            [class]="agregadoReciente() === producto.id ? 'bg-status-success-bg text-status-success-text' : 'bg-brand-cream text-brand-primary hover:bg-brand-primary hover:text-brand-contraste'">
                       <i [class]="agregadoReciente() === producto.id ? 'fas fa-check text-sm' : 'fas fa-plus text-sm'"></i>
                     </button>
                   </div>
@@ -112,7 +112,7 @@
   @if (carrito.cantidadTotal() > 0) {
     <div class="sm:hidden fixed bottom-0 inset-x-0 z-20 p-4 bg-gradient-to-t from-neutral-bg via-neutral-bg/90 to-transparent">
       <button type="button" (click)="carrito.abierto.set(true)"
-              class="w-full flex items-center justify-between rounded-xl bg-brand-primary text-white px-5 py-3.5 font-bold shadow-lg shadow-brand-primary/30">
+              class="w-full flex items-center justify-between rounded-xl bg-brand-primary text-brand-contraste px-5 py-3.5 font-bold shadow-lg shadow-brand-primary/30">
         <span class="inline-flex items-center gap-2">
           <span class="h-6 min-w-[24px] px-1.5 rounded-full bg-white/25 text-xs flex items-center justify-center">{{ carrito.cantidadTotal() }}</span>
           Ver pedido

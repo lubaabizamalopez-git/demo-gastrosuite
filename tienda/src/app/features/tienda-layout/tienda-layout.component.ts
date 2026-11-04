@@ -6,6 +6,7 @@ import { catchError, of, switchMap } from 'rxjs';
 import { TiendaService } from '../../core/servicios/tienda.service';
 import { CarritoService } from '../../core/servicios/carrito.service';
 import { EmpresaActualService } from '../../core/servicios/empresa-actual.service';
+import { ModoVisualService } from '../../core/servicios/modo-visual.service';
 import { resolverUrlImagen } from '../../core/constantes/api.constantes';
 import { ItemCarrito } from '../../core/modelos/tienda.model';
 import { PrecioPipe } from '../../shared/pipes/precio.pipe';
@@ -26,6 +27,8 @@ export class TiendaLayoutComponent {
   private meta = inject(Meta);
   protected carrito = inject(CarritoService);
   protected estado = inject(EmpresaActualService);
+  protected modoVisual = inject(ModoVisualService);
+  protected esModerno = computed(() => this.modoVisual.modo() === 'moderno');
 
   slug = input.required<string>();
 

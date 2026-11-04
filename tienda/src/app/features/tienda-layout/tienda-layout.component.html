@@ -4,7 +4,7 @@
   </div>
 } @else if (noEncontrado()) {
   <div class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
-    <i class="fas fa-store-slash text-4xl text-[#FFBD80] mb-4"></i>
+    <i class="fas fa-store-slash text-4xl text-brand-soft mb-4"></i>
     <h1 class="text-xl font-bold text-text-title mb-2">No encontramos este restaurante</h1>
     <p class="text-sm text-text-muted">Revisa que la dirección esté bien escrita.</p>
   </div>
@@ -13,18 +13,34 @@
   <div class="min-h-screen flex flex-col">
 
     <!-- ENCABEZADO -->
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-neutral-border">
+    <header class="sticky top-0 z-30 bg-neutral-surface/95 backdrop-blur border-b border-neutral-border">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <a [routerLink]="['/', empresa.slug]" class="flex items-center gap-3 min-w-0">
           @if (empresa.logoUrl) {
             <img [src]="resolverUrlImagen(empresa.logoUrl)" [alt]="empresa.nombre" class="h-9 w-9 rounded-full object-cover" />
           } @else {
-            <span class="h-9 w-9 shrink-0 rounded-full bg-brand-primary text-white font-bold flex items-center justify-center">{{ inicial() }}</span>
+            <span class="h-9 w-9 shrink-0 rounded-full bg-brand-primary text-brand-contraste font-bold flex items-center justify-center">{{ inicial() }}</span>
           }
           <span class="font-bold text-text-title truncate">{{ empresa.nombre }}</span>
         </a>
 
         <nav class="flex items-center gap-2 sm:gap-3">
+          <!-- Switch de modo visual: clásico / moderno (kit: Acción Principal) -->
+          <button type="button" role="switch" (click)="modoVisual.alternar()"
+                  [attr.aria-checked]="esModerno()"
+                  [attr.aria-label]="esModerno() ? 'Cambiar a modo clásico' : 'Cambiar a modo moderno'"
+                  [title]="esModerno() ? 'Modo moderno' : 'Modo clásico'"
+                  class="flex items-center gap-2 px-1 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/40">
+            <span class="hidden md:inline text-xs font-semibold text-text-muted select-none">{{ esModerno() ? 'Moderno' : 'Clásico' }}</span>
+            <span class="w-10 h-6 rounded-full p-0.5 flex items-center box-border transition-colors duration-300"
+                  [class]="esModerno() ? 'bg-brand-primary' : 'bg-[#CEBFB5]'">
+              <span class="w-5 h-5 bg-neutral-surface rounded-full shadow-md flex items-center justify-center transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    [class.translate-x-4]="esModerno()">
+                <i class="fas text-[9px]" [class]="esModerno() ? 'fa-moon text-brand-primary' : 'fa-sun text-[#FF6B00]'"></i>
+              </span>
+            </span>
+          </button>
+
           <button type="button" (click)="abrirProximamente()"
                   class="hidden sm:inline-flex text-sm font-semibold text-text-body hover:text-brand-primary transition-colors px-2">
             Ingresar
@@ -37,10 +53,10 @@
             <i class="far fa-user"></i>
           </button>
           <button type="button" (click)="carrito.abierto.set(true)" aria-label="Ver carrito"
-                  class="relative h-10 w-10 rounded-full flex items-center justify-center bg-brand-cream text-brand-primary hover:bg-[#FFBD80]/30 transition-colors">
+                  class="relative h-10 w-10 rounded-full flex items-center justify-center bg-brand-cream text-brand-primary hover:bg-brand-soft/30 transition-colors">
             <i class="fas fa-shopping-bag"></i>
             @if (carrito.cantidadTotal() > 0) {
-              <span class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-brand-primary text-white text-[11px] font-bold flex items-center justify-center">
+              <span class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full bg-brand-primary text-brand-contraste text-[11px] font-bold flex items-center justify-center">
                 {{ carrito.cantidadTotal() }}
               </span>
             }
@@ -54,7 +70,7 @@
     </main>
 
     <!-- PIE DE PÁGINA -->
-    <footer class="border-t border-neutral-border bg-white mt-16">
+    <footer class="border-t border-neutral-border bg-neutral-surface mt-16">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid gap-8 sm:grid-cols-3 text-sm">
         <div>
           <p class="font-bold text-text-title mb-2">{{ empresa.nombre }}</p>
@@ -85,9 +101,9 @@
     <!-- CARRITO LATERAL -->
     @if (carrito.abierto()) {
       <div class="fixed inset-0 z-40 bg-[#231E1B]/40 backdrop-blur-[2px]" (click)="carrito.abierto.set(false)"></div>
-      <aside class="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md bg-white shadow-2xl flex flex-col" aria-label="Carrito">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-[#FFBD80]/30">
-          <h2 class="text-lg font-bold text-[#c45302]">Tu pedido</h2>
+      <aside class="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md bg-neutral-surface shadow-2xl flex flex-col" aria-label="Carrito">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-brand-soft/30">
+          <h2 class="text-lg font-bold text-brand-dark">Tu pedido</h2>
           <button type="button" (click)="carrito.abierto.set(false)" aria-label="Cerrar carrito"
                   class="w-8 h-8 rounded-full flex items-center justify-center text-text-muted hover:text-brand-primary hover:bg-brand-cream">
             <i class="fas fa-times"></i>
@@ -96,7 +112,7 @@
 
         @if (carrito.items().length === 0) {
           <div class="flex-1 flex flex-col items-center justify-center px-8 text-center">
-            <i class="fas fa-shopping-bag text-4xl text-[#FFBD80] mb-4"></i>
+            <i class="fas fa-shopping-bag text-4xl text-brand-soft mb-4"></i>
             <p class="font-semibold text-text-title mb-1">Tu carrito está vacío</p>
             <p class="text-sm text-text-muted">Agrega productos del menú para comenzar.</p>
           </div>

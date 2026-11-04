@@ -10,14 +10,14 @@ import { BotonComponent } from '../boton/boton.component';
   template: `
     <app-modal (cerrar)="cerrar.emit()">
       <div class="px-8 pt-10 pb-8 text-center">
-        <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF5F0]">
-          <i class="fas fa-gift text-2xl text-[#FF6B00]"></i>
+        <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-brand-cream">
+          <i class="fas fa-gift text-2xl text-brand-primary"></i>
         </div>
-        <span class="inline-block mb-3 rounded-full bg-[#FFF5F0] px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-[#CC5500]">
+        <span class="inline-block mb-3 rounded-full bg-brand-cream px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-brand-dark">
           Próximamente
         </span>
-        <h3 class="text-xl font-bold text-[#231E1B] mb-2">{{ titulo() }}</h3>
-        <p class="text-sm leading-relaxed text-[#5C534E] mb-7">{{ mensaje() }}</p>
+        <h3 class="text-xl font-bold text-text-title mb-2">{{ titulo() }}</h3>
+        <p class="text-sm leading-relaxed text-text-body mb-7">{{ mensaje() }}</p>
         <app-boton label="Entendido" size="lg" (btnClick)="cerrar.emit()"></app-boton>
       </div>
     </app-modal>

@@ -6,7 +6,7 @@
 
   @if (carrito.items().length === 0 && !enviando()) {
     <div class="tarjeta mt-6 px-6 py-14 text-center">
-      <i class="fas fa-shopping-bag text-4xl text-[#FFBD80] mb-4"></i>
+      <i class="fas fa-shopping-bag text-4xl text-brand-soft mb-4"></i>
       <p class="font-semibold text-text-title mb-1">Tu carrito está vacío</p>
       <p class="text-sm text-text-muted mb-6">Agrega productos del menú para continuar.</p>
       <a [routerLink]="['/', slug()]"><app-boton label="Ver el menú"></app-boton></a>

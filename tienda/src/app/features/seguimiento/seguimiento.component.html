@@ -1,7 +1,7 @@
 <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8">
   @if (noEncontrado()) {
     <div class="tarjeta px-6 py-14 text-center">
-      <i class="fas fa-receipt text-4xl text-[#FFBD80] mb-4"></i>
+      <i class="fas fa-receipt text-4xl text-brand-soft mb-4"></i>
       <p class="font-semibold text-text-title mb-1">No encontramos este pedido</p>
       <p class="text-sm text-text-muted mb-6">Revisa que el enlace esté completo.</p>
       <a [routerLink]="['/', slug()]"><app-boton label="Ir al menú"></app-boton></a>
@@ -68,8 +68,8 @@
             <li class="flex gap-4">
               <div class="flex flex-col items-center">
                 <span class="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors"
-                      [class]="i < indicePaso() ? 'bg-brand-primary text-white'
-                             : i === indicePaso() ? 'bg-brand-primary text-white ring-4 ring-brand-primary/15'
+                      [class]="i < indicePaso() ? 'bg-brand-primary text-brand-contraste'
+                             : i === indicePaso() ? 'bg-brand-primary text-brand-contraste ring-4 ring-brand-primary/15'
                              : 'bg-neutral-bg text-text-muted border border-neutral-border'">
                   @if (i < indicePaso()) { <i class="fas fa-check"></i> } @else { {{ i + 1 }} }
                 </span>

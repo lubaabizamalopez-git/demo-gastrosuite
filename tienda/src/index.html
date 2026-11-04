@@ -8,6 +8,10 @@
   <meta name="description" content="Revisa el menú y pide online para retiro o delivery.">
   <meta name="theme-color" content="#FF6B00">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Aplica el modo visual guardado antes del primer pintado (evita parpadeo clásico -> moderno) -->
+  <script>
+    try { if (localStorage.getItem('gs-modo-visual') === 'moderno') document.documentElement.setAttribute('data-modo', 'moderno'); } catch (e) {}
+  </script>
 </head>
 <body>
   <app-root></app-root>
